@@ -6,35 +6,50 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $user_id = $_GET['user_id'];
+    if (!isset($_GET['user_id'])) {
+        echo json_encode(["success" => false, "message" => "Missing user_id"]);
+        exit;
+    }
 
-    // Fetch user data from the 'users' table
+    $user_id = $_GET['user_id'];
+    $base_url = "http://localhost/vitecap1/capstone1/";
+
+    // Fetch user data
     $stmt = $conn->prepare("SELECT * FROM users WHERE user_id = ?");
-    $stmt->bind_param("i", $user_id);
+    $stmt->bind_param("s", $user_id); // 's' because user_id is varchar
     $stmt->execute();
     $user_result = $stmt->get_result();
     $user = $user_result->fetch_assoc();
 
-    // Fetch profile data from 'user_profiles' table
+    if (!$user) {
+        echo json_encode(["success" => false, "message" => "User not found"]);
+        exit;
+    }
+
+    // Fetch profile data
     $stmt = $conn->prepare("SELECT * FROM user_profiles WHERE user_id = ?");
-    $stmt->bind_param("i", $user_id);
+    $stmt->bind_param("s", $user_id);
     $stmt->execute();
     $profile_result = $stmt->get_result();
     $profile = $profile_result->fetch_assoc();
 
-    // Merge the data (you may want to merge it differently based on your needs)
+    $profile_pic_path = isset($profile["profile_pic"]) && $profile["profile_pic"]
+        ? $base_url . $profile["profile_pic"]
+        : "https://ui-avatars.com/api/?name=" . urlencode($user["user_id"]);
+
+    // Merge response
     $response = array(
         "success" => true,
         "user_id" => $user["user_id"],
         "role" => $user["role"],
         "email" => $user["email"],
-        "profile_picture" => $profile["profile_picture"] ?? "https://ui-avatars.com/api/?name=" . $user["user_id"],
+        "profile_picture" => $profile_pic_path,
         "full_name" => $profile["full_name"] ?? '',
         "contact_number" => $profile["contact_number"] ?? ''
     );
 
     echo json_encode($response);
-    
+
     $stmt->close();
     $conn->close();
 }

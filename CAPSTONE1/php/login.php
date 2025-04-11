@@ -1,8 +1,9 @@
 <?php
-include 'db_connect.php';
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
+include 'db_connect.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST["email"];

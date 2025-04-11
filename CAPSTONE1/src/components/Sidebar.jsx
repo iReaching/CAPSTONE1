@@ -16,19 +16,32 @@ export default function Sidebar({ children }) {
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
     if (userId) {
-      fetch(`http://localhost/test2/capstone1/php/get_profile.php?user_id=${userId}`)
+      fetch(`http://localhost/vitecap1/capstone1/php/get_profile.php?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setProfile(data))
         .catch((err) => console.error("Profile fetch error:", err));
     }
   }, []);
 
-
+  const fetchProfile = () => {
+    const userId = localStorage.getItem("user_id");
+    if (userId) {
+      fetch(`http://localhost/vitecap1/capstone1/PHP/get_profile.php?user_id=${userId}`)
+        .then((res) => res.json())
+        .then((data) => setProfile(data))
+        .catch((err) => console.error("Profile fetch error:", err));
+    }
+  };
+  
   // Simulate log out function
   const handleLogOut = () => {
     localStorage.clear();
     window.location.href = "/login";
   };
+  
+  useEffect(() => {
+    fetchProfile();
+  }, []);
   
 
   return (
@@ -62,15 +75,15 @@ export default function Sidebar({ children }) {
             <div className="border-t p-3 flex items-center justify-between bg-white">
             {/* Profile Info */}
             <div className="flex items-center gap-3 overflow-hidden">
-                <img
-                src={
-                    profile.profile_picture
-                    ? `http://localhost/test2/Capstone1/${profile.profile_picture}`
-                    : `https://ui-avatars.com/api/?name=${profile.full_name || "User"}`
-                }
-                alt="Profile"
-                className="w-10 h-10 rounded-full object-cover"
-                />
+            <img
+              src={
+                profile.profile_picture?.startsWith("uploads/")
+                  ? `http://localhost/vitecap1/capstone1/${profile.profile_picture}`
+                  : profile.profile_picture || "https://ui-avatars.com/api/?name=" + (profile.full_name || "")
+              }
+              alt="Profile"
+              className="w-10 h-10 rounded-md object-cover"
+            />
 
                 {expanded && (
                 <div className="leading-4 text-gray-800">
@@ -92,7 +105,7 @@ export default function Sidebar({ children }) {
 
                 {/* Options Menu */}
                 {showOptions && (
-                    <div className="absolute left-full top-1/3 -translate-y-1/2 ml-3 shadow-md bg-white text-gray-700 rounded-md w-40 z-50 border text-sm">
+                    <div className="absolute left-full top-1/3 -translate-y-1/2 ml-3 shadow-md text-gray-700 rounded-md w-40 z-50 text-sm">
                     <ul className="py-1">
                         <li>
                         <button
@@ -111,7 +124,7 @@ export default function Sidebar({ children }) {
                             handleLogOut();
                             setShowOptions(false);
                             }}
-                            className="w-full text-left px-4 py-2 hover:bg-gray-100 hover:text-red-600"
+                            className="w-full text-left px-4 py-2 hover:bg-white hover:text-red-600"
                         >
                             Log Out
                         </button>
@@ -126,8 +139,11 @@ export default function Sidebar({ children }) {
 
       </nav>
 
-      {/* Show Profile Modal */}
-      <ProfileModal show={showProfile} onClose={() => setShowProfile(false)} />
+      <ProfileModal
+        show={showProfile}
+        onClose={() => setShowProfile(false)}
+        onProfileUpdate={fetchProfile}
+      />
     </aside>
   );
 }

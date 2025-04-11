@@ -17,7 +17,7 @@ export default function Login() {
     formData.append("password", password);
   
     try {
-      const response = await fetch("http://localhost/test2/Capstone1/PHP/login.php", {
+      const response = await fetch("http://localhost/vitecap1/Capstone1/PHP/login.php", {
         method: "POST",
         body: formData,
       });
