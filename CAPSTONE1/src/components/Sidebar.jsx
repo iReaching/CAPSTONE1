@@ -98,14 +98,14 @@ export default function Sidebar({ children }) {
                 <div className="relative">
                 <button
                     onClick={() => setShowOptions((prev) => !prev)}
-                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                    className="text-white hover:text-gray-600 transition-colors"
                 >
                     <MoreVertical size={16} />
                 </button>
 
                 {/* Options Menu */}
                 {showOptions && (
-                    <div className="absolute left-full top-1/3 -translate-y-1/2 ml-3 shadow-md text-gray-700 rounded-md w-40 z-50 text-sm">
+                    <div className="absolute left-full top-1/3 -translate-y-1/2 ml-3 shadow-md text-white rounded-md w-40 z-50 text-sm">
                     <ul className="py-1">
                         <li>
                         <button

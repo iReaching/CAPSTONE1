@@ -161,7 +161,7 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
               onChange={(e) =>
                 setProfile((prev) => ({ ...prev, full_name: e.target.value }))
               }
-              className="w-full border border-black px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-black px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-600"
             />
           </div>
 
@@ -174,30 +174,28 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
               onChange={(e) =>
                 setProfile((prev) => ({ ...prev, contact_number: e.target.value }))
               }
-              className="w-full border border-black px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-black px-3 py-2 rounded text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-600"
             />
           </div>
 
-          {/* Save Button */}
-          <div className="text-right pt-2">
+            {/* Button Row */}
+            <div className="pt-4 flex justify-between items-center">
             <button
-              type="submit"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
+                type="button"
+                onClick={handleDeleteAccount} // <-- your delete function here
+                className="bg-black text-red-500 hover:text-red-600 px-4 py-2 rounded text-sm"
+              >
+                Delete Account
+              </button>
 
-        {/* Delete Account Button */}
-        <div className="mt-4 text-center">
-          <button
-            onClick={handleDeleteAccount}
-            className="text-red-600 text-sm hover:underline"
-          >
-            Delete Account
-          </button>
-        </div>
+              <button
+                type="submit"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm"
+              >
+                Save Changes
+              </button>
+            </div>
+        </form>
       </div>
     </div>
   );

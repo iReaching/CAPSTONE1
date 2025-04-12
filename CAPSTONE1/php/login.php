@@ -1,16 +1,16 @@
 <?php
+include 'db_connect.php';
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
-include 'db_connect.php';
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST["email"];
+    $user_id = $_POST["user_id"];
     $password = $_POST["password"];
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
+    $stmt = $conn->prepare("SELECT * FROM users WHERE user_id = ?");
+    $stmt->bind_param("s", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(["success" => false, "message" => "Incorrect password."]);
         }
     } else {
-        echo json_encode(["success" => false, "message" => "User not found."]);
+        echo json_encode(["success" => false, "message" => "User ID not found."]);
     }
 
     $stmt->close();
