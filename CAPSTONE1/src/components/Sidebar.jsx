@@ -1,17 +1,38 @@
-import { MoreVertical, ChevronFirst, ChevronLast } from "lucide-react"; // Import icons
 import { useState, useContext, createContext, useEffect } from "react";
-import { Link } from "react-router-dom";
-import ProfileModal from "./ProfileModal"; // Import ProfileModal
+import { Link, useLocation } from "react-router-dom";
+import ProfileModal from "./ProfileModal";
+import {
+  Home as HomeIcon,
+  CalendarDays,
+  Boxes,
+  FileText,
+  ScrollText,
+  UserSquare,
+  Eye,
+  Plus,
+  Wrench,
+  ChevronDown,
+  ChevronRight,
+  MoreVertical,
+  ChevronFirst,
+  ChevronLast
+} from "lucide-react";
+
 
 
 // Create a context to share sidebar expansion state with SidebarItem
 const SidebarContext = createContext();
 
 export default function Sidebar({ children }) {
-  const [expanded, setExpanded] = useState(true); // Sidebar expanded state
-  const [showProfile, setShowProfile] = useState(false); // Modal state
-  const [showOptions, setShowOptions] = useState(false); // Dropdown options state
+  const location = useLocation();
+  
+  const [expanded, setExpanded] = useState(true);
+  const [showProfile, setShowProfile] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const [profile, setProfile] = useState({});
+  const [amenitiesOpen, setAmenitiesOpen] = useState(false);
+  
+
 
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
@@ -60,7 +81,7 @@ export default function Sidebar({ children }) {
           />
           <button
             onClick={() => setExpanded((curr) => !curr)}
-            className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
+             className="p-1 text-gray-400 hover:text-gray-600 bg-transparent border-none shadow-none"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </button>
@@ -68,7 +89,45 @@ export default function Sidebar({ children }) {
 
         {/* Navigation Items */}
         <SidebarContext.Provider value={{ expanded }}>
-          <ul className="flex-1 px-3">{children}</ul>
+        <ul className="flex-1 px-3 space-y-1">
+        <SidebarItem icon={<HomeIcon size={18} />} text="Home" link="/home" active={location.pathname === "/home"} />
+
+          {/* Amenities Group */}
+          <li className="text-gray-700">
+          <div
+            onClick={() => {
+              setAmenitiesOpen(!amenitiesOpen);
+              navigate("/amenities/view");
+            }}
+            className="flex items-center justify-between px-3 py-2 hover:bg-indigo-100 rounded cursor-pointer"
+          >
+            <div className="flex items-center gap-3 text-gray-600 w-full">
+            <CalendarDays size={18} />
+              {expanded && <span className="flex-grow text-center font-medium">Amenities</span>}
+            </div>
+
+            {expanded && (
+              <div>
+                {amenitiesOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              </div>
+            )}
+          </div>
+            {amenitiesOpen && expanded && (
+              <ul className="ml-6 space-y-1">
+                <SidebarItem icon={<Eye size={26} />} text="View" link="/amenities/view" active={location.pathname === "/amenities/view"} />
+                <SidebarItem icon={<Plus size={26} />} text="Add" link="/amenities/add" active={location.pathname === "/amenities/add"} />
+                <SidebarItem icon={<Wrench size={26} />} text="Edit" link="/amenities/edit" active={location.pathname === "/amenities/edit"} />
+                <SidebarItem icon={<ScrollText size={26} />} text="Schedules" link="/amenities/schedules" active={location.pathname === "/amenities/schedules"} />
+              </ul>
+            )}
+          </li>
+
+        <SidebarItem icon={<Boxes size={18} />} text="Items" link="/items" active={location.pathname === "/items"} />
+        <SidebarItem icon={<FileText size={18} />} text="Report" link="/reports" active={location.pathname === "/reports"} />
+        <SidebarItem icon={<ScrollText size={18} />} text="Entry Log" link="/entrylog" active={location.pathname === "/entrylog"} />
+        <SidebarItem icon={<UserSquare size={18} />} text="Account" link="/account" active={location.pathname === "/account"} />
+
+        </ul>
         </SidebarContext.Provider>
 
         {/* Footer: User Info */}
@@ -97,12 +156,12 @@ export default function Sidebar({ children }) {
             {expanded && (
                 <div className="relative">
                 <button
-                    onClick={() => setShowOptions((prev) => !prev)}
-                    className="text-white hover:text-gray-600 transition-colors"
+                  type="button"
+                  onClick={() => setShowOptions((prev) => !prev)}
+                  className="appearance-none p-1 text-gray-400 hover:text-gray-600 bg-transparent border-none shadow-none outline-none focus:outline-none focus:ring-0"
                 >
-                    <MoreVertical size={16} />
+                  <MoreVertical size={16} />
                 </button>
-
                 {/* Options Menu */}
                 {showOptions && (
                     <div className="absolute left-full top-1/3 -translate-y-1/2 ml-3 shadow-md text-white rounded-md w-40 z-50 text-sm">

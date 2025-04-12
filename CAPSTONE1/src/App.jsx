@@ -9,6 +9,10 @@ import EntryLog from "./pages/EntryLog";
 import Account from "./pages/Account";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import AmenityView from "./pages/amenitiesSUB/AmenityView";
+import AmenityAdd from "./pages/amenitiesSUB/AmenityAdd";
+import AmenityEdit from "./pages/amenitiesSUB/AmenityEdit";
+import AmenitySchedules from "./pages/amenitiesSUB/AmenitySchedules";
 
 import {
   Home as HomeIcon,
@@ -51,6 +55,10 @@ export default function App() {
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/entrylog" element={<EntryLog />} />
                     <Route path="/account" element={<Account />} />
+                    <Route path="/amenities/view" element={<AmenityView />} />
+                    <Route path="/amenities/add" element={<AmenityAdd />} />
+                    <Route path="/amenities/edit" element={<AmenityEdit />} />
+                    <Route path="/amenities/schedules" element={<AmenitySchedules />} />
                   </Routes>
                 </main>
               </div>
