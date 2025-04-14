@@ -92,7 +92,7 @@ export default function AmenityEdit() {
               <img
                 src={preview}
                 alt="Preview"
-                className="w-24 h-24 mx-auto object-cover rounded-full border border-gray-300 mb-3"
+                className="w-24 h-24 mx-auto object-cover border border-gray-300 mb-3"
               />
             )}
             <label

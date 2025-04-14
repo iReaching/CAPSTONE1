@@ -68,50 +68,63 @@ export default function Sidebar({ children }) {
   return (
     <aside
       className={`fixed top-0 left-0 z-50 h-screen bg-white border-r shadow-sm transition-all ${
-        expanded ? "w-64" : "w-24"
+        expanded ? "w-64" : "w-20"
       }`}
     >
       <nav className="h-full flex flex-col bg-white border-r shadow-sm">
         {/* Top: Logo and Toggle Button */}
         <div className="p-4 pb-2 flex justify-between items-center">
-          <img
-            src="https://img.logoipsum.com/243.svg"
-            className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`}
-            alt="logo"
-          />
-          <button
+
+          <div
             onClick={() => setExpanded((curr) => !curr)}
-             className="p-1 text-gray-400 hover:text-gray-600 bg-transparent border-none shadow-none"
+            className="p-1 text-black hover:text-gray-600 cursor-pointer"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
-          </button>
+          </div>
         </div>
 
         {/* Navigation Items */}
         <SidebarContext.Provider value={{ expanded }}>
         <ul className="flex-1 px-3 space-y-1">
-        <SidebarItem icon={<HomeIcon size={18} />} text="Home" link="/home" active={location.pathname === "/home"} />
+        <SidebarItem icon={<HomeIcon size={20} />} text="Home" link="/home" active={location.pathname === "/home"} />
 
-          {/* Amenities Group */}
-          <li className="text-gray-700">
-          <div
-            onClick={() => {
-              setAmenitiesOpen(!amenitiesOpen);
-              navigate("/amenities/view");
-            }}
-            className="flex items-center justify-between px-3 py-2 hover:bg-indigo-100 rounded cursor-pointer"
-          >
-            <div className="flex items-center gap-3 text-gray-600 w-full">
-            <CalendarDays size={18} />
-              {expanded && <span className="flex-grow text-center font-medium">Amenities</span>}
-            </div>
+        <li className="text-gray-700 relative group">
+              <div
+                onClick={() => {
+                  setAmenitiesOpen(!amenitiesOpen);
+                  navigate("/amenities/view");
+                }}
+                className={`
+                  flex items-center justify-between px-3 py-2
+                  hover:bg-indigo-100 rounded cursor-pointer
+                  transition-colors
+                `}
+              >
+                <div className="flex items-center gap-3 text-gray-600 w-full">
+                  <CalendarDays size={20} />
+                  {expanded && <span className="flex-grow text-center font-medium">Amenities</span>}
+                </div>
 
-            {expanded && (
-              <div>
-                {amenitiesOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                {expanded && (
+                  <div>
+                    {amenitiesOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+
+              {/* Tooltip when collapsed */}
+              {!expanded && (
+                <div
+                  className="
+                    absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2 py-1
+                    rounded bg-indigo-100 text-indigo-800 text-sm
+                    opacity-0 group-hover:opacity-100 group-hover:translate-x-0
+                    transition-all duration-300 whitespace-nowrap z-50
+                  "
+                >
+                  Amenities
+                </div>
+              )}
             {amenitiesOpen && expanded && (
               <ul className="ml-6 space-y-1">
                 <SidebarItem icon={<Eye size={26} />} text="View" link="/amenities/view" active={location.pathname === "/amenities/view"} />

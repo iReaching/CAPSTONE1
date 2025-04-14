@@ -59,7 +59,7 @@ export default function AmenityAdd() {
             required
             onChange={(e) => setDescription(e.target.value)}
             className="w-full px-3 py-2 border rounded border-black text-sm"
-            rows="4"
+            rows="10"
           />
         </div>
 
@@ -70,7 +70,7 @@ export default function AmenityAdd() {
               <img
                 src={preview}
                 alt="Preview"
-                className="w-24 h-24 mx-auto object-cover rounded-full border border-gray-300 mb-3"
+                className="w-24 h-24 mx-auto object-cover border border-gray-300 mb-3"
               />
             )}
             <label

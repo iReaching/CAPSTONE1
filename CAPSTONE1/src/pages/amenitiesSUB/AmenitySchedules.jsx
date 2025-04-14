@@ -1,105 +1,86 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function AmenitySchedules() {
-  const [requests, setRequests] = useState([]);
+  const [schedules, setSchedules] = useState([]);
+  const [activeTab, setActiveTab] = useState("pending");
 
   useEffect(() => {
     fetch("http://localhost/vitecap1/capstone1/php/get_amenity_schedules.php")
       .then((res) => res.json())
-      .then((data) => setRequests(data))
-      .catch((err) => console.error("Failed to fetch schedules:", err));
+      .then((data) => setSchedules(data))
+      .catch((err) => console.error("Error fetching schedules:", err));
   }, []);
 
-  const handleAction = async (id, action) => {
-    try {
-      const res = await fetch("http://localhost/vitecap1/capstone1/php/update_schedule_status.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, action }),
-      });
-      const result = await res.json();
-      if (result.success) {
-        setRequests((prev) =>
-          prev.map((req) =>
-            req.id === id ? { ...req, status: action } : req
-          )
-        );
-      } else {
-        alert("Failed to update request status.");
-      }
-    } catch (err) {
-      console.error("Update error:", err);
-    }
-  };
+  const filteredSchedules = schedules.filter(
+    (s) => s.status === activeTab
+  );
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-xl font-bold mb-4">Amenity Schedule Requests</h1>
-      <div className="overflow-x-auto bg-white rounded shadow">
-        <table className="min-w-full text-sm text-center border">
-          <thead className="bg-gray-100 text-gray-700 font-semibold">
-            <tr>
-              <th className="px-3 py-2">User ID</th>
-              <th>Date</th>
-              <th>Amenity</th>
-              <th>Message</th>
-              <th>Time</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {requests.length === 0 ? (
-              <tr>
-                <td colSpan="7" className="p-4 text-gray-500">
-                  No requests found.
-                </td>
-              </tr>
-            ) : (
-              requests.map((req) => (
-                <tr key={req.id} className="border-t">
-                  <td className="px-3 py-2">{req.homeowner_id}</td>
-                  <td className="px-3 py-2">{req.request_date}</td>
-                  <td className="px-3 py-2">{req.amenity_name}</td>
-                  <td className="px-3 py-2">{req.message}</td>
-                  <td className="px-3 py-2">
-                    {req.time_start} - {req.time_end}
-                  </td>
-                  <td className="px-3 py-2 capitalize">{req.status}</td>
-                  <td className="px-3 py-2 space-x-2">
-                    {req.status === "pending" ? (
-                      <>
-                        <button
-                          onClick={() => handleAction(req.id, "approved")}
-                          className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => handleAction(req.id, "rejected")}
-                          className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                        >
-                          Reject
-                        </button>
-                      </>
-                    ) : (
-                      <span
-                        className={`px-2 py-1 rounded text-white ${
-                          req.status === "approved"
-                            ? "bg-green-600"
-                            : "bg-red-600"
-                        }`}
-                      >
-                        {req.status}
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+    <div className="text-white">
+      <h2 className="text-2xl font-bold mb-6">Amenity Schedules</h2>
+
+      {/* Tabs */}
+      <div className="flex space-x-4 mb-6">
+        <button
+          className={`px-4 py-2 rounded ${
+            activeTab === "pending"
+              ? "bg-indigo-600"
+              : "bg-gray-700 hover:bg-gray-600"
+          }`}
+          onClick={() => setActiveTab("pending")}
+        >
+          Pending
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${
+            activeTab === "approved"
+              ? "bg-indigo-600"
+              : "bg-gray-700 hover:bg-gray-600"
+          }`}
+          onClick={() => setActiveTab("approved")}
+        >
+          Approved
+        </button>
       </div>
+
+      {/* Empty indicator */}
+      {filteredSchedules.length === 0 ? (
+        <p className="text-gray-400 italic">No {activeTab} schedules found.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filteredSchedules.map((schedule) => (
+            <div
+              key={schedule.id}
+              className={`rounded-lg shadow-md p-4 ${
+                schedule.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-green-100 text-green-800"
+              }`}
+            >
+              <h3 className="font-bold text-lg mb-2">
+                {schedule.amenity_name}
+              </h3>
+              <p className="text-sm">
+                <span className="font-medium">Requested by:</span>{" "}
+                {schedule.homeowner_id}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Date:</span>{" "}
+                {schedule.request_date}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Time:</span>{" "}
+                {schedule.time_start} - {schedule.time_end}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Status:</span>{" "}
+                {schedule.status.charAt(0).toUpperCase() +
+                  schedule.status.slice(1)}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
