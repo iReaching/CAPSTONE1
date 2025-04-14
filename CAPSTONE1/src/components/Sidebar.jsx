@@ -17,6 +17,7 @@ import {
   ChevronFirst,
   ChevronLast
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -25,7 +26,15 @@ const SidebarContext = createContext();
 
 export default function Sidebar({ children }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const isAmenitiesActive = [
+    "/amenities/view",
+    "/amenities/add",
+    "/amenities/edit",
+    "/amenities/schedules"
+  ].includes(location.pathname);
   
+
   const [expanded, setExpanded] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
@@ -88,56 +97,62 @@ export default function Sidebar({ children }) {
         <ul className="flex-1 px-3 space-y-1">
         <SidebarItem icon={<HomeIcon size={20} />} text="Home" link="/home" active={location.pathname === "/home"} />
 
-        <li className="text-gray-700 relative group">
+        <li className="relative">
+        <Link
+          to="#"
+          onClick={(e) => {
+            e.preventDefault();
+            if (!isAmenitiesActive) {
+              navigate("/amenities/view");
+            }
+            setAmenitiesOpen((prev) => !prev);
+          }}
+          className={`
+            flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer
+            transition-colors group w-full
+            ${isAmenitiesActive ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-100 text-gray-600"}
+          `}               
+          >
+            <CalendarDays size={20} />
+            <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
+              Amenities
+            </span>
+
+            {!expanded && (
               <div
-                onClick={() => {
-                  setAmenitiesOpen(!amenitiesOpen);
-                  navigate("/amenities/view");
-                }}
                 className={`
-                  flex items-center justify-between px-3 py-2
-                  hover:bg-indigo-100 rounded cursor-pointer
-                  transition-colors
+                  absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2 py-1 rounded-md
+                  bg-indigo-100 text-indigo-800 text-sm whitespace-nowrap
+                  opacity-0 group-hover:opacity-100 transition-all z-50
                 `}
               >
-                <div className="flex items-center gap-3 text-gray-600 w-full">
-                  <CalendarDays size={20} />
-                  {expanded && <span className="flex-grow text-center font-medium">Amenities</span>}
-                </div>
-
-                {expanded && (
-                  <div>
-                    {amenitiesOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                  </div>
-                )}
+                Amenities
               </div>
-
-              {/* Tooltip when collapsed */}
-              {!expanded && (
-                <div
-                  className="
-                    absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2 py-1
-                    rounded bg-indigo-100 text-indigo-800 text-sm
-                    opacity-0 group-hover:opacity-100 group-hover:translate-x-0
-                    transition-all duration-300 whitespace-nowrap z-50
-                  "
-                >
-                  Amenities
-                </div>
-              )}
-            {amenitiesOpen && expanded && (
-              <ul className="ml-6 space-y-1">
-                <SidebarItem icon={<Eye size={26} />} text="View" link="/amenities/view" active={location.pathname === "/amenities/view"} />
-                <SidebarItem icon={<Plus size={26} />} text="Add" link="/amenities/add" active={location.pathname === "/amenities/add"} />
-                <SidebarItem icon={<Wrench size={26} />} text="Edit" link="/amenities/edit" active={location.pathname === "/amenities/edit"} />
-                <SidebarItem icon={<ScrollText size={26} />} text="Schedules" link="/amenities/schedules" active={location.pathname === "/amenities/schedules"} />
-              </ul>
             )}
-          </li>
+
+            {expanded && (
+              <div className="ml-auto">
+                {amenitiesOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              </div>
+            )}
+          </Link>
+
+          {/* Dropdown Items (only show when expanded) */}
+          {amenitiesOpen && expanded && (
+            <ul className="ml-9 mt-1 space-y-1 text-sm">
+              <SidebarItem icon={<Eye size={20} />} text="View" link="/amenities/view" active={location.pathname === "/amenities/view"} />
+              <SidebarItem icon={<Plus size={20} />} text="Add" link="/amenities/add" active={location.pathname === "/amenities/add"} />
+              <SidebarItem icon={<Wrench size={20} />} text="Edit" link="/amenities/edit" active={location.pathname === "/amenities/edit"} />
+              <SidebarItem icon={<ScrollText size={20} />} text="Schedules" link="/amenities/schedules" active={location.pathname === "/amenities/schedules"} />
+            </ul>
+          )}
+        </li>
+
+
 
         <SidebarItem icon={<Boxes size={18} />} text="Items" link="/items" active={location.pathname === "/items"} />
         <SidebarItem icon={<FileText size={18} />} text="Report" link="/reports" active={location.pathname === "/reports"} />
-        <SidebarItem icon={<ScrollText size={18} />} text="Entry Log" link="/entrylog" active={location.pathname === "/entrylog"} />
+        <SidebarItem icon={<ScrollText size={18} />} text="EntryLog" link="/entrylog" active={location.pathname === "/entrylog"} />
         <SidebarItem icon={<UserSquare size={18} />} text="Account" link="/account" active={location.pathname === "/account"} />
 
         </ul>

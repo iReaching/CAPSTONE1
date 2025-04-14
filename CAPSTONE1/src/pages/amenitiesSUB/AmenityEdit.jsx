@@ -123,7 +123,7 @@ export default function AmenityEdit() {
           >
             Update Amenity
           </button>
-        </div>
+        </div>231
       </form>
     </div>
   );

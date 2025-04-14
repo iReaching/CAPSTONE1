@@ -21,7 +21,7 @@ export default function AmenityView() {
       {amenities.map((amenity) => (
         <div
           key={amenity.id}
-          className="bg-white text-black rounded-lg shadow-lg p-6 w-full max-w-5xl min-h-[800px] flex flex-col items-center justify-start"
+          className="bg-white text-black rounded-lg shadow-lg p-6 w-full max-w-4xl min-h-[700px] flex flex-col items-center justify-start"
         >
           <img
             src={`http://localhost/vitecap1/capstone1/${amenity.image}`}
