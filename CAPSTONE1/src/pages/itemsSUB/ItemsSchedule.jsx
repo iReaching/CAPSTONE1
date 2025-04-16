@@ -1,54 +1,124 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function ItemsSchedule() {
-  const [requests, setRequests] = useState([]);
-
-  const fetchRequests = () => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_item_requests.php")
-      .then((res) => res.json())
-      .then((data) => setRequests(data));
-  };
-
-  const handleAction = (id, status) => {
-    fetch("http://localhost/vitecap1/capstone1/php/update_item_request.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, status })
-    }).then(() => fetchRequests());
-  };
+  const [schedules, setSchedules] = useState([]);
+  const [activeTab, setActiveTab] = useState("pending");
 
   useEffect(() => {
-    fetchRequests();
+    fetch("http://localhost/vitecap1/capstone1/php/get_item_schedule.php")
+      .then((res) => res.json())
+      .then((data) => setSchedules(data))
+      .catch((err) => console.error("Error fetching item schedules:", err));
   }, []);
 
+  const handleUpdateStatus = (id, status) => {
+    fetch("http://localhost/vitecap1/capstone1/php/update_item_status.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ id, status }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setSchedules((prev) =>
+            prev.map((s) => (s.id === id ? { ...s, status } : s))
+          );
+        } else {
+          alert("Failed to update item status.");
+        }
+      });
+  };
+
+  const filteredSchedules =
+    activeTab === "pending"
+      ? schedules.filter((s) => s.status === "pending")
+      : schedules.filter((s) => s.status === "approved" || s.status === "rejected");
+
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4">Item Borrow Requests</h2>
-      <table className="w-full text-sm border">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2">Item</th>
-            <th>Requested By</th>
-            <th>Quantity</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests.map((req) => (
-            <tr key={req.id}>
-              <td className="p-2">{req.item_name}</td>
-              <td>{req.requested_by}</td>
-              <td>{req.quantity}</td>
-              <td>{req.status}</td>
-              <td>
-                <button onClick={() => handleAction(req.id, "approved")} className="text-green-600 mr-2">Approve</button>
-                <button onClick={() => handleAction(req.id, "rejected")} className="text-red-600">Reject</button>
-              </td>
-            </tr>
+    <div className="text-white">
+      <h2 className="text-2xl font-bold mb-6">Item Schedules</h2>
+
+      {/* Tabs */}
+      <div className="flex space-x-4 mb-6">
+        <button
+          className={`px-4 py-2 rounded ${
+            activeTab === "pending"
+              ? "bg-indigo-600"
+              : "bg-gray-700 hover:bg-gray-600"
+          }`}
+          onClick={() => setActiveTab("pending")}
+        >
+          Pending
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${
+            activeTab !== "pending"
+              ? "bg-indigo-600"
+              : "bg-gray-700 hover:bg-gray-600"
+          }`}
+          onClick={() => setActiveTab("processed")}
+        >
+          Processed
+        </button>
+      </div>
+
+      {filteredSchedules.length === 0 ? (
+        <p className="text-gray-400 italic">No {activeTab} schedules found.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filteredSchedules.map((schedule) => (
+            <div
+              key={schedule.id}
+              className={`rounded-lg shadow-md p-4 ${
+                schedule.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : schedule.status === "approved"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              <h3 className="font-bold text-lg mb-2">{schedule.item_name}</h3>
+              <p className="text-sm">
+                <span className="font-medium">Requested by:</span>{" "}
+                {schedule.requested_by}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Date:</span>{" "}
+                {schedule.request_date}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Time:</span>{" "}
+                {schedule.time_start} - {schedule.time_end}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Message:</span>{" "}
+                {schedule.message || "-"}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Status:</span>{" "}
+                {schedule.status.charAt(0).toUpperCase() + schedule.status.slice(1)}
+              </p>
+
+              {schedule.status === "pending" && (
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() => handleUpdateStatus(schedule.id, "approved")}
+                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => handleUpdateStatus(schedule.id, "rejected")}
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
     </div>
   );
 }

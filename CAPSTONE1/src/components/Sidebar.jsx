@@ -34,6 +34,15 @@ export default function Sidebar({ children }) {
     "/amenities/schedules"
   ].includes(location.pathname);
   
+  const isItemsActive = [
+    "/items/view",
+    "/items/add",
+    "/items/edit",
+    "/items/schedule"
+  ].includes(location.pathname);
+  
+  const [itemsOpen, setItemsOpen] = useState(false);
+  
 
   const [expanded, setExpanded] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
@@ -150,7 +159,50 @@ export default function Sidebar({ children }) {
 
 
 
-        <SidebarItem icon={<Boxes size={18} />} text="Items" link="/items" active={location.pathname === "/items"} />
+        <li className="relative">
+          <Link
+            to="#"
+            onClick={(e) => {
+              e.preventDefault();
+              if (!isItemsActive) {
+                navigate("/items/view");
+              }
+              setItemsOpen((prev) => !prev);
+            }}
+            className={`
+              flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer
+              transition-colors group w-full
+              ${isItemsActive ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-100 text-gray-600"}
+            `}
+          >
+            <Boxes size={18} />
+            <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
+              Items
+            </span>
+
+            {!expanded && (
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2 py-1 rounded-md bg-indigo-100 text-indigo-800 text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all z-50">
+                Items
+              </div>
+            )}
+
+            {expanded && (
+              <div className="ml-auto">
+                {itemsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+              </div>
+            )}
+          </Link>
+
+          {itemsOpen && expanded && (
+            <ul className="ml-9 mt-1 space-y-1 text-sm">
+              <SidebarItem icon={<Eye size={16} />} text="View" link="/items/view" active={location.pathname === "/items/view"} />
+              <SidebarItem icon={<Plus size={16} />} text="Add" link="/items/add" active={location.pathname === "/items/add"} />
+              <SidebarItem icon={<Wrench size={16} />} text="Edit" link="/items/edit" active={location.pathname === "/items/edit"} />
+              <SidebarItem icon={<ScrollText size={16} />} text="Schedule" link="/items/schedule" active={location.pathname === "/items/schedule"} />
+            </ul>
+          )}
+        </li>
+
         <SidebarItem icon={<FileText size={18} />} text="Report" link="/reports" active={location.pathname === "/reports"} />
         <SidebarItem icon={<ScrollText size={18} />} text="EntryLog" link="/entrylog" active={location.pathname === "/entrylog"} />
         <SidebarItem icon={<UserSquare size={18} />} text="Account" link="/account" active={location.pathname === "/account"} />

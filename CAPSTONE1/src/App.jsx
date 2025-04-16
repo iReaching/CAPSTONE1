@@ -13,6 +13,10 @@ import AmenityView from "./pages/amenitiesSUB/AmenityView";
 import AmenityAdd from "./pages/amenitiesSUB/AmenityAdd";
 import AmenityEdit from "./pages/amenitiesSUB/AmenityEdit";
 import AmenitySchedules from "./pages/amenitiesSUB/AmenitySchedules";
+import ItemsView from "./pages/itemsSUB/ItemsView";
+import ItemsAdd from "./pages/itemsSUB/ItemsAdd";
+import ItemsEdit from "./pages/itemsSUB/ItemsEdit";
+import ItemsSchedule from "./pages/itemsSUB/ItemsSchedule";
 
 import {
   Home as HomeIcon,
@@ -59,6 +63,10 @@ export default function App() {
                     <Route path="/amenities/add" element={<AmenityAdd />} />
                     <Route path="/amenities/edit" element={<AmenityEdit />} />
                     <Route path="/amenities/schedules" element={<AmenitySchedules />} />
+                    <Route path="/items/view" element={<ItemsView />} />
+                    <Route path="/items/add" element={<ItemsAdd />} />
+                    <Route path="/items/edit" element={<ItemsEdit />} />
+                    <Route path="/items/schedule" element={<ItemsSchedule />} />
                   </Routes>
                 </main>
               </div>

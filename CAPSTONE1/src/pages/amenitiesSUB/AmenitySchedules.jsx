@@ -8,12 +8,31 @@ export default function AmenitySchedules() {
     fetch("http://localhost/vitecap1/capstone1/php/get_amenity_schedules.php")
       .then((res) => res.json())
       .then((data) => setSchedules(data))
-      .catch((err) => console.error("Error fetching schedules:", err));
+      .catch((err) => console.error("Error fetching amenity schedules:", err));
   }, []);
 
-  const filteredSchedules = schedules.filter(
-    (s) => s.status === activeTab
-  );
+  const handleUpdateStatus = (id, status) => {
+    fetch("http://localhost/vitecap1/capstone1/php/update_amenity_status.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ id, status }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setSchedules((prev) =>
+            prev.map((s) => (s.id === id ? { ...s, status } : s))
+          );
+        } else {
+          alert("Failed to update amenity status.");
+        }
+      });
+  };
+
+  const filteredSchedules =
+    activeTab === "pending"
+      ? schedules.filter((s) => s.status === "pending")
+      : schedules.filter((s) => s.status === "approved" || s.status === "rejected");
 
   return (
     <div className="text-white">
@@ -33,17 +52,16 @@ export default function AmenitySchedules() {
         </button>
         <button
           className={`px-4 py-2 rounded ${
-            activeTab === "approved"
+            activeTab !== "pending"
               ? "bg-indigo-600"
               : "bg-gray-700 hover:bg-gray-600"
           }`}
-          onClick={() => setActiveTab("approved")}
+          onClick={() => setActiveTab("processed")}
         >
-          Approved
+          Processed
         </button>
       </div>
 
-      {/* Empty indicator */}
       {filteredSchedules.length === 0 ? (
         <p className="text-gray-400 italic">No {activeTab} schedules found.</p>
       ) : (
@@ -54,15 +72,15 @@ export default function AmenitySchedules() {
               className={`rounded-lg shadow-md p-4 ${
                 schedule.status === "pending"
                   ? "bg-yellow-100 text-yellow-800"
-                  : "bg-green-100 text-green-800"
+                  : schedule.status === "approved"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
               }`}
             >
-              <h3 className="font-bold text-lg mb-2">
-                {schedule.amenity_name}
-              </h3>
+              <h3 className="font-bold text-lg mb-2">{schedule.amenity_name}</h3>
               <p className="text-sm">
                 <span className="font-medium">Requested by:</span>{" "}
-                {schedule.homeowner_id}
+                {schedule.requested_by}
               </p>
               <p className="text-sm">
                 <span className="font-medium">Date:</span>{" "}
@@ -73,10 +91,30 @@ export default function AmenitySchedules() {
                 {schedule.time_start} - {schedule.time_end}
               </p>
               <p className="text-sm">
-                <span className="font-medium">Status:</span>{" "}
-                {schedule.status.charAt(0).toUpperCase() +
-                  schedule.status.slice(1)}
+                <span className="font-medium">Message:</span>{" "}
+                {schedule.message || "-"}
               </p>
+              <p className="text-sm">
+                <span className="font-medium">Status:</span>{" "}
+                {schedule.status.charAt(0).toUpperCase() + schedule.status.slice(1)}
+              </p>
+
+              {schedule.status === "pending" && (
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() => handleUpdateStatus(schedule.id, "approved")}
+                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => handleUpdateStatus(schedule.id, "rejected")}
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>

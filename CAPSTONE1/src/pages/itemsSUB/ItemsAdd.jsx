@@ -2,36 +2,121 @@ import { useState } from "react";
 
 export default function ItemsAdd() {
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("quantity", quantity);
-    formData.append("image", image);
+    formData.append("description", description);
+    formData.append("available", quantity);
+    if (image) formData.append("image", image);
 
-    fetch("http://localhost/vitecap1/capstone1/php/add_item.php", {
-      method: "POST",
-      body: formData
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        alert(data.message);
+    try {
+      const res = await fetch("http://localhost/vitecap1/capstone1/php/add_item.php", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+      if (result.success || result.message?.includes("success")) {
+        alert("Item added successfully!");
         setName("");
+        setDescription("");
         setQuantity(1);
         setImage(null);
-      })
-      .catch((err) => console.error("Add item error:", err));
+        setPreview("");
+      } else {
+        alert("Error: " + result.message || "Failed to add item.");
+      }
+    } catch (err) {
+      console.error("Upload failed:", err);
+      alert("Something went wrong.");
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md">
-      <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Item Name" className="w-full border px-3 py-2 rounded" required />
-      <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder="Quantity" className="w-full border px-3 py-2 rounded" min="1" required />
-      <input type="file" onChange={(e) => setImage(e.target.files[0])} className="w-full" />
-      <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Add Item</button>
-    </form>
+    <div className="p-6 max-w-xl mx-auto bg-white rounded shadow">
+      <h2 className="text-xl font-bold mb-4 text-indigo-600">Add New Item</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+          <input
+            type="text"
+            value={name}
+            required
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Ladder"
+            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea
+            value={description}
+            required
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter the item's description here."
+            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            rows="10"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Quantity Available</label>
+          <input
+            type="number"
+            value={quantity}
+            min="1"
+            required
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder="e.g. 5 (minimum 1)"
+            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+          />
+        </div>
+
+        <div className="flex justify-center mt-4">
+          <div className="w-full max-w-xs text-center">
+            {preview && (
+              <img
+                src={preview}
+                alt="Preview"
+                className="w-24 h-24 mx-auto object-cover border border-gray-300 mb-3"
+              />
+            )}
+            <label
+              htmlFor="image-upload"
+              className="cursor-pointer inline-block px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition"
+            >
+              {preview ? "Change Image" : "Upload Image"}
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  setImage(file);
+                  setPreview(URL.createObjectURL(file));
+                }}
+                className="hidden"
+              />
+            </label>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+        >
+          Add Item
+        </button>
+      </form>
+    </div>
   );
 }
