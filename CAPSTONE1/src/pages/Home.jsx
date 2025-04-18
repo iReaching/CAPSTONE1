@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 export default function Home() {
   const [summary, setSummary] = useState({
     amenity_pending: 0,
@@ -13,6 +14,7 @@ export default function Home() {
     count_staff: 0,
     count_guard: 0,
     count_homeowner: 0,
+    total_vehicles: 0,
   });  
   const navigate = useNavigate();
 
@@ -92,7 +94,8 @@ export default function Home() {
       </div>
 
       {/* Row 3: Accounts Preview */}
-      <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Accounts Preview */}
         <div
           onClick={() => navigate("/account")}
           className="cursor-pointer bg-white rounded-lg shadow p-4 hover:shadow-lg transition"
@@ -107,7 +110,27 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Vehicles Preview */}
+        <div
+          onClick={() => navigate("/account")}
+          className="cursor-pointer bg-white rounded-lg shadow p-4 hover:shadow-lg transition"
+        >
+          <div className="flex flex-col items-center text-center">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3203/3203808.png"
+              alt="Vehicles"
+              className="w-20 h-20 object-contain mb-2"
+            />
+            <h2 className="text-lg font-semibold text-indigo-600">Registered Vehicles</h2>
+            <p className="text-sm text-gray-600">{summary.total_vehicles} vehicle(s) registered</p>
+          </div>
+        </div>
       </div>
+
+
+
+
     </div>
   );
 }

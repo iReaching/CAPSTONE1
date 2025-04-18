@@ -27,7 +27,7 @@ if ($row = $item_result->fetch_assoc()) {
 }
 
 // Count unresolved reports
-$report_sql = "SELECT COUNT(*) as count FROM maintenance_reports WHERE status = 'pending'";
+$report_sql = "SELECT COUNT(*) as count FROM maintenance_reports WHERE status IN ('pending', 'ongoing')";
 $report_result = $conn->query($report_sql);
 if ($row = $report_result->fetch_assoc()) {
     $response["report_pending"] = $row['count'];
