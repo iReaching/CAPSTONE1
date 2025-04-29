@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login(props) {
   const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
@@ -11,21 +11,31 @@ export default function Login() {
     const formData = new FormData();
     formData.append("user_id", userId);
     formData.append("password", password);
-
+  
     try {
       const response = await fetch("http://localhost/vitecap1/capstone1/php/login.php", {
         method: "POST",
         body: formData,
       });
-
+  
       const result = await response.json();
-
+  
       if (result.success) {
         localStorage.setItem("user_id", result.user_id);
         localStorage.setItem("role", result.role);
         localStorage.setItem("is_admin", result.is_admin);
-        navigate("/home");
-      } else {
+      
+        if (props.onLogin) props.onLogin(); // trigger re-render in App
+      
+        // redirect based on role
+        const role = result.role;
+        if (role === "admin") navigate("/home");
+        else if (role === "staff") navigate("/staff_home");
+        else if (role === "guard") navigate("/guard_home");
+        else if (role === "homeowner") navigate("/homeowner_home");
+        else navigate("/home");
+      }
+       else {
         alert(result.message || "Login failed.");
       }
     } catch (err) {
@@ -33,6 +43,7 @@ export default function Login() {
       console.error(err);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0e1525]">
