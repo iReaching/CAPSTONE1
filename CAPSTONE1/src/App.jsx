@@ -33,7 +33,7 @@ import Login from "./pages/Login";
 import BorrowItem from "./pages/homeownerSUB/BorrowItem";
 import BorrowAmenities from "./pages/homeownerSUB/BorrowAmenities";
 import RegisterVehicle from "./pages/homeownerSUB/RegisterVehicle";
-
+import SubmitReport from "./pages/homeownerSUB/SubmitReport";
 
 import {
   Home as HomeIcon,
@@ -173,6 +173,7 @@ function AppLayout() {
             <Route path="/homeowner/borrow_item" element={<BorrowItem />} />
             <Route path="/homeowner/borrow_amenities" element={<BorrowAmenities />} />
             <Route path="/homeowner/register_vehicle" element={<RegisterVehicle />} />
+            <Route path="/homeowner/submit_report" element={<SubmitReport />} />
           </Routes>
         </main>
       </div>

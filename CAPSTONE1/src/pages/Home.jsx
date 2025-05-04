@@ -33,7 +33,7 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Amenities Preview */}
         <div
-          onClick={() => navigate("/amenities")}
+          onClick={() => navigate("/amenities/view")}
           className="cursor-pointer bg-white rounded-lg shadow p-4 flex flex-col items-center text-center hover:shadow-lg transition"
         >
           <img
@@ -47,7 +47,7 @@ export default function Home() {
 
         {/* Items Preview */}
         <div
-          onClick={() => navigate("/items")}
+          onClick={() => navigate("/items/view")}
           className="cursor-pointer bg-white rounded-lg shadow p-4 flex flex-col items-center text-center hover:shadow-lg transition"
         >
           <img

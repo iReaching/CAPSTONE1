@@ -1,45 +1,64 @@
 <?php
-include 'db_connect.php';
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json");
 
-$uploadDir = "uploads/";
+include '../db_connect.php';
+
+$response = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_POST['user_id'] ?? '';
-    $vehicle_name = $_POST['vehicle_name'] ?? '';
-    $type_of_vehicle = $_POST['type_of_vehicle'] ?? '';
+    $name = $_POST['name'] ?? '';
     $color = $_POST['color'] ?? '';
+    $type = $_POST['type_of_vehicle'] ?? '';
     $plate_number = $_POST['plate_number'] ?? '';
     $block = $_POST['block'] ?? '';
     $lot = $_POST['lot'] ?? '';
 
-    if (!$user_id || !$vehicle_name || !$type_of_vehicle || !$color || !$plate_number || !$block || !$lot) {
-        echo json_encode(["success" => false, "message" => "Missing required fields"]);
+    // Check required fields
+    if (!$user_id || !$name || !$color || !$type || !$plate_number || !$block || !$lot || !isset($_FILES['image'])) {
+        http_response_code(400);
+        echo json_encode(['message' => 'All fields are required.']);
         exit;
     }
 
-    $filePath = "";
-    if (!empty($_FILES["vehicle_pic"]["name"])) {
-        $fileName = basename($_FILES["vehicle_pic"]["name"]);
-        $filePath = $uploadDir . uniqid() . "_" . $fileName;
-        if (!move_uploaded_file($_FILES["vehicle_pic"]["tmp_name"], $filePath)) {
-            echo json_encode(["success" => false, "message" => "Failed to upload image."]);
-            exit;
+    // File upload handling
+    $target_dir = "../../uploads/";
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
+
+    $image = $_FILES['image'];
+    $filename = time() . '_' . basename($image["name"]);
+    $target_file = $target_dir . $filename;
+    $relative_path = "uploads/" . $filename;
+
+    if (move_uploaded_file($image["tmp_name"], $target_file)) {
+        // Insert into database
+        $stmt = $conn->prepare("INSERT INTO vehicle_registrations (user_id, name, color, type_of_vehicle, plate_number, block, lot, vehicle_pic_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssss", $user_id, $name, $color, $type, $plate_number, $block, $lot, $relative_path);
+
+        if ($stmt->execute()) {
+            $response['success'] = true;
+            $response['message'] = "Vehicle registered successfully.";
+        } else {
+            http_response_code(500);
+            $response['success'] = false;
+            $response['message'] = "Database error: " . $stmt->error;
         }
-    }
 
-    $stmt = $conn->prepare("INSERT INTO vehicle_registrations (user_id, name, type_of_vehicle, color, plate_number, block, lot, vehicle_pic_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssssssss", $user_id, $vehicle_name, $type_of_vehicle, $color, $plate_number, $block, $lot, $filePath);
-
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true]);
+        $stmt->close();
     } else {
-        echo json_encode(["success" => false, "message" => "Database error"]);
+        http_response_code(500);
+        $response['success'] = false;
+        $response['message'] = "Failed to upload image.";
     }
-
-    $stmt->close();
-    $conn->close();
+} else {
+    http_response_code(405);
+    $response['message'] = "Invalid request method.";
 }
-?>
+
+echo json_encode($response);
+$conn->close();

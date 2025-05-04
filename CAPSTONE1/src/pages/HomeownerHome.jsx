@@ -47,7 +47,7 @@ export default function HomeownerHome() {
       {/* Row 3: Submit Report and Register Vehicle */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div
-          onClick={() => navigate("/reports")}
+          onClick={() => navigate("/homeowner/submit_report")}
           className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
         >
           <h2 className="text-lg font-semibold text-indigo-600">Submit Report</h2>
