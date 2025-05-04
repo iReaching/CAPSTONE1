@@ -3,13 +3,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { useState } from "react";
 import Sidebar, { SidebarItem } from "./components/Sidebar";
 import SidebarStaff from "./components/SidebarStaff";
-// import SidebarGuard from "./components/SidebarGuard";
-// import SidebarHomeowner from "./components/SidebarHomeowner";
+import SidebarGuard from "./components/SidebarGuard";
+import SidebarHomeowner from "./components/SidebarHomeowner";
 
 import Home from "./pages/Home";
 import StaffHome from "./pages/StaffHome";
-// import GuardHome from "./pages/GuardHome";
-// import HomeownerHome from "./pages/HomeownerHome";
+import GuardHome from "./pages/GuardHome";
+import HomeownerHome from "./pages/HomeownerHome";
 
 import Amenities from "./pages/Amenities";
 import Items from "./pages/Items";
@@ -29,6 +29,11 @@ import ItemsSchedule from "./pages/itemsSUB/ItemsSchedule";
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+
+import BorrowItem from "./pages/homeownerSUB/BorrowItem";
+import BorrowAmenities from "./pages/homeownerSUB/BorrowAmenities";
+import RegisterVehicle from "./pages/homeownerSUB/RegisterVehicle";
+
 
 import {
   Home as HomeIcon,
@@ -157,19 +162,23 @@ function AppLayout() {
   // }
 
   // HOMEOWNER
-  // if (role === "homeowner") {
-  //   return (
-  //     <div className="bg-gray-900 min-h-screen text-white relative">
-  //       <SidebarHomeowner>{/* Homeowner links here */}</SidebarHomeowner>
-  //       <main className="absolute top-0 left-0 right-0 min-h-screen pl-64 pt-10 pr-10 bg-[#0e1525] text-white overflow-x-hidden">
-  //         <Routes>
-  //           <Route path="/" element={<Navigate to="/homeowner_home" />} />
-  //           <Route path="/homeowner_home" element={<HomeownerHome />} />
-  //         </Routes>
-  //       </main>
-  //     </div>
-  //   );
-  // }
+  if (role === "homeowner") {
+    return (
+      <div className="bg-gray-900 min-h-screen text-white relative">
+        <SidebarHomeowner />
+        <main className="absolute top-0 left-0 right-0 min-h-screen pl-64 pt-10 pr-10 bg-[#0e1525] text-white overflow-x-hidden">
+          <Routes>
+            <Route path="/" element={<Navigate to="/homeowner_home" />} />
+            <Route path="/homeowner_home" element={<HomeownerHome />} />
+            <Route path="/homeowner/borrow_item" element={<BorrowItem />} />
+            <Route path="/homeowner/borrow_amenities" element={<BorrowAmenities />} />
+            <Route path="/homeowner/register_vehicle" element={<RegisterVehicle />} />
+          </Routes>
+        </main>
+      </div>
+    );
+  }
+  
 
   // Default fallback
   return <Navigate to="/login" />;

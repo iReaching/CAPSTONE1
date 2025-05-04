@@ -1,42 +1,64 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function HomeownerHome() {
-  const [summary, setSummary] = useState({
-    my_amenities: 0,
-    my_items: 0,
-    my_reports: 0,
-    my_guests: 0
-  });
-
-  useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
-    if (!user_id) return;
-    fetch(`http://localhost/vitecap1/capstone1/php/homeowner_dashboard_summary.php?user_id=${user_id}`)
-      .then((res) => res.json())
-      .then((data) => setSummary(data))
-      .catch((err) => console.error("Homeowner summary error:", err));
-  }, []);
+  const navigate = useNavigate();
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold mb-4">Welcome, Homeowner!</h1>
+      <h1 className="text-2xl font-bold mb-6">Homeowner Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-black">
-        <div className="bg-white rounded shadow p-6 text-center">
-          <h2 className="text-lg font-semibold text-indigo-600">My Amenity Requests</h2>
-          <p className="text-3xl font-bold mt-2">{summary.my_amenities}</p>
+      {/* Row 1: View Amenities and Items */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+          onClick={() => navigate("/amenities")}
+          className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
+        >
+          <h2 className="text-lg font-semibold text-indigo-600">View Amenities</h2>
+          <p className="text-gray-600 text-sm">Check available amenities</p>
         </div>
-        <div className="bg-white rounded shadow p-6 text-center">
-          <h2 className="text-lg font-semibold text-indigo-600">My Item Borrowings</h2>
-          <p className="text-3xl font-bold mt-2">{summary.my_items}</p>
+        <div
+          onClick={() => navigate("/items")}
+          className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
+        >
+          <h2 className="text-lg font-semibold text-indigo-600">View Items</h2>
+          <p className="text-gray-600 text-sm">Browse available items</p>
         </div>
-        <div className="bg-white rounded shadow p-6 text-center">
-          <h2 className="text-lg font-semibold text-indigo-600">My Reports</h2>
-          <p className="text-3xl font-bold mt-2">{summary.my_reports}</p>
+      </div>
+
+      {/* Row 2: Borrow Amenity and Item */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+          onClick={() => navigate("/homeowner/borrow_amenities")}
+          className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
+        >
+          <h2 className="text-lg font-semibold text-indigo-600">Borrow Amenity</h2>
+          <p className="text-gray-600 text-sm">Request to use an amenity</p>
         </div>
-        <div className="bg-white rounded shadow p-6 text-center">
-          <h2 className="text-lg font-semibold text-indigo-600">Guest Requests</h2>
-          <p className="text-3xl font-bold mt-2">{summary.my_guests}</p>
+        <div
+          onClick={() => navigate("/homeowner/borrow_item")}
+          className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
+        >
+          <h2 className="text-lg font-semibold text-indigo-600">Borrow Item</h2>
+          <p className="text-gray-600 text-sm">Submit a borrow request for items</p>
+        </div>
+      </div>
+
+      {/* Row 3: Submit Report and Register Vehicle */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+          onClick={() => navigate("/reports")}
+          className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
+        >
+          <h2 className="text-lg font-semibold text-indigo-600">Submit Report</h2>
+          <p className="text-gray-600 text-sm">Report an issue or concern</p>
+        </div>
+        <div
+          onClick={() => navigate("/homeowner/register_vehicle")}
+          className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
+        >
+          <h2 className="text-lg font-semibold text-indigo-600">Register Vehicle</h2>
+          <p className="text-gray-600 text-sm">Add vehicle details for entry recognition</p>
         </div>
       </div>
     </div>
