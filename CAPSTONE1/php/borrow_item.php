@@ -6,21 +6,24 @@ header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $item_id = $_POST['item_id'] ?? '';
-    $user_id = $_POST['user_id'] ?? '';
-    $borrow_date = $_POST['borrow_date'] ?? '';
-    $return_date = $_POST['return_date'] ?? '';
-    $purpose = $_POST['purpose'] ?? '';
+    $homeowner_id = $_POST['user_id'] ?? '';
+    $request_date = $_POST['request_date'] ?? '';
+    $time_start = $_POST['time_start'] ?? '';
+    $time_end = $_POST['time_end'] ?? '';
+    $message = $_POST['message'] ?? '';
 
-    if (!$item_id || !$user_id || !$borrow_date || !$return_date || !$purpose) {
+    if (!$item_id || !$homeowner_id || !$request_date || !$time_start || !$time_end) {
         echo json_encode(["success" => false, "message" => "Missing required fields"]);
         exit;
     }
 
-    $stmt = $conn->prepare("INSERT INTO item_schedule (item_id, homeowner_id, borrow_date, return_date, purpose, status) VALUES (?, ?, ?, ?, ?, 'pending')");
-    $stmt->bind_param("sssss", $item_id, $user_id, $borrow_date, $return_date, $purpose);
+    $stmt = $conn->prepare("INSERT INTO item_schedule 
+        (item_id, homeowner_id, request_date, time_start, time_end, message, status) 
+        VALUES (?, ?, ?, ?, ?, ?, 'pending')");
+    $stmt->bind_param("ssssss", $item_id, $homeowner_id, $request_date, $time_start, $time_end, $message);
 
     if ($stmt->execute()) {
-        echo json_encode(["success" => true]);
+        echo json_encode(["success" => true, "message" => "Item borrowing request submitted."]);
     } else {
         echo json_encode(["success" => false, "message" => "Database error"]);
     }

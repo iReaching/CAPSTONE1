@@ -6,10 +6,10 @@ export default function BorrowItem() {
   const [items, setItems] = useState([]);
   const [formData, setFormData] = useState({
     item_id: "",
-    quantity: 1,
-    borrow_date: null,
-    return_date: null,    
-    purpose: ""
+    request_date: null,
+    time_start: null,
+    time_end: null,
+    message: ""
   });
 
   useEffect(() => {
@@ -24,19 +24,21 @@ export default function BorrowItem() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const userId = localStorage.getItem("user_id");
+    const homeownerId = localStorage.getItem("user_id");
+
     const payload = new FormData();
-    payload.append("user_id", userId);
+    payload.append("user_id", homeownerId);
     payload.append("item_id", formData.item_id);
-    payload.append("quantity", formData.quantity);
-    payload.append("purpose", formData.purpose || "");
-    
-    if (formData.borrow_date)
-      payload.append("borrow_date", formData.borrow_date.toISOString().split("T")[0]);
-    
-    if (formData.return_date)
-      payload.append("return_date", formData.return_date.toISOString().split("T")[0]);
-    
+    payload.append("message", formData.message || "");
+
+    if (formData.request_date)
+      payload.append("request_date", formData.request_date.toISOString().split("T")[0]);
+
+    if (formData.time_start)
+      payload.append("time_start", formData.time_start.toTimeString().slice(0, 5));
+
+    if (formData.time_end)
+      payload.append("time_end", formData.time_end.toTimeString().slice(0, 5));
 
     fetch("http://localhost/vitecap1/capstone1/php/borrow_item.php", {
       method: "POST",
@@ -47,10 +49,10 @@ export default function BorrowItem() {
         alert(res.message || "Request submitted!");
         setFormData({
           item_id: "",
-          quantity: 1,
-          borrow_date: "",
-          return_date: "",
-          purpose: ""
+          request_date: null,
+          time_start: null,
+          time_end: null,
+          message: ""
         });
       })
       .catch((err) => {
@@ -84,44 +86,47 @@ export default function BorrowItem() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block mb-1 font-semibold">Quantity</label>
-              <input
-                type="number"
-                name="quantity"
-                value={formData.quantity}
-                min={1}
-                onChange={handleChange}
-                required
-                className="w-full p-2 border rounded text-black"
-              />
-            </div>
-            <div>
-              <label className="block mb-1 font-semibold">Date</label>
+              <label className="block mb-1 font-semibold">Request Date</label>
               <DatePicker
-                selected={formData.borrow_date}
-                onChange={(date) => setFormData({ ...formData, borrow_date: date })}
+                selected={formData.request_date}
+                onChange={(date) => setFormData({ ...formData, request_date: date })}
                 dateFormat="yyyy-MM-dd"
                 className="w-full p-2 border rounded text-black"
               />
             </div>
             <div>
-            <label className="block mb-1 font-semibold">Return Date</label>
-            <DatePicker
-              selected={formData.borrow_date}
-              onChange={(date) => setFormData({ ...formData, return_date: date })}
-              dateFormat="yyyy-MM-dd"
-              className="w-full p-2 border rounded text-black"
-            />
+              <label className="block mb-1 font-semibold">Time Start</label>
+              <DatePicker
+                selected={formData.time_start}
+                onChange={(time) => setFormData({ ...formData, time_start: time })}
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={15}
+                timeCaption="Start"
+                dateFormat="HH:mm"
+                className="w-full p-2 border rounded text-black"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 font-semibold">Time End</label>
+              <DatePicker
+                selected={formData.time_end}
+                onChange={(time) => setFormData({ ...formData, time_end: time })}
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={15}
+                timeCaption="End"
+                dateFormat="HH:mm"
+                className="w-full p-2 border rounded text-black"
+              />
+            </div>
           </div>
-        </div>
-
-
 
           <div>
-            <label className="block mb-1 font-semibold">Purpose (optional)</label>
+            <label className="block mb-1 font-semibold">Message (optional)</label>
             <textarea
-              name="purpose"
-              value={formData.purpose}
+              name="message"
+              value={formData.message}
               onChange={handleChange}
               rows={4}
               className="w-full p-2 border rounded text-black"

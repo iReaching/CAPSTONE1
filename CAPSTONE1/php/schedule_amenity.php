@@ -6,22 +6,23 @@ header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $amenity_id = $_POST['amenity_id'] ?? '';
-    $user_id = $_POST['user_id'] ?? '';
-    $date = $_POST['date'] ?? '';
-    $start_time = $_POST['start_time'] ?? '';
-    $end_time = $_POST['end_time'] ?? '';
-    $purpose = $_POST['purpose'] ?? '';
+    $homeowner_id = $_POST['homeowner_id'] ?? '';
+    $house_id = $_POST['house_id'] ?? '';
+    $request_date = $_POST['request_date'] ?? '';
+    $message = $_POST['message'] ?? '';
+    $time_start = $_POST['time_start'] ?? '';
+    $time_end = $_POST['time_end'] ?? '';
 
-    if (!$amenity_id || !$user_id || !$date || !$start_time || !$end_time || !$purpose) {
+    if (!$amenity_id || !$homeowner_id || !$house_id || !$request_date || !$time_start || !$time_end) {
         echo json_encode(["success" => false, "message" => "Missing required fields"]);
         exit;
     }
 
-    $stmt = $conn->prepare("INSERT INTO amenity_schedule (amenity_id, homeowner_id, date, start_time, end_time, purpose, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')");
-    $stmt->bind_param("ssssss", $amenity_id, $user_id, $date, $start_time, $end_time, $purpose);
+    $stmt = $conn->prepare("INSERT INTO amenity_schedule (amenity_id, homeowner_id, house_id, request_date, message, time_start, time_end, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')");
+    $stmt->bind_param("sssssss", $amenity_id, $homeowner_id, $house_id, $request_date, $message, $time_start, $time_end);
 
     if ($stmt->execute()) {
-        echo json_encode(["success" => true]);
+        echo json_encode(["success" => true, "message" => "Request submitted successfully!"]);
     } else {
         echo json_encode(["success" => false, "message" => "Database error"]);
     }

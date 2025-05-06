@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-
 export default function BorrowAmenities() {
   const [amenities, setAmenities] = useState([]);
   const [formData, setFormData] = useState({
     amenity_id: "",
-    date: "",
-    time_start: "",
-    time_end: "",
+    request_date: null,
+    time_start: null,
+    time_end: null,
+    house_id: "",
     message: ""
   });
 
@@ -25,21 +25,22 @@ export default function BorrowAmenities() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const userId = localStorage.getItem("user_id");
+    const homeownerId = localStorage.getItem("user_id");
+
     const payload = new FormData();
-    payload.append("user_id", userId);
+    payload.append("homeowner_id", homeownerId);
     payload.append("amenity_id", formData.amenity_id);
+    payload.append("house_id", formData.house_id);
     payload.append("message", formData.message || "");
-    
-    if (formData.date)
-      payload.append("date", formData.date.toISOString().split("T")[0]);
-    
+
+    if (formData.request_date)
+      payload.append("request_date", formData.request_date.toISOString().split("T")[0]);
+
     if (formData.time_start)
-      payload.append("time_start", formData.time_start.toTimeString().slice(0, 5)); // HH:mm
-    
+      payload.append("time_start", formData.time_start.toTimeString().slice(0, 5));
+
     if (formData.time_end)
-      payload.append("time_end", formData.time_end.toTimeString().slice(0, 5)); // HH:mm
-    
+      payload.append("time_end", formData.time_end.toTimeString().slice(0, 5));
 
     fetch("http://localhost/vitecap1/capstone1/php/schedule_amenity.php", {
       method: "POST",
@@ -50,9 +51,10 @@ export default function BorrowAmenities() {
         alert(res.message || "Request submitted!");
         setFormData({
           amenity_id: "",
-          date: "",
-          time_start: "",
-          time_end: "",
+          request_date: null,
+          time_start: null,
+          time_end: null,
+          house_id: "",
           message: ""
         });
       })
@@ -87,10 +89,10 @@ export default function BorrowAmenities() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block mb-1 font-semibold">Date</label>
+              <label className="block mb-1 font-semibold">Request Date</label>
               <DatePicker
-                selected={formData.date}
-                onChange={(date) => setFormData({ ...formData, date })}
+                selected={formData.request_date}
+                onChange={(date) => setFormData({ ...formData, request_date: date })}
                 dateFormat="yyyy-MM-dd"
                 className="w-full p-2 border rounded text-black"
               />
@@ -121,6 +123,18 @@ export default function BorrowAmenities() {
                 className="w-full p-2 border rounded text-black"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block mb-1 font-semibold">House ID</label>
+            <input
+              type="text"
+              name="house_id"
+              value={formData.house_id}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border rounded text-black"
+            />
           </div>
 
           <div>
