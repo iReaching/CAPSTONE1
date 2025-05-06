@@ -4,11 +4,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import ProfileModal from "./ProfileModal";
 import {
   Home as HomeIcon,
-  ScrollText,
-  UserSquare,
   MoreVertical,
   ChevronFirst,
   ChevronLast,
+  ClipboardList
 } from "lucide-react";
 
 const SidebarContext = createContext();
@@ -53,11 +52,10 @@ export default function SidebarGuard({ children }) {
         </div>
 
         <SidebarContext.Provider value={{ expanded }}>
-          <ul className="flex-1 px-3 space-y-1">
-            <SidebarItem icon={<HomeIcon size={20} />} text="Home" link="/guard_home" active={location.pathname === "/guard_home"} />
-            <SidebarItem icon={<ScrollText size={20} />} text="Entry Log" link="/entrylog" active={location.pathname === "/entrylog"} />
-            <SidebarItem icon={<UserSquare size={20} />} text="Account" link="/account" active={location.pathname === "/account"} />
-          </ul>
+        <ul className="flex-1 px-3 space-y-1">
+          <SidebarItem icon={<HomeIcon size={20} />} text="Home" link="/guard_home" active={location.pathname === "/guard_home"} />
+          <SidebarItem icon={<ClipboardList size={20} />} text="Existing Logs" link="/existinglogs" active={location.pathname === "/existinglogs"} />
+        </ul>
         </SidebarContext.Provider>
 
         <div className="border-t p-3 flex items-center justify-between bg-white">

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function BorrowItem() {
   const [items, setItems] = useState([]);
   const [formData, setFormData] = useState({
     item_id: "",
     quantity: 1,
-    borrow_date: "",
-    return_date: "",
+    borrow_date: null,
+    return_date: null,    
     purpose: ""
   });
 
@@ -25,9 +27,16 @@ export default function BorrowItem() {
     const userId = localStorage.getItem("user_id");
     const payload = new FormData();
     payload.append("user_id", userId);
-    Object.entries(formData).forEach(([key, value]) => {
-      payload.append(key, value);
-    });
+    payload.append("item_id", formData.item_id);
+    payload.append("quantity", formData.quantity);
+    payload.append("purpose", formData.purpose || "");
+    
+    if (formData.borrow_date)
+      payload.append("borrow_date", formData.borrow_date.toISOString().split("T")[0]);
+    
+    if (formData.return_date)
+      payload.append("return_date", formData.return_date.toISOString().split("T")[0]);
+    
 
     fetch("http://localhost/vitecap1/capstone1/php/borrow_item.php", {
       method: "POST",
@@ -73,7 +82,7 @@ export default function BorrowItem() {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block mb-1 font-semibold">Quantity</label>
               <input
@@ -87,29 +96,26 @@ export default function BorrowItem() {
               />
             </div>
             <div>
-              <label className="block mb-1 font-semibold">Borrow Date</label>
-              <input
-                type="date"
-                name="borrow_date"
-                value={formData.borrow_date}
-                onChange={handleChange}
-                required
+              <label className="block mb-1 font-semibold">Date</label>
+              <DatePicker
+                selected={formData.borrow_date}
+                onChange={(date) => setFormData({ ...formData, borrow_date: date })}
+                dateFormat="yyyy-MM-dd"
                 className="w-full p-2 border rounded text-black"
               />
             </div>
-          </div>
-
-          <div>
+            <div>
             <label className="block mb-1 font-semibold">Return Date</label>
-            <input
-              type="date"
-              name="return_date"
-              value={formData.return_date}
-              onChange={handleChange}
-              required
+            <DatePicker
+              selected={formData.borrow_date}
+              onChange={(date) => setFormData({ ...formData, return_date: date })}
+              dateFormat="yyyy-MM-dd"
               className="w-full p-2 border rounded text-black"
             />
           </div>
+        </div>
+
+
 
           <div>
             <label className="block mb-1 font-semibold">Purpose (optional)</label>

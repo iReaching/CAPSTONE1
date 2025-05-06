@@ -147,38 +147,43 @@ function AppLayout() {
   }
 
   // GUARD
-  // if (role === "guard") {
-  //   return (
-  //     <div className="bg-gray-900 min-h-screen text-white relative">
-  //       <SidebarGuard>{/* Guard links here */}</SidebarGuard>
-  //       <main className="absolute top-0 left-0 right-0 min-h-screen pl-64 pt-10 pr-10 bg-[#0e1525] text-white overflow-x-hidden">
-  //         <Routes>
-  //           <Route path="/" element={<Navigate to="/guard_home" />} />
-  //           <Route path="/guard_home" element={<GuardHome />} />
-  //         </Routes>
-  //       </main>
-  //     </div>
-  //   );
-  // }
-
-  // HOMEOWNER
-  if (role === "homeowner") {
+  if (role === "guard") {
     return (
       <div className="bg-gray-900 min-h-screen text-white relative">
-        <SidebarHomeowner />
+        <SidebarGuard />
         <main className="absolute top-0 left-0 right-0 min-h-screen pl-64 pt-10 pr-10 bg-[#0e1525] text-white overflow-x-hidden">
           <Routes>
-            <Route path="/" element={<Navigate to="/homeowner_home" />} />
-            <Route path="/homeowner_home" element={<HomeownerHome />} />
-            <Route path="/homeowner/borrow_item" element={<BorrowItem />} />
-            <Route path="/homeowner/borrow_amenities" element={<BorrowAmenities />} />
-            <Route path="/homeowner/register_vehicle" element={<RegisterVehicle />} />
-            <Route path="/homeowner/submit_report" element={<SubmitReport />} />
+            <Route path="/" element={<Navigate to="/guard_home" />} />
+            <Route path="/guard_home" element={<GuardHome />} />
+            <Route path="/existinglogs" element={<EntryLog />} />
           </Routes>
         </main>
       </div>
     );
   }
+
+
+// HOMEOWNER
+if (role === "homeowner") {
+  return (
+    <div className="bg-gray-900 min-h-screen text-white relative">
+      <SidebarHomeowner />
+      <main className="absolute top-0 left-0 right-0 min-h-screen pl-64 pt-10 pr-10 bg-[#0e1525] text-white overflow-x-hidden">
+        <Routes>
+          <Route path="/" element={<Navigate to="/homeowner_home" />} />
+          <Route path="/homeowner_home" element={<HomeownerHome />} />
+          <Route path="/homeowner/borrow_item" element={<BorrowItem />} />
+          <Route path="/homeowner/borrow_amenities" element={<BorrowAmenities />} />
+          <Route path="/homeowner/register_vehicle" element={<RegisterVehicle />} />
+          <Route path="/homeowner/submit_report" element={<SubmitReport />} />
+          <Route path="/items/view" element={<ItemsView />} />
+          <Route path="/amenities/view" element={<AmenityView />} />
+        </Routes>
+      </main>
+    </div>
+  );
+}
+
   
 
   // Default fallback

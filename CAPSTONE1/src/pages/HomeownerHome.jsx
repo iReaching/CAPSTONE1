@@ -11,14 +11,14 @@ export default function HomeownerHome() {
       {/* Row 1: View Amenities and Items */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div
-          onClick={() => navigate("/amenities")}
+          onClick={() => navigate("/amenities/view")}
           className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
         >
           <h2 className="text-lg font-semibold text-indigo-600">View Amenities</h2>
           <p className="text-gray-600 text-sm">Check available amenities</p>
         </div>
         <div
-          onClick={() => navigate("/items")}
+          onClick={() => navigate("/items/view")}
           className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
         >
           <h2 className="text-lg font-semibold text-indigo-600">View Items</h2>

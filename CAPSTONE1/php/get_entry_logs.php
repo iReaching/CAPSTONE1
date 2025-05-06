@@ -31,9 +31,10 @@ if (!empty($search)) {
 
 // Role condition
 if (!empty($role)) {
-    $conditions[] = "u.role = ?";
+    $conditions[] = "(u.role = ? OR u.role IS NULL)";
     $params[] = $role;
 }
+
 
 if (count($conditions) > 0) {
     $sql .= " WHERE " . implode(" AND ", $conditions);
@@ -73,9 +74,10 @@ if (!empty($search)) {
     $count_params[] = "%$search%";
 }
 if (!empty($role)) {
-    $count_conditions[] = "u.role = ?";
+    $count_conditions[] = "(u.role = ? OR u.role IS NULL)";
     $count_params[] = $role;
 }
+
 
 if (count($count_conditions) > 0) {
     $count_sql .= " WHERE " . implode(" AND ", $count_conditions);

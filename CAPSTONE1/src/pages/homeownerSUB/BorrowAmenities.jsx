@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 
 export default function BorrowAmenities() {
   const [amenities, setAmenities] = useState([]);
@@ -25,9 +28,18 @@ export default function BorrowAmenities() {
     const userId = localStorage.getItem("user_id");
     const payload = new FormData();
     payload.append("user_id", userId);
-    Object.entries(formData).forEach(([key, value]) => {
-      payload.append(key, value);
-    });
+    payload.append("amenity_id", formData.amenity_id);
+    payload.append("message", formData.message || "");
+    
+    if (formData.date)
+      payload.append("date", formData.date.toISOString().split("T")[0]);
+    
+    if (formData.time_start)
+      payload.append("time_start", formData.time_start.toTimeString().slice(0, 5)); // HH:mm
+    
+    if (formData.time_end)
+      payload.append("time_end", formData.time_end.toTimeString().slice(0, 5)); // HH:mm
+    
 
     fetch("http://localhost/vitecap1/capstone1/php/schedule_amenity.php", {
       method: "POST",
@@ -76,34 +88,36 @@ export default function BorrowAmenities() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block mb-1 font-semibold">Date</label>
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                required
+              <DatePicker
+                selected={formData.date}
+                onChange={(date) => setFormData({ ...formData, date })}
+                dateFormat="yyyy-MM-dd"
                 className="w-full p-2 border rounded text-black"
               />
             </div>
             <div>
               <label className="block mb-1 font-semibold">Time Start</label>
-              <input
-                type="time"
-                name="time_start"
-                value={formData.time_start}
-                onChange={handleChange}
-                required
+              <DatePicker
+                selected={formData.time_start}
+                onChange={(time) => setFormData({ ...formData, time_start: time })}
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={15}
+                timeCaption="Start"
+                dateFormat="HH:mm"
                 className="w-full p-2 border rounded text-black"
               />
             </div>
             <div>
               <label className="block mb-1 font-semibold">Time End</label>
-              <input
-                type="time"
-                name="time_end"
-                value={formData.time_end}
-                onChange={handleChange}
-                required
+              <DatePicker
+                selected={formData.time_end}
+                onChange={(time) => setFormData({ ...formData, time_end: time })}
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={15}
+                timeCaption="End"
+                dateFormat="HH:mm"
                 className="w-full p-2 border rounded text-black"
               />
             </div>
