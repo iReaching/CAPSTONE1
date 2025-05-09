@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Trash2 } from "lucide-react";
 
 export default function ItemsEdit() {
   const [items, setItems] = useState([]);
@@ -9,11 +10,41 @@ export default function ItemsEdit() {
   const [preview, setPreview] = useState("");
 
   useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = () => {
     fetch("http://localhost/vitecap1/capstone1/php/get_items.php")
       .then((res) => res.json())
       .then((data) => setItems(data))
       .catch((err) => console.error("Error fetching items:", err));
-  }, []);
+  };
+
+  const handleDelete = () => {
+    if (!selectedId) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    if (!confirmDelete) return;
+
+    fetch("http://localhost/vitecap1/capstone1/php/delete_item.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ id: selectedId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data.message || "Item deleted.");
+        setSelectedId("");
+        setNewName("");
+        setNewDescription("");
+        setNewImage(null);
+        setPreview("");
+        fetchItems();
+      })
+      .catch((err) => {
+        console.error("Deletion error:", err);
+        alert("Something went wrong.");
+      });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +69,7 @@ export default function ItemsEdit() {
       setNewDescription("");
       setNewImage(null);
       setPreview("");
+      fetchItems();
     } else {
       alert("Update failed: " + result.message || result.error);
     }
@@ -48,25 +80,33 @@ export default function ItemsEdit() {
       <h2 className="text-xl font-bold mb-4 text-indigo-600">Edit Item</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Select Item */}
-        <div>
-          <label className="block mb-1 text-sm font-medium text-black">Select Item</label>
-          <select
-            value={selectedId}
-            onChange={(e) => setSelectedId(e.target.value)}
-            className="w-full border px-3 py-2 rounded text-sm text-black"
-            required
+        <div className="flex justify-between items-end gap-2">
+          <div className="w-full">
+            <label className="block mb-1 text-sm font-medium text-black">Select Item</label>
+            <select
+              value={selectedId}
+              onChange={(e) => setSelectedId(e.target.value)}
+              className="w-full border px-3 py-2 rounded text-sm text-black"
+              required
+            >
+              <option value="">-- Choose an item --</option>
+              {items.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="text-red-600 hover:text-red-800"
+            title="Delete item"
           >
-            <option value="">-- Choose an item --</option>
-            {items.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
+            <Trash2 size={24} />
+          </button>
         </div>
 
-        {/* Name */}
         <div>
           <label className="block mb-1 text-sm font-medium text-black">New Name (optional)</label>
           <input
@@ -78,7 +118,6 @@ export default function ItemsEdit() {
           />
         </div>
 
-        {/* Description */}
         <div>
           <label className="block mb-1 text-sm font-medium text-black">New Description (optional)</label>
           <textarea
@@ -90,7 +129,6 @@ export default function ItemsEdit() {
           />
         </div>
 
-        {/* Image Upload */}
         <div className="flex justify-center mt-4">
           <div className="w-full max-w-xs text-center">
             {preview && (
@@ -120,7 +158,6 @@ export default function ItemsEdit() {
           </div>
         </div>
 
-        {/* Submit */}
         <div className="flex justify-center mt-6">
           <button
             type="submit"

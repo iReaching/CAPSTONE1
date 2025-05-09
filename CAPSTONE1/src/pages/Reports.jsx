@@ -92,7 +92,7 @@ export default function Reports() {
                 {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
               </p>
 
-              {report.status === "pending" && (
+              {(report.status === "pending" || report.status === "ongoing") && (
                 <div className="flex gap-2 mt-3">
                   <button
                     onClick={() => handleResolve(report.id)}

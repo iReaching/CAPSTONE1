@@ -8,7 +8,8 @@ import {
   UserSquare,
   MoreVertical,
   ChevronFirst,
-  ChevronLast
+  ChevronLast,
+  LogIn
 } from "lucide-react";
 import ProfileModal from "./ProfileModal";
 
@@ -65,6 +66,7 @@ export default function SidebarHomeowner({ children }) {
             <SidebarItem icon={<FileText size={20} />} text="Borrow Item" link="/homeowner/borrow_item" active={location.pathname === "/homeowner/borrow_item"} />
             <SidebarItem icon={<FileText size={20} />} text="Submit Report" link="/homeowner/submit_report" active={location.pathname === "/homeowner/submit_report"} />
             <SidebarItem icon={<UserSquare size={20} />} text="Register Vehicle" link="/homeowner/register_vehicle" active={location.pathname === "/homeowner/register_vehicle"} />
+            <SidebarItem icon={<LogIn size={20} />} text="Entry Log Request" link="/homeowner/request_entry" active={location.pathname === "/homeowner/request_entry"} />
             <SidebarItem icon={<UserSquare size={20} />} text="Account" link="/account" active={location.pathname === "/account"} />
             </ul>
         </SidebarContext.Provider>

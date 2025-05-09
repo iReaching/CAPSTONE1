@@ -1,15 +1,27 @@
 <?php
+include 'db_connect.php';
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
 
-include '../PHP/db_connect.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'] ?? '';
 
-$data = json_decode(file_get_contents("php://input"));
-$id = $data->id;
+    if (!$id) {
+        echo json_encode(["success" => false, "message" => "Missing item ID"]);
+        exit;
+    }
 
-$stmt = $conn->prepare("DELETE FROM items WHERE id = ?");
-$stmt->bind_param("i", $id);
-$stmt->execute();
+    $stmt = $conn->prepare("DELETE FROM items WHERE id = ?");
+    $stmt->bind_param("i", $id);
 
-echo json_encode(["message" => "Item deleted"]);
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "Item deleted successfully."]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Failed to delete item."]);
+    }
+
+    $stmt->close();
+    $conn->close();
+}
 ?>

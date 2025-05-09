@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Trash2 } from "lucide-react";
 
 export default function AmenityEdit() {
   const [amenities, setAmenities] = useState([]);
@@ -7,14 +8,43 @@ export default function AmenityEdit() {
   const [newDescription, setNewDescription] = useState("");
   const [newImage, setNewImage] = useState(null);
   const [preview, setPreview] = useState("");
-  
 
   useEffect(() => {
+    fetchAmenities();
+  }, []);
+
+  const fetchAmenities = () => {
     fetch("http://localhost/vitecap1/capstone1/php/get_amenities.php")
       .then((res) => res.json())
       .then((data) => setAmenities(data))
       .catch((err) => console.error("Error fetching amenities:", err));
-  }, []);
+  };
+
+  const handleDelete = () => {
+    if (!selectedId) return;
+    const confirmDelete = window.confirm("Are you sure you want to delete this amenity?");
+    if (!confirmDelete) return;
+
+    fetch("http://localhost/vitecap1/capstone1/php/delete_amenity.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ id: selectedId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data.message || "Amenity deleted.");
+        setSelectedId("");
+        setNewName("");
+        setNewDescription("");
+        setNewImage(null);
+        setPreview("");
+        fetchAmenities();
+      })
+      .catch((err) => {
+        console.error("Deletion error:", err);
+        alert("Something went wrong.");
+      });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,10 +64,12 @@ export default function AmenityEdit() {
     const result = await res.json();
     if (result.success) {
       alert("Amenity updated.");
+      setSelectedId("");
       setNewName("");
       setNewDescription("");
       setNewImage(null);
-      setSelectedId("");
+      setPreview("");
+      fetchAmenities();
     } else {
       alert("Update failed: " + result.message || result.error);
     }
@@ -48,21 +80,31 @@ export default function AmenityEdit() {
       <h2 className="text-xl font-bold mb-4 text-indigo-600">Edit Amenity</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1 text-sm font-medium text-black">Select Amenity</label>
-          <select
-            value={selectedId}
-            onChange={(e) => setSelectedId(e.target.value)}
-            className="w-full border px-3 py-2 rounded text-sm text-black"
-            required
+        <div className="flex justify-between items-end gap-2">
+          <div className="w-full">
+            <label className="block mb-1 text-sm font-medium text-black">Select Amenity</label>
+            <select
+              value={selectedId}
+              onChange={(e) => setSelectedId(e.target.value)}
+              className="w-full border px-3 py-2 rounded text-sm text-black"
+              required
+            >
+              <option value="">-- Choose an amenity --</option>
+              {amenities.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="text-red-600 hover:text-red-800"
+            title="Delete amenity"
           >
-            <option value="">-- Choose an amenity --</option>
-            {amenities.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name}
-              </option>
-            ))}
-          </select>
+            <Trash2 size={24} />
+          </button>
         </div>
 
         <div>
@@ -85,7 +127,6 @@ export default function AmenityEdit() {
           />
         </div>
 
-        {/* New Image (optional) */}
         <div className="flex justify-center mt-4">
           <div className="w-full max-w-xs text-center">
             {preview && (
@@ -115,7 +156,6 @@ export default function AmenityEdit() {
           </div>
         </div>
 
-
         <div className="flex justify-center mt-6">
           <button
             type="submit"
@@ -123,7 +163,7 @@ export default function AmenityEdit() {
           >
             Update Amenity
           </button>
-        </div>231
+        </div>
       </form>
     </div>
   );
