@@ -1,6 +1,8 @@
 <?php
 session_start();
 require 'db_connect.php';
+require 'log_action.php';
+
 
 // Allow cross-origin requests for local React dev
 header("Access-Control-Allow-Origin: *");
@@ -43,6 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
         echo json_encode(["status" => "success", "message" => "Entry logged successfully"]);
+        $description = "New entry log submitted for: $name";
+        logAction($requested_by ?: 'unknown', 'insert', $description, basename(__FILE__));
+
     } else {
         echo json_encode(["status" => "error", "message" => $stmt->error]);
     }

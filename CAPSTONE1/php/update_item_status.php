@@ -3,6 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 include '../PHP/db_connect.php';
+include 'log_action.php';
 
 $id = $_POST['id'];
 $status = $_POST['status'];
@@ -12,6 +13,7 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("si", $status, $id);
 
 if ($stmt->execute()) {
+  logAction($_POST['user_id'] ?? 'unknown', 'update', "Updated item schedule ID $id to $status", 'update_item_status.php');
   echo json_encode(["success" => true]);
 } else {
   echo json_encode(["success" => false, "error" => $stmt->error]);

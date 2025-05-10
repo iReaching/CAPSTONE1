@@ -61,6 +61,24 @@ export default function HomeownerHome() {
           <p className="text-gray-600 text-sm">Add vehicle details for entry recognition</p>
         </div>
       </div>
+
+      {/* Row 4: Visitor Log History and Entry Log Request */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+          onClick={() => navigate("/homeowner/request_entry")}
+          className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
+        >
+          <h2 className="text-lg font-semibold text-indigo-600">Submit Entry Log Request</h2>
+          <p className="text-gray-600 text-sm">Let guards know about expected guests</p>
+        </div>
+        <div
+          onClick={() => navigate("/homeowner/visitor_logs")}
+          className="cursor-pointer bg-white rounded-lg shadow p-6 text-center hover:shadow-lg transition"
+        >
+          <h2 className="text-lg font-semibold text-indigo-600">Visitor Logs</h2>
+          <p className="text-gray-600 text-sm">View your past visitor entry log history</p>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 <?php
 include 'db_connect.php';
+include 'log_action.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
@@ -16,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($user = $result->fetch_assoc()) {
         if (password_verify($password, $user['password'])) {
+            logAction($user["user_id"], 'login', 'User logged in successfully', 'login.php');
             echo json_encode([
                 "success" => true,
                 "user_id" => $user["user_id"],
@@ -32,4 +34,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
     $conn->close();
 }
+
 ?>

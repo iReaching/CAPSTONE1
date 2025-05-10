@@ -67,7 +67,7 @@ export default function SidebarHomeowner({ children }) {
             <SidebarItem icon={<FileText size={20} />} text="Submit Report" link="/homeowner/submit_report" active={location.pathname === "/homeowner/submit_report"} />
             <SidebarItem icon={<UserSquare size={20} />} text="Register Vehicle" link="/homeowner/register_vehicle" active={location.pathname === "/homeowner/register_vehicle"} />
             <SidebarItem icon={<LogIn size={20} />} text="Entry Log Request" link="/homeowner/request_entry" active={location.pathname === "/homeowner/request_entry"} />
-            <SidebarItem icon={<UserSquare size={20} />} text="Account" link="/account" active={location.pathname === "/account"} />
+            <SidebarItem icon={<FileText size={20} />} text="Visitor Logs" link="/homeowner/visitor_logs" active={location.pathname === "/homeowner/visitor_logs"} />
             </ul>
         </SidebarContext.Provider>
 

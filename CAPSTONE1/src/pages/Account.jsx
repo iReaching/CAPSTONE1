@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
 
 export default function Accounts() {
   const [users, setUsers] = useState([]);
@@ -7,7 +8,14 @@ export default function Accounts() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [details, setDetails] = useState(null);
-
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [registerData, setRegisterData] = useState({
+    user_id: "",
+    email: "",
+    password: "",
+    role: "homeowner",
+    is_admin: 0,
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -43,6 +51,37 @@ export default function Accounts() {
   };
   
   
+  const handleRegister = () => {
+    const payload = new FormData();
+    Object.entries(registerData).forEach(([key, value]) =>
+      payload.append(key, value)
+    );
+
+    fetch("http://localhost/vitecap1/capstone1/php/register_user.php", {
+      method: "POST",
+      body: payload,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Account registered!");
+          setShowRegisterModal(false);
+          setRegisterData({ user_id: "", email: "", password: "", role: "homeowner", is_admin: 0 });
+          fetchUsers(); // Refresh user list
+        } else {
+          alert(data.message || "Failed to register.");
+        }
+      })
+      .catch(() => alert("Registration failed."));
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setRegisterData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? (checked ? 1 : 0) : value,
+    }));
+  };
   
 
   return (
@@ -56,7 +95,7 @@ export default function Accounts() {
           placeholder="Search by name or email..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="px-3 py-2 border border-gray-400 rounded text-gray-800 w-full md:max-w-md text-white"
+          className="px-3 py-2 border border-gray-400 rounded w-full md:max-w-md text-white"
         />
 
         <select
@@ -70,7 +109,17 @@ export default function Accounts() {
           <option value="guard">Guard</option>
           <option value="homeowner">Homeowner</option>
         </select>
+
+      <div className="flex">
+        <button
+          onClick={() => setShowRegisterModal(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        >
+          <Plus size={16} />
+          Add Account
+        </button>
       </div>
+    </div>
 
       {/* User Table */}
       <div className="overflow-x-auto">
@@ -195,6 +244,39 @@ export default function Accounts() {
           </div>
         </div>
       )}
+
+      {showRegisterModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-lg text-black relative">
+            <h2 className="text-xl font-bold mb-4">Register New Account</h2>
+
+            <label className="block mb-2 text-sm">User ID</label>
+            <input type="text" name="user_id" value={registerData.user_id} onChange={handleInputChange} className="w-full mb-4 p-2 border rounded" />
+
+            <label className="block mb-2 text-sm">Email</label>
+            <input type="email" name="email" value={registerData.email} onChange={handleInputChange} className="w-full mb-4 p-2 border rounded" />
+
+            <label className="block mb-2 text-sm">Password</label>
+            <input type="password" name="password" value={registerData.password} onChange={handleInputChange} className="w-full mb-4 p-2 border rounded" />
+
+            <label className="block mb-2 text-sm">Role</label>
+            <select name="role" value={registerData.role} onChange={handleInputChange} className="w-full mb-4 p-2 border rounded">
+              <option value="staff">Staff</option>
+              <option value="guard">Guard</option>
+              <option value="homeowner">Homeowner</option>
+            </select>
+
+
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setShowRegisterModal(false)} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+              <button onClick={handleRegister} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Register</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
     </div>
   );
 }

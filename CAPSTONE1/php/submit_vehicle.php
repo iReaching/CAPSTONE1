@@ -5,6 +5,7 @@ header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json");
 
 include '../db_connect.php';
+include 'log_action.php';
 
 $response = [];
 
@@ -17,18 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $block = $_POST['block'] ?? '';
     $lot = $_POST['lot'] ?? '';
 
-    // Check required fields
     if (!$user_id || !$name || !$color || !$type || !$plate_number || !$block || !$lot || !isset($_FILES['image'])) {
         http_response_code(400);
         echo json_encode(['message' => 'All fields are required.']);
         exit;
     }
 
-    // File upload handling
     $target_dir = "../../uploads/";
-    if (!file_exists($target_dir)) {
-        mkdir($target_dir, 0777, true);
-    }
+    if (!file_exists($target_dir)) mkdir($target_dir, 0777, true);
 
     $image = $_FILES['image'];
     $filename = time() . '_' . basename($image["name"]);
@@ -36,11 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $relative_path = "uploads/" . $filename;
 
     if (move_uploaded_file($image["tmp_name"], $target_file)) {
-        // Insert into database
         $stmt = $conn->prepare("INSERT INTO vehicle_registrations (user_id, name, color, type_of_vehicle, plate_number, block, lot, vehicle_pic_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssssss", $user_id, $name, $color, $type, $plate_number, $block, $lot, $relative_path);
 
         if ($stmt->execute()) {
+            logAction($user_id, 'upload', "Registered vehicle $plate_number", 'submit_vehicle.php');
             $response['success'] = true;
             $response['message'] = "Vehicle registered successfully.";
         } else {
@@ -62,3 +59,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 echo json_encode($response);
 $conn->close();
+?>

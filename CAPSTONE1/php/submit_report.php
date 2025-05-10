@@ -1,5 +1,6 @@
 <?php
 include 'db_connect.php';
+include 'log_action.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
@@ -21,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("sssss", $user_id, $message, $block, $lot, $date_submitted);
 
     if ($stmt->execute()) {
+        logAction($user_id, 'insert', "Submitted report for Block $block, Lot $lot", 'submit_report.php');
         echo json_encode(["success" => true]);
     } else {
         echo json_encode(["success" => false, "message" => "Database error."]);

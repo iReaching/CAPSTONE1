@@ -1,5 +1,6 @@
 <?php
 include 'db_connect.php';
+include 'log_action.php';
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
@@ -23,6 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("ssssss", $item_id, $homeowner_id, $request_date, $time_start, $time_end, $message);
 
     if ($stmt->execute()) {
+        // ✅ Log this insertion
+        $description = "Homeowner requested to borrow item ID $item_id from $time_start to $time_end on $request_date.";
+        logAction($homeowner_id, 'insert', $description, basename(__FILE__));
+
         echo json_encode(["success" => true, "message" => "Item borrowing request submitted."]);
     } else {
         echo json_encode(["success" => false, "message" => "Database error"]);

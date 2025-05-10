@@ -1,5 +1,7 @@
 <?php
 include 'db_connect.php';
+include 'log_action.php';
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
@@ -10,8 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reason = $_POST['reason'] ?? '';
     $expected_time = $_POST['expected_time'] ?? '';
     $requested_by = $_POST['requested_by'] ?? '';
-
-    // determine expected based on whether expected_time is provided
     $expected = $expected_time !== '' ? 1 : 0;
 
     if (!$name || !$reason || !$requested_by) {
@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("sssiis", $name, $vehicle_plate, $reason, $expected, $expected_time, $requested_by);
 
     if ($stmt->execute()) {
+        logAction($requested_by, 'insert', "Requested entry log for guest: $name", 'request_entrylog.php');
         echo json_encode(["success" => true, "message" => "Entry log request submitted."]);
     } else {
         echo json_encode(["success" => false, "message" => "Database error"]);
@@ -34,4 +35,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
     $conn->close();
 }
+
 ?>

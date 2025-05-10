@@ -27,6 +27,7 @@ import ItemsAdd from "./pages/itemsSUB/ItemsAdd";
 import ItemsEdit from "./pages/itemsSUB/ItemsEdit";
 import ItemsSchedule from "./pages/itemsSUB/ItemsSchedule";
 import EntryLogRequest from "./pages/homeownerSUB/EntryLogRequest";
+import SystemLogs from "./pages/SystemLogs";
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -35,6 +36,7 @@ import BorrowItem from "./pages/homeownerSUB/BorrowItem";
 import BorrowAmenities from "./pages/homeownerSUB/BorrowAmenities";
 import RegisterVehicle from "./pages/homeownerSUB/RegisterVehicle";
 import SubmitReport from "./pages/homeownerSUB/SubmitReport";
+import VisitorLogHistory from "./pages/homeownerSUB/VisitorLogHistory";
 
 import {
   Home as HomeIcon,
@@ -106,6 +108,7 @@ function AppLayout() {
             <Route path="/items/schedule" element={<ItemsSchedule />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/entrylog" element={<EntryLog />} />
+            <Route path="/system_logs" element={<SystemLogs />} /> {/* <- New Route */}
             <Route path="/account" element={<Account />} />
           </Routes>
         </main>
@@ -178,6 +181,7 @@ if (role === "homeowner") {
           <Route path="/homeowner/register_vehicle" element={<RegisterVehicle />} />
           <Route path="/homeowner/submit_report" element={<SubmitReport />} />
           <Route path="/homeowner/request_entry" element={<EntryLogRequest />} />
+          <Route path="/homeowner/visitor_logs" element={<VisitorLogHistory />} />
           <Route path="/items/view" element={<ItemsView />} />
           <Route path="/amenities/view" element={<AmenityView />} />
         </Routes>

@@ -1,5 +1,6 @@
 <?php
 include 'db_connect.php';
+include 'log_action.php';
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
@@ -34,6 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
         $response["success"] = true;
+        $userId = $_POST['user_id'] ?? 'unknown';  // Send this from frontend
+        $description = "Added new amenity: $name";
+        logAction($userId, 'insert', $description, basename(__FILE__));
     } else {
         $response["message"] = $stmt->error;
     }

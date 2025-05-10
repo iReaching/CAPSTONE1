@@ -1,5 +1,6 @@
 <?php
 include 'db_connect.php';
+include 'log_action.php';
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
@@ -16,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
+        $userId = $_SESSION['user_id'] ?? 'unknown';
+        logAction($userId, 'delete', "Deleted item ID: $id", basename(__FILE__));
         echo json_encode(["success" => true, "message" => "Item deleted successfully."]);
     } else {
         echo json_encode(["success" => false, "message" => "Failed to delete item."]);
@@ -24,4 +27,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
     $conn->close();
 }
+
 ?>

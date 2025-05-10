@@ -204,7 +204,8 @@ export default function Sidebar({ children }) {
         </li>
 
         <SidebarItem icon={<FileText size={18} />} text="Report" link="/reports" active={location.pathname === "/reports"} />
-        <SidebarItem icon={<ScrollText size={18} />} text="EntryLog" link="/entrylog" active={location.pathname === "/entrylog"} />
+        <SidebarItem icon={<ScrollText size={18} />} text="Entry Log" link="/entrylog" active={location.pathname === "/entrylog"} />
+        <SidebarItem icon={<ScrollText size={18} />} text="System Logs" link="/system_logs" active={location.pathname === "/admin/system_logs"} />
         <SidebarItem icon={<UserSquare size={18} />} text="Account" link="/account" active={location.pathname === "/account"} />
 
         </ul>

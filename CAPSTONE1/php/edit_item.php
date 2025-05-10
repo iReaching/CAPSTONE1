@@ -6,13 +6,13 @@ header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $amenity_id = $_POST["amenity_id"] ?? null;
+    $item_id = $_POST["item_id"] ?? null;
     $new_name = trim($_POST["new_name"] ?? "");
     $new_description = trim($_POST["new_description"] ?? "");
     $uploadDir = "../uploads/";
 
-    if (!$amenity_id) {
-        echo json_encode(["success" => false, "message" => "Missing amenity ID."]);
+    if (!$item_id) {
+        echo json_encode(["success" => false, "message" => "Missing item ID."]);
         exit;
     }
 
@@ -59,18 +59,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $params[] = $amenity_id;
+    $params[] = $item_id;
     $types .= "i";
 
-    $sql = "UPDATE amenities SET " . implode(", ", $fields) . " WHERE id = ?";
+    $sql = "UPDATE items SET " . implode(", ", $fields) . " WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param($types, ...$params);
 
     if ($stmt->execute()) {
-        // Logging the update
-        $userId = $_POST['user_id'] ?? 'admin'; // update to session/user context if needed
-        $desc = "Updated amenity ID $amenity_id";
-        logAction($userId, 'update', $desc, 'edit_amenity.php');
+        $userId = $_POST['user_id'] ?? 'admin'; // adjust to your session logic
+        logAction($userId, 'update', "Updated item ID $item_id", 'edit_item.php');
 
         echo json_encode(["success" => true]);
     } else {

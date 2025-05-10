@@ -1,5 +1,7 @@
 <?php
 include 'db_connect.php';
+include 'log_action.php';
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
@@ -22,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("sssssss", $amenity_id, $homeowner_id, $house_id, $request_date, $message, $time_start, $time_end);
 
     if ($stmt->execute()) {
+        logAction($homeowner_id, 'insert', "Requested amenity ID $amenity_id on $request_date", 'schedule_amenity.php');
         echo json_encode(["success" => true, "message" => "Request submitted successfully!"]);
     } else {
         echo json_encode(["success" => false, "message" => "Database error"]);
@@ -30,4 +33,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
     $conn->close();
 }
+
 ?>
