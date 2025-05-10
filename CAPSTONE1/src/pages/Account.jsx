@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-
+import { Trash2 } from "lucide-react";
 export default function Accounts() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -170,6 +170,37 @@ export default function Accounts() {
       {modalOpen && details && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white text-black p-6 rounded-lg max-w-5xl w-full shadow-lg relative flex flex-col md:flex-row gap-6">
+            {/* Delete Icon - Top Left */}
+            <button
+              onClick={() => {
+                if (window.confirm("Are you sure you want to delete this account?")) {
+                  fetch("http://localhost/vitecap1/capstone1/php/delete_account.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ user_id: details.profile.user_id }),
+                  })
+                    .then((res) => res.json())
+                    .then((data) => {
+                      if (data.success) {
+                        alert("Account deleted successfully.");
+                        setModalOpen(false);
+                        fetchUsers();
+                      } else {
+                        alert("Failed to delete account.");
+                      }
+                    })
+                    .catch((err) => {
+                      console.error("Error deleting account:", err);
+                      alert("Error deleting account.");
+                    });
+                }
+              }}
+              className="absolute top-2 left-2 p-2 bg-white text-red-600 rounded transition"
+              title="Delete Account"
+            >
+              <Trash2 size={24} />
+            </button>
+
             {/* Close Button */}
             <button
               onClick={() => {
@@ -180,7 +211,6 @@ export default function Accounts() {
             >
               &times;
             </button>
-
             {/* Left Column: User Info + Activity */}
             <div className="flex-1 space-y-4">
               <h3 className="text-xl font-bold">User Details</h3>
