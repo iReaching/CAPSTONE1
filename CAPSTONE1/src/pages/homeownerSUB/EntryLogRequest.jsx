@@ -7,8 +7,13 @@ export default function EntryLogRequest() {
     name: "",
     vehicle_plate: "",
     reason: "",
-    expected_time: null, // Date object or null
+    expected_time: null,
+    visitor_count: 1,
+    package_details: "",
+    homeowner_name: "",
   });
+
+  
 
   const userId = localStorage.getItem("user_id");
 

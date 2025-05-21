@@ -11,7 +11,7 @@ export default function EntryLog() {
   const [sortOrder, setSortOrder] = useState("DESC");
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedLog, setSelectedLog] = useState(null);
-  
+
   const fetchLogs = () => {
     const params = new URLSearchParams({
       page,
@@ -56,7 +56,6 @@ export default function EntryLog() {
     setSelectedLog(log);
     setViewModalOpen(true);
   };
-  
 
   return (
     <div className="text-white">
@@ -113,7 +112,9 @@ export default function EntryLog() {
           <thead className="bg-indigo-600 text-white">
             <tr>
               <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Entry Type</th>
+              <th className="px-4 py-2">Visitor Count</th>
+              <th className="px-4 py-2">Package Details</th>
+              <th className="px-4 py-2">Homeowner</th>
               <th className="px-4 py-2">Plate</th>
               <th className="px-4 py-2">Reason</th>
               <th className="px-4 py-2">Timestamp</th>
@@ -130,13 +131,15 @@ export default function EntryLog() {
                 className={`border-b ${log.expected === "1" ? "bg-yellow-100" : "bg-white"}`}
               >
                 <td className="px-4 py-2">{log.name}</td>
-                <td className="px-4 py-2">{log.entry_type}</td>
+                <td className="px-4 py-2">{log.visitor_count}</td>
+                <td className="px-4 py-2">{log.package_details}</td>
+                <td className="px-4 py-2">{log.homeowner_name}</td>
                 <td className="px-4 py-2">{log.vehicle_plate}</td>
                 <td className="px-4 py-2">{log.reason}</td>
                 <td className="px-4 py-2">{log.timestamp}</td>
                 <td className="px-4 py-2">{log.requested_by}</td>
                 <td className="px-4 py-2">
-                  {log.expected === 1 ? (
+                  {log.expected === 1 || log.expected === "1" ? (
                     <span className="text-yellow-800 font-semibold">Expected</span>
                   ) : (
                     "-"
@@ -224,6 +227,9 @@ export default function EntryLog() {
             <h3 className="text-xl font-bold mb-4">Entry Log Details</h3>
             <div className="space-y-2 text-sm">
               <p><strong>Name:</strong> {selectedLog.name}</p>
+              <p><strong>Visitor Count:</strong> {selectedLog.visitor_count}</p>
+              <p><strong>Package Details:</strong> {selectedLog.package_details}</p>
+              <p><strong>Homeowner Visited:</strong> {selectedLog.homeowner_name}</p>
               <p><strong>Entry Type:</strong> {selectedLog.entry_type}</p>
               <p><strong>Vehicle Plate:</strong> {selectedLog.vehicle_plate}</p>
               <p><strong>Reason:</strong> {selectedLog.reason}</p>
@@ -249,4 +255,3 @@ export default function EntryLog() {
     </div>
   );
 }
-
