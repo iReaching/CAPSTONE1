@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $stmt = $conn->prepare("INSERT INTO maintenance_reports (user_id, message, block, lot, date_submitted, status) VALUES (?, ?, ?, ?, ?, 'pending')");
+    $stmt = $conn->prepare("INSERT INTO maintenance_reports (user_id, message, block, lot, date_submitted, status) VALUES (?, ?, ?, ?, ?, 'ongoing')");
     $stmt->bind_param("sssss", $user_id, $message, $block, $lot, $date_submitted);
 
     if ($stmt->execute()) {

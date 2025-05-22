@@ -5,6 +5,7 @@ import Sidebar, { SidebarItem } from "./components/Sidebar";
 import SidebarStaff from "./components/SidebarStaff";
 import SidebarGuard from "./components/SidebarGuard";
 import SidebarHomeowner from "./components/SidebarHomeowner";
+import ManageVehicles from './pages/homeownerSUB/ManageVehicles';
 
 import Home from "./pages/Home";
 import StaffHome from "./pages/StaffHome";
@@ -179,6 +180,7 @@ if (role === "homeowner") {
           <Route path="/homeowner/borrow_item" element={<BorrowItem />} />
           <Route path="/homeowner/borrow_amenities" element={<BorrowAmenities />} />
           <Route path="/homeowner/register_vehicle" element={<RegisterVehicle />} />
+          <Route path="/homeowner/manage_vehicles" element={<ManageVehicles />} /> {/* ✅ NEW */}
           <Route path="/homeowner/submit_report" element={<SubmitReport />} />
           <Route path="/homeowner/request_entry" element={<EntryLogRequest />} />
           <Route path="/homeowner/visitor_logs" element={<VisitorLogHistory />} />
