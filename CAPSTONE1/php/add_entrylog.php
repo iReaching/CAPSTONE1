@@ -17,12 +17,20 @@ function uploadIDPhoto($fileKey) {
     if (isset($_FILES[$fileKey]) && $_FILES[$fileKey]['error'] === UPLOAD_ERR_OK) {
         $filename = uniqid("id_") . '_' . basename($_FILES[$fileKey]['name']);
         $targetPath = $uploadDir . $filename;
+
         if (move_uploaded_file($_FILES[$fileKey]['tmp_name'], $targetPath)) {
             return $relativePath . $filename;
+        } else {
+            echo json_encode(["status" => "error", "message" => "Failed to move uploaded file"]);
+            exit;
         }
     }
+
+    // No file uploaded, return null (optional behavior)
     return null;
 }
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'] ?? '';
@@ -34,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $expected = isset($_POST['expected']) && $_POST['expected'] === 'true' ? 1 : 0;
     $expected_time = $_POST['expected_time'] ?? null;
-    $requested_by = $_SESSION['user_id'] ?? ''; // fallback to blank
+    $requested_by = $_SESSION['user_id'] ?? ''; 
     $id_photo_path = uploadIDPhoto('id_photo');
 
     $sql = "INSERT INTO entry_log 
@@ -42,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Entry', NOW())";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sisssisssss", 
+    $stmt->bind_param("sisssissss", 
         $name, $visitor_count, $package_details, $vehicle_plate, $reason, 
         $expected, $expected_time, $requested_by, $homeowner_name, $id_photo_path
     );

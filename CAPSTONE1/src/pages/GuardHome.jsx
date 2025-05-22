@@ -5,25 +5,29 @@ import "react-datepicker/dist/react-datepicker.css";
 
 export default function GuardHome() {
   const [successMsg, setSuccessMsg] = useState("");
+  const [preview, setPreview] = useState("");
+  const [entryLogs, setEntryLogs] = useState([]);
+  const [homeowners, setHomeowners] = useState([]);
 
   const [formData, setFormData] = useState({
     name: "",
-    entry_type: "Guest",
     vehicle_plate: "",
     reason: "",
     expected: false,
     expected_time: null,
     id_photo: null,
+    visitor_count: 1,
+    package_details: "",
+    homeowner_name: "",
   });
-  const [preview, setPreview] = useState("");
-  const [entryLogs, setEntryLogs] = useState([]);
 
   useEffect(() => {
     fetchLogs();
+    fetchHomeowners();
   }, []);
 
   const fetchLogs = async () => {
-    const res = await axios.get("http://localhost/vitecap1/capstone1/PHP/get_entry_logs.php?...", {
+    const res = await axios.get("http://localhost/vitecap1/capstone1/PHP/get_entry_logs.php", {
       params: {
         page: 1,
         role: "guard",
@@ -32,6 +36,11 @@ export default function GuardHome() {
       },
     });
     setEntryLogs(res.data.logs);
+  };
+
+  const fetchHomeowners = async () => {
+    const res = await axios.get("http://localhost/vitecap1/capstone1/PHP/get_homeowners.php");
+    setHomeowners(res.data);
   };
 
   const handleChange = (e) => {
@@ -49,40 +58,42 @@ export default function GuardHome() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     const data = new FormData();
-  
-    // Copy all fields except expected_time
+
     for (let key in formData) {
-      if (key !== "expected_time") {
+      if (key === "expected_time" && formData.expected_time) {
+        data.append("expected_time", formData.expected_time.toTimeString().slice(0, 5));
+      } else if (key !== "expected_time") {
         data.append(key, formData[key]);
       }
     }
-  
-  
-    await axios.post("http://localhost/vitecap1/capstone1/PHP/add_entrylog.php", data);
 
-    // Show success message
+    console.log("Submitting form...");
+    await axios.post("http://localhost/vitecap1/capstone1/PHP/add_entrylog.php", data)
+    .then(res => console.log("Response:", res.data))
+    .catch(err => {
+    console.error("POST error:", err);
+    alert("Error submitting entry log.");
+  });
     setSuccessMsg("Entry log submitted successfully!");
-    
-    fetchLogs(); // refresh table
-    
-    // Clear form after 1.5s
+    fetchLogs();
+
     setTimeout(() => {
       setFormData({
         name: "",
-        entry_type: "Entry",
         vehicle_plate: "",
         reason: "",
+        expected: false,
+        expected_time: null,
         id_photo: null,
+        visitor_count: 1,
+        package_details: "",
+        homeowner_name: "",
       });
       setPreview("");
-      setSuccessMsg(""); // clear the message
+      setSuccessMsg("");
     }, 1500);
-    
-    setPreview("");
   };
-  
 
   const handleDelete = async (id) => {
     const formData = new FormData();
@@ -94,11 +105,12 @@ export default function GuardHome() {
   return (
     <div className="p-6 max-w mx-auto bg-white rounded shadow space-y-10">
       <h2 className="text-2xl font-bold mb-4 text-indigo-600">Entry Log Submission</h2>
+
       {successMsg && (
-  <div className="text-green-600 bg-green-100 border border-green-400 rounded px-4 py-2">
-    {successMsg}
-  </div>
-)}
+        <div className="text-green-600 bg-green-100 border border-green-400 rounded px-4 py-2">
+          {successMsg}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -110,21 +122,6 @@ export default function GuardHome() {
             onChange={handleChange}
             required
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Entry Type</label>
-          <select
-            name="entry_type"
-            value={formData.entry_type}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
-            required
-          >
-            <option value="">-- Select Entry Type --</option>
-            <option value="Entry">Entry</option>
-            <option value="Exit">Exit</option>
-          </select>
         </div>
 
         <div>
@@ -148,6 +145,46 @@ export default function GuardHome() {
           />
         </div>
 
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Number of Visitors</label>
+          <input
+            type="number"
+            name="visitor_count"
+            value={formData.visitor_count}
+            onChange={handleChange}
+            min="1"
+            required
+            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Package Details</label>
+          <input
+            type="text"
+            name="package_details"
+            value={formData.package_details}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Visitor is going to:</label>
+          <select
+            name="homeowner_name"
+            value={formData.homeowner_name}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+          >
+            <option value="">-- Select Homeowner --</option>
+            {homeowners.map((h, i) => (
+              <option key={i} value={h.full_name}>{h.full_name}</option>
+            ))}
+          </select>
+        </div>
+
         <div className="flex justify-center mt-4">
           <div className="w-full max-w-xs text-center">
             {preview && (
@@ -169,7 +206,6 @@ export default function GuardHome() {
                 accept="image/*"
                 onChange={handleChange}
                 className="hidden"
-                required
               />
             </label>
           </div>

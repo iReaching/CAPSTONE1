@@ -42,7 +42,7 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
     formData.append("user_id", profile.user_id);
     formData.append("full_name", profile.full_name);
     formData.append("contact_number", profile.contact_number);
-    if (profilePic) formData.append("profile_picture", profilePic);
+    if (profilePic) formData.append("profile_pic", profilePic);
 
     const response = await fetch("http://localhost/vitecap1/capstone1/PHP/update_profile.php", {
       method: "POST",

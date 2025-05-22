@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -10,12 +10,25 @@ export default function EntryLogRequest() {
     expected_time: null,
     visitor_count: 1,
     package_details: "",
-    homeowner_name: "",
+    homeowner_name: "", 
   });
 
-  
-
   const userId = localStorage.getItem("user_id");
+
+  useEffect(() => {
+    // Fetch full name of the logged-in user to set as homeowner_name
+    if (userId) {
+      fetch(`http://localhost/vitecap1/capstone1/php/get_profile.php?user_id=${userId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setFormData((prev) => ({
+            ...prev,
+            homeowner_name: data.full_name || ""
+          }));
+        })
+        .catch((err) => console.error("Failed to fetch profile:", err));
+    }
+  }, [userId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,12 +41,15 @@ export default function EntryLogRequest() {
     payload.append("name", formData.name);
     payload.append("vehicle_plate", formData.vehicle_plate);
     payload.append("reason", formData.reason);
+    payload.append("visitor_count", formData.visitor_count);
+    payload.append("package_details", formData.package_details);
+    payload.append("homeowner_name", formData.homeowner_name);
     payload.append("requested_by", userId);
 
     if (formData.expected_time) {
       payload.append(
         "expected_time",
-        formData.expected_time.toTimeString().slice(0, 5) // "HH:MM"
+        formData.expected_time.toTimeString().slice(0, 5)
       );
     }
 
@@ -49,6 +65,9 @@ export default function EntryLogRequest() {
           vehicle_plate: "",
           reason: "",
           expected_time: null,
+          visitor_count: 1,
+          package_details: "",
+          homeowner_name: formData.homeowner_name, 
         });
       })
       .catch((err) => {
@@ -62,6 +81,7 @@ export default function EntryLogRequest() {
       <h2 className="text-3xl font-bold mb-8 text-center">Request Entry Log</h2>
       <div className="bg-white text-black rounded-lg shadow-lg p-8 space-y-6">
         <form onSubmit={handleSubmit} className="space-y-4">
+
           <div>
             <label className="block mb-1 font-semibold">Visitor Name</label>
             <input
@@ -98,10 +118,36 @@ export default function EntryLogRequest() {
           </div>
 
           <div>
+            <label className="block mb-1 font-semibold">Number of Visitors</label>
+            <input
+              type="number"
+              name="visitor_count"
+              value={formData.visitor_count}
+              onChange={handleChange}
+              min="1"
+              required
+              className="w-full p-2 border rounded text-black"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-semibold">Package Details</label>
+            <input
+              type="text"
+              name="package_details"
+              value={formData.package_details}
+              onChange={handleChange}
+              className="w-full p-2 border rounded text-black"
+            />
+          </div>
+
+          <div>
             <label className="block mb-1 font-semibold">Expected Arrival Time (optional)</label>
             <DatePicker
               selected={formData.expected_time}
-              onChange={(time) => setFormData({ ...formData, expected_time: time })}
+              onChange={(time) =>
+                setFormData({ ...formData, expected_time: time })
+              }
               showTimeSelect
               showTimeSelectOnly
               timeIntervals={15}
