@@ -48,7 +48,7 @@ export default function AmenityAdd() {
             value={name}
             required
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border rounded border-black text-sm"
+            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
           />
         </div>
 
@@ -58,7 +58,7 @@ export default function AmenityAdd() {
             value={description}
             required
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border rounded border-black text-sm"
+            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
             rows="10"
           />
         </div>

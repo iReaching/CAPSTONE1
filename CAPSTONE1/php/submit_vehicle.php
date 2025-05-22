@@ -4,7 +4,7 @@ header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json");
 
-include '../db_connect.php';
+include 'db_connect.php';
 include 'log_action.php';
 
 $response = [];
