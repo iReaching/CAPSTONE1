@@ -58,7 +58,7 @@ export default function AdminAnnouncements() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 text-white">
+    <div className="w-full mx-auto text-white">
       <h2 className="text-2xl font-bold mb-6">Admin Announcements</h2>
 
       {/* Form */}
