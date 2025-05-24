@@ -105,40 +105,53 @@ export default function AdminDues() {
               <td className="p-3">{d.payment_date || "-"}</td>
               <td className="p-3 space-y-1">
                 {Number(d.is_paid) === 0 && (
-                  <>
+                <>
                     {Number(d.payment_requested) === 1 && (
-                      <div className="text-yellow-600 text-sm mb-1 text-center">
+                    <>
+                        <div className="text-yellow-600 text-sm mb-1 text-center">
                         Request: Homeowner submitted payment proof
-                      </div>
-                    )}
-                    {d.payment_proof_path && (
-                      <div className="mb-1 text-center">
+                        </div>
+                        {d.payment_proof_path && (
+                        <div className="mb-1 text-center">
+                            <button
+                            onClick={() => {
+                                setModalImage(`http://localhost/vitecap1/${d.payment_proof_path}`);
+                                setShowModal(true);
+                            }}
+                            className="text-blue-600 underline"
+                            >
+                            View Proof
+                            </button>
+                        </div>
+                        )}
+                        <div className="flex justify-center gap-2">
                         <button
-                          onClick={() => {
-                            setModalImage(`http://localhost/vitecap1/${d.payment_proof_path}`);
-                            setShowModal(true);
-                          }}
-                          className="text-blue-600 underline"
+                            onClick={() => approvePayment(d.id)}
+                            className="bg-green-600 text-white px-2 py-1 rounded text-sm"
                         >
-                          View Proof
+                            Approve
                         </button>
-                      </div>
+                        <button
+                            onClick={() => rejectPaymentRequest(d.id)}
+                            className="bg-red-600 text-white px-2 py-1 rounded text-sm"
+                        >
+                            Reject
+                        </button>
+                        </div>
+                    </>
                     )}
-                    <div className="flex justify-center gap-2">
-                      <button
+
+                    {Number(d.payment_requested) === 0 && (
+                    <div className="flex justify-center">
+                        <button
                         onClick={() => approvePayment(d.id)}
                         className="bg-green-600 text-white px-2 py-1 rounded text-sm"
-                      >
+                        >
                         Set to Paid
-                      </button>
-                      <button
-                        onClick={() => rejectPaymentRequest(d.id)}
-                        className="bg-red-600 text-white px-2 py-1 rounded text-sm"
-                      >
-                        Reject
-                      </button>
+                        </button>
                     </div>
-                  </>
+                    )}
+                </>
                 )}
               </td>
             </tr>
