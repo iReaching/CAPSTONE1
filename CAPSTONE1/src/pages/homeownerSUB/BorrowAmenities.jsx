@@ -65,7 +65,8 @@ export default function BorrowAmenities() {
   };
 
   return (
-    <div className="text-white max-w-4xl mx-auto mt-10">
+
+    <div className="text-white w-full mx-auto mt-10">
       <h2 className="text-3xl font-bold mb-8 text-center">Borrow Amenity</h2>
       <div className="bg-white text-black rounded-lg shadow-lg p-8 space-y-6">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -157,5 +158,6 @@ export default function BorrowAmenities() {
         </form>
       </div>
     </div>
+
   );
 }

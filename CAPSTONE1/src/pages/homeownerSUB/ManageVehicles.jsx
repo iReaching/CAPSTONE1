@@ -63,10 +63,9 @@ export default function ManageVehicles() {
   };
 
   return (
-    <div className="text-white">
+    <div className="px-4 md:px-10 py-4 w-full max-w-7xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Manage Vehicles</h2>
-
-    <div className="relative z-50 overflow-visible">
+      <div className="overflow-auto rounded-lg shadow bg-white text-black">
         <table className="w-full text-sm text-left bg-white text-black rounded shadow">
           <thead className="bg-indigo-600 text-white">
             <tr>

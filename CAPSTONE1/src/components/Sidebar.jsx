@@ -15,7 +15,9 @@ import {
   ChevronRight,
   MoreVertical,
   ChevronFirst,
-  ChevronLast
+  ChevronLast,
+  Megaphone,
+  DollarSign
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -207,6 +209,8 @@ export default function Sidebar({ children }) {
         <SidebarItem icon={<ScrollText size={18} />} text="Entry Log" link="/entrylog" active={location.pathname === "/entrylog"} />
         <SidebarItem icon={<ScrollText size={18} />} text="System Logs" link="/system_logs" active={location.pathname === "/admin/system_logs"} />
         <SidebarItem icon={<UserSquare size={18} />} text="Account" link="/account" active={location.pathname === "/account"} />
+        <SidebarItem icon={<Megaphone size={18} />} text="Announcement" link="/announcement" active={location.pathname === "/announcement"} />
+        <SidebarItem icon={<DollarSign size={18} />} text="Monthly Dues" link="/dues" />
 
         </ul>
         </SidebarContext.Provider>

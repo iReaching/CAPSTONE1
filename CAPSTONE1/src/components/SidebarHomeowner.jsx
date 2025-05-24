@@ -9,7 +9,9 @@ import {
   MoreVertical,
   ChevronFirst,
   ChevronLast,
-  LogIn
+  LogIn,
+  Megaphone,
+  DollarSign
 } from "lucide-react";
 import ProfileModal from "./ProfileModal";
 
@@ -49,7 +51,7 @@ export default function SidebarHomeowner({ children }) {
   };
 
   return (
-    <aside className={`fixed top-0 left-0 z-50 h-screen bg-white border-r shadow-sm transition-all ${expanded ? "w-64" : "w-20"}`}>
+    <aside className={`fixed top-0 left-0 z-50 h-screen bg-white border-r shadow-sm transition-all ${expanded ? "w-64" : "w-16"}`}>
       <nav className="h-full flex flex-col bg-white border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center">
           <div onClick={() => setExpanded((curr) => !curr)} className="p-1 text-black hover:text-gray-600 cursor-pointer">
@@ -59,16 +61,19 @@ export default function SidebarHomeowner({ children }) {
 
         <SidebarContext.Provider value={{ expanded }}>
         <ul className="flex-1 px-3 space-y-1">
-            <SidebarItem icon={<Home size={20} />} text="Home" link="/homeowner_home" active={location.pathname === "/homeowner_home"} />
-            <SidebarItem icon={<CalendarDays size={20} />} text="Amenities" link="/amenities/view" active={location.pathname.startsWith("/amenities")} />
-            <SidebarItem icon={<Boxes size={20} />} text="Items" link="/items/view" active={location.pathname.startsWith("/items")} />
-            <SidebarItem icon={<FileText size={20} />} text="Borrow Amenity" link="/homeowner/borrow_amenities" active={location.pathname === "/homeowner/borrow_amenities"} />
-            <SidebarItem icon={<FileText size={20} />} text="Borrow Item" link="/homeowner/borrow_item" active={location.pathname === "/homeowner/borrow_item"} />
-            <SidebarItem icon={<FileText size={20} />} text="Submit Report" link="/homeowner/submit_report" active={location.pathname === "/homeowner/submit_report"} />
-            <SidebarItem icon={<UserSquare size={20} />} text="Register Vehicle" link="/homeowner/register_vehicle" active={location.pathname === "/homeowner/register_vehicle"} />
-            <SidebarItem icon={<LogIn size={20} />} text="Entry Log Request" link="/homeowner/request_entry" active={location.pathname === "/homeowner/request_entry"} />
-            <SidebarItem icon={<FileText size={20} />} text="Visitor Logs" link="/homeowner/visitor_logs" active={location.pathname === "/homeowner/visitor_logs"} />
-            <SidebarItem icon={<UserSquare size={20} />} text="Manage Vehicles" link="/homeowner/manage_vehicles" active={location.pathname === "/homeowner/manage_vehicles"} />
+            <SidebarItem icon={<Home size={16} />} text="Home" link="/homeowner_home" active={location.pathname === "/homeowner_home"} />
+            <SidebarItem icon={<CalendarDays size={16} />} text="Amenities" link="/amenities/view" active={location.pathname.startsWith("/amenities")} />
+            <SidebarItem icon={<Boxes size={16} />} text="Items" link="/items/view" active={location.pathname.startsWith("/items")} />
+            <SidebarItem icon={<FileText size={16} />} text="Borrow Amenity" link="/homeowner/borrow_amenities" active={location.pathname === "/homeowner/borrow_amenities"} />
+            <SidebarItem icon={<FileText size={16} />} text="Borrow Item" link="/homeowner/borrow_item" active={location.pathname === "/homeowner/borrow_item"} />
+            <SidebarItem icon={<FileText size={16} />} text="Submit Report" link="/homeowner/submit_report" active={location.pathname === "/homeowner/submit_report"} />
+            <SidebarItem icon={<UserSquare size={16} />} text="Register Vehicle" link="/homeowner/register_vehicle" active={location.pathname === "/homeowner/register_vehicle"} />
+            <SidebarItem icon={<LogIn size={16} />} text="Entry Log Request" link="/homeowner/request_entry" active={location.pathname === "/homeowner/request_entry"} />
+            <SidebarItem icon={<FileText size={16} />} text="Visitor Logs" link="/homeowner/visitor_logs" active={location.pathname === "/homeowner/visitor_logs"} />
+            <SidebarItem icon={<UserSquare size={16} />} text="Manage Vehicles" link="/homeowner/manage_vehicles" active={location.pathname === "/homeowner/manage_vehicles"} />
+            <SidebarItem icon={<Megaphone size={16} />} text="Announcements" link="/homeowner/announcements" active={location.pathname === "/homeowner/announcements"} /> 
+            <SidebarItem icon={<DollarSign size={16} />} text="Monthly Dues" link="/homeowner/dues" active={location.pathname === "/homeowner/dues"} />
+
 
             </ul>
         </SidebarContext.Provider>
@@ -145,13 +150,13 @@ export function SidebarItem({ icon, text, active, link }) {
 
   return (
     <Link to={link}>
-      <li className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${active ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-indigo-50 text-gray-600"}`}>
+      <li className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${active ? "bg-gradient-to-tr from-indigo-160 to-indigo-100 text-indigo-800" : "hover:bg-indigo-50 text-gray-600"}`}>
         {icon}
         <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
           {text}
         </span>
         {!expanded && (
-          <div className="absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-indigo-800 text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0">
+          <div className="absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-indigo-800 text-sm invisible opacity-16 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0">
             {text}
           </div>
         )}

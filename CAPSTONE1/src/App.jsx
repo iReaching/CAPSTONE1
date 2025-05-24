@@ -5,13 +5,12 @@ import Sidebar, { SidebarItem } from "./components/Sidebar";
 import SidebarStaff from "./components/SidebarStaff";
 import SidebarGuard from "./components/SidebarGuard";
 import SidebarHomeowner from "./components/SidebarHomeowner";
-import ManageVehicles from './pages/homeownerSUB/ManageVehicles';
-
+import AdminAnnouncements from "./pages/AdminAnnouncements";
 import Home from "./pages/Home";
 import StaffHome from "./pages/StaffHome";
 import GuardHome from "./pages/GuardHome";
 import HomeownerHome from "./pages/HomeownerHome";
-
+import AdminDues from "./pages/AdminDues";
 import Amenities from "./pages/Amenities";
 import Items from "./pages/Items";
 import Reports from "./pages/Reports";
@@ -32,12 +31,14 @@ import SystemLogs from "./pages/SystemLogs";
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
-
+import HomeownerDues from "./pages/homeownerSUB/HomeownerDues";
 import BorrowItem from "./pages/homeownerSUB/BorrowItem";
 import BorrowAmenities from "./pages/homeownerSUB/BorrowAmenities";
 import RegisterVehicle from "./pages/homeownerSUB/RegisterVehicle";
 import SubmitReport from "./pages/homeownerSUB/SubmitReport";
 import VisitorLogHistory from "./pages/homeownerSUB/VisitorLogHistory";
+import HomeownerAnnouncements from "./pages/homeownerSUB/HomeownerAnnouncements";
+import ManageVehicles from './pages/homeownerSUB/ManageVehicles';
 
 import {
   Home as HomeIcon,
@@ -45,7 +46,8 @@ import {
   Boxes,
   FileText,
   ScrollText,
-  UserSquare
+  UserSquare,
+  Megaphone
 } from "lucide-react";
 
 export default function App() {
@@ -91,10 +93,11 @@ function AppLayout() {
           <SidebarItem icon={<FileText size={30} />} text="Report" link="/reports" />
           <SidebarItem icon={<ScrollText size={30} />} text="Entry Log" link="/entrylog" />
           <SidebarItem icon={<UserSquare size={30} />} text="Account" link="/account" />
+          <SidebarItem icon={<Megaphone size={30} />} text="Announcement" link="/announcements" />
+
         </Sidebar>
 
-        <main className="absolute top-0 left-0 right-0 min-h-screen pl-64 pt-10 pr-10 bg-[#0e1525] text-white overflow-x-hidden">
-          <Routes>
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#0e1525] text-white overflow-x-auto transition-all duration-300">          <Routes>
             <Route path="/" element={<Navigate to="/home" />} />
             <Route path="/home" element={<Home />} />
             <Route path="/amenities" element={<Amenities />} />
@@ -111,6 +114,8 @@ function AppLayout() {
             <Route path="/entrylog" element={<EntryLog />} />
             <Route path="/system_logs" element={<SystemLogs />} /> {/* <- New Route */}
             <Route path="/account" element={<Account />} />
+            <Route path="/announcement" element={<AdminAnnouncements />} />
+            <Route path="/dues" element={<AdminDues />} />
           </Routes>
         </main>
       </div>
@@ -129,8 +134,7 @@ function AppLayout() {
           <SidebarItem icon={<UserSquare size={30} />} text="Account" link="/account" />
         </SidebarStaff>
 
-        <main className="absolute top-0 left-0 right-0 min-h-screen pl-64 pt-10 pr-10 bg-[#0e1525] text-white overflow-x-hidden">
-          <Routes>
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#0e1525] text-white overflow-x-auto transition-all duration-300">          <Routes>
             <Route path="/" element={<Navigate to="/staff_home" />} />
             <Route path="/staff_home" element={<StaffHome />} />
             <Route path="/amenities" element={<Amenities />} />
@@ -156,8 +160,7 @@ function AppLayout() {
     return (
       <div className="bg-gray-900 min-h-screen text-white relative">
         <SidebarGuard />
-        <main className="absolute top-0 left-0 right-0 min-h-screen pl-64 pt-10 pr-10 bg-[#0e1525] text-white overflow-x-hidden">
-          <Routes>
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#0e1525] text-white overflow-x-auto transition-all duration-300">          <Routes>
             <Route path="/" element={<Navigate to="/guard_home" />} />
             <Route path="/guard_home" element={<GuardHome />} />
             <Route path="/existinglogs" element={<EntryLog />} />
@@ -173,17 +176,21 @@ if (role === "homeowner") {
   return (
     <div className="bg-gray-900 min-h-screen text-white relative">
       <SidebarHomeowner />
-      <main className="absolute top-0 left-0 right-0 min-h-screen pl-64 pt-10 pr-10 bg-[#0e1525] text-white overflow-x-hidden">
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#0e1525] text-white overflow-x-auto transition-all duration-300">
+
+
         <Routes>
           <Route path="/" element={<Navigate to="/homeowner_home" />} />
           <Route path="/homeowner_home" element={<HomeownerHome />} />
           <Route path="/homeowner/borrow_item" element={<BorrowItem />} />
           <Route path="/homeowner/borrow_amenities" element={<BorrowAmenities />} />
           <Route path="/homeowner/register_vehicle" element={<RegisterVehicle />} />
-          <Route path="/homeowner/manage_vehicles" element={<ManageVehicles />} /> {/* ✅ NEW */}
+          <Route path="/homeowner/manage_vehicles" element={<ManageVehicles />} />
           <Route path="/homeowner/submit_report" element={<SubmitReport />} />
           <Route path="/homeowner/request_entry" element={<EntryLogRequest />} />
           <Route path="/homeowner/visitor_logs" element={<VisitorLogHistory />} />
+          <Route path="/homeowner/announcements" element={<HomeownerAnnouncements />} />
+          <Route path="/homeowner/dues" element={<HomeownerDues />} />
           <Route path="/items/view" element={<ItemsView />} />
           <Route path="/amenities/view" element={<AmenityView />} />
         </Routes>

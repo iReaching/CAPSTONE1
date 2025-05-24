@@ -168,8 +168,9 @@ export default function Accounts() {
 
       {/* Modal */}
       {modalOpen && details && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white text-black p-6 rounded-lg max-w-5xl w-full shadow-lg relative flex flex-col md:flex-row gap-6">
+<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-hidden">
+          <div className="bg-white text-black p-6 rounded-lg max-w-5xl w-full shadow-lg relative flex flex-col md:flex-row gap-6 overflow-y-auto max-h-[90vh]">
+
             {/* Delete Icon - Top Left */}
             <button
               onClick={() => {
