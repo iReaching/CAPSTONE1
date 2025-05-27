@@ -14,7 +14,8 @@ export default function AdminAnnouncements() {
   const fetchAnnouncements = () => {
     fetch(`${BASE_URL}get_announcements.php`)
       .then((res) => res.json())
-      .then((data) => setAnnouncements(data));
+      .then((data) => setAnnouncements(data.announcements || []));
+
   };
 
   const handleSubmit = (e) => {

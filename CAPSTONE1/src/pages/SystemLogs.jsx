@@ -3,12 +3,20 @@ import { BASE_URL } from "../config";
 export default function SystemLogs() {
   const [logs, setLogs] = useState([]);
 
-  useEffect(() => {
-    fetch(`${BASE_URL}get_logs.php`)
-      .then((res) => res.json())
-      .then((data) => setLogs(data))
-      .catch((err) => console.error("Error fetching logs:", err));
-  }, []);
+  fetch(`${BASE_URL}get_logs.php`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.logs && Array.isArray(data.logs)) {
+        setLogs(data.logs);
+      } else {
+        setLogs([]);
+      }
+    })
+    .catch(err => {
+      console.error("Failed to fetch logs", err);
+      setLogs([]);
+    });
+
 
   return (
     <div className="text-white p-6">
