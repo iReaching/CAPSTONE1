@@ -148,7 +148,7 @@ export default function EntryLog() {
                 <td className="px-4 py-2">
                   {log.id_photo_path ? (
                     <img
-                      src={`${window.location.origin}capstone1/${log.id_photo_path}`}
+                      src={`${window.location.origin}/capstone1/${log.id_photo_path}`}
                       alt="ID"
                       className="w-12 h-12 object-cover rounded"
                     />
@@ -243,7 +243,7 @@ export default function EntryLog() {
               <div className="mt-4">
                 <p className="font-semibold mb-2">Uploaded ID Photo:</p>
                 <img
-                  src={`${window.location.origin}capstone1/${selectedLog.id_photo_path}`}
+                  src={`${window.location.origin}/capstone1/${selectedLog.id_photo_path}`}
                   alt="ID"
                   className="w-full max-h-[400px] object-contain border rounded"
                 />

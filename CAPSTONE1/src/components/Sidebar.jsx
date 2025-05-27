@@ -223,7 +223,7 @@ export default function Sidebar({ children }) {
             <img
               src={
                 profile.profile_picture?.startsWith("uploads/")
-                  ? `${window.location.origin}/capstone1/${profile.profile_picture}`
+                  ? `${BASE_URL}${profile.profile_picture}`
                   : profile.profile_picture || "https://ui-avatars.com/api/?name=" + (profile.full_name || "")
               }
               alt="Profile"
