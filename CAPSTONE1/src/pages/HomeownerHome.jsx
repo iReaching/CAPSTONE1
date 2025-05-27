@@ -6,7 +6,7 @@ export default function HomeownerHome() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold mb-6">Homeowner Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-6 text-indigo-500">Homeowner Dashboard</h1>
 
       {/* Row 1: View Amenities and Items */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

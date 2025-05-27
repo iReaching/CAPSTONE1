@@ -59,10 +59,10 @@ export default function AdminAnnouncements() {
 
   return (
     <div className="w-full mx-auto text-white">
-      <h2 className="text-2xl font-bold mb-6">Admin Announcements</h2>
+      <h2 className="text-2xl font-bold mb-6 text-indigo-500">Admin Announcements</h2>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white text-black p-4 rounded shadow space-y-4 mb-8">
+      <form onSubmit={handleSubmit} className="p-4 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black space-y-4 mb-8">
         <h3 className="font-semibold text-lg">{editingId ? "Edit" : "New"} Announcement</h3>
         <input
           type="text"
@@ -110,7 +110,7 @@ export default function AdminAnnouncements() {
           <p className="text-center text-gray-400">No announcements yet.</p>
         ) : (
           announcements.map((a) => (
-            <div key={a.id} className="bg-white text-black p-4 rounded shadow">
+            <div key={a.id} className="bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black p-4">
               <div className="flex justify-between items-center">
                 <h4 className="text-lg font-semibold">{a.title}</h4>
                 <div className="flex space-x-2">

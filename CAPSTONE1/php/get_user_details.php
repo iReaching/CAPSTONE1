@@ -2,6 +2,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Content-Type: application/json");
 include 'db_connect.php';
 
@@ -38,9 +40,10 @@ if ($row = $profile_result->fetch_assoc()) {
 $stmt->close();
 
 // Get registered vehicles
-$vehicle_sql = "SELECT name, color, type_of_vehicle AS type, plate_number AS plate, vehicle_pic_path, block, lot
+$vehicle_sql = "SELECT id, name, color, type_of_vehicle AS type, plate_number AS plate, vehicle_pic_path, block, lot
                 FROM vehicle_registrations
-                WHERE user_id = ?";
+                WHERE user_id = ?
+                ";
 $stmt = $conn->prepare($vehicle_sql);
 $stmt->bind_param("s", $user_id);
 $stmt->execute();

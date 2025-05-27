@@ -103,7 +103,7 @@ export default function GuardHome() {
   };
 
   return (
-    <div className="p-6 max-w mx-auto bg-white rounded shadow space-y-10">
+    <div className="p-6 mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black">
       <h2 className="text-2xl font-bold mb-4 text-indigo-600">Entry Log Submission</h2>
 
       {successMsg && (
@@ -116,7 +116,7 @@ export default function GuardHome() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Visitor Name</label>
           <input
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            className="w-full px-3 py-2 p-6 mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -127,7 +127,7 @@ export default function GuardHome() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Vehicle Plate (optional)</label>
           <input
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            className="w-full px-3 py-2 p-6 mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             name="vehicle_plate"
             value={formData.vehicle_plate}
             onChange={handleChange}
@@ -137,7 +137,7 @@ export default function GuardHome() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Reason for Visit</label>
           <input
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            className="w-full px-3 py-2 p-6 mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             name="reason"
             value={formData.reason}
             onChange={handleChange}
@@ -154,7 +154,7 @@ export default function GuardHome() {
             onChange={handleChange}
             min="1"
             required
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            className="w-full px-3 py-2 p-6 mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
           />
         </div>
 
@@ -165,7 +165,7 @@ export default function GuardHome() {
             name="package_details"
             value={formData.package_details}
             onChange={handleChange}
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            className="w-full px-3 py-2 p-6 mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
           />
         </div>
 
@@ -176,7 +176,7 @@ export default function GuardHome() {
             value={formData.homeowner_name}
             onChange={handleChange}
             required
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            className="w-full px-3 py-2 p-6 mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
           >
             <option value="">-- Select Homeowner --</option>
             {homeowners.map((h, i) => (
@@ -196,7 +196,7 @@ export default function GuardHome() {
             )}
             <label
               htmlFor="id_photo"
-              className="cursor-pointer inline-block px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition"
+              className="cursor-pointer inline-block px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-200 transition"
             >
               {preview ? "Change ID Photo" : "Upload ID Photo"}
               <input

@@ -76,7 +76,7 @@ export default function ItemsEdit() {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white rounded shadow">
+    <div className="max-w-xl mx-auto p-6 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black">
       <h2 className="text-xl font-bold mb-4 text-indigo-600">Edit Item</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -86,7 +86,7 @@ export default function ItemsEdit() {
             <select
               value={selectedId}
               onChange={(e) => setSelectedId(e.target.value)}
-              className="w-full border px-3 py-2 rounded text-sm text-black"
+              className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
               required
             >
               <option value="">-- Choose an item --</option>
@@ -114,7 +114,7 @@ export default function ItemsEdit() {
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="e.g. New Item Name"
-            className="w-full border px-3 py-2 rounded text-sm text-black"
+            className="w-full  px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
           />
         </div>
 
@@ -124,7 +124,7 @@ export default function ItemsEdit() {
             value={newDescription}
             onChange={(e) => setNewDescription(e.target.value)}
             placeholder="e.g. Updated item description..."
-            className="w-full border px-3 py-2 rounded text-sm text-black"
+            className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
             rows={3}
           />
         </div>

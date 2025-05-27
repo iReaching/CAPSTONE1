@@ -66,9 +66,9 @@ export default function BorrowAmenities() {
 
   return (
 
-    <div className="text-white w-full mx-auto mt-10">
-      <h2 className="text-3xl font-bold mb-8 text-center">Borrow Amenity</h2>
-      <div className="bg-white text-black rounded-lg shadow-lg p-8 space-y-6">
+    <div className="text-white max-w-4xl mx-auto mt-10">
+      <h2 className="text-3xl font-bold mb-8 text-center text-indigo-500">Borrow Amenity</h2>
+      <div className="p-6 max-w-3xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block mb-1 font-semibold">Select Amenity</label>
@@ -77,7 +77,7 @@ export default function BorrowAmenities() {
               value={formData.amenity_id}
               onChange={handleChange}
               required
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 max-w-2xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100"
             >
               <option value="">-- Select --</option>
               {amenities.map((a) => (
@@ -95,7 +95,7 @@ export default function BorrowAmenities() {
                 selected={formData.request_date}
                 onChange={(date) => setFormData({ ...formData, request_date: date })}
                 dateFormat="yyyy-MM-dd"
-                className="w-full p-2 border rounded text-black"
+                className="w-full p-2 max-w-2xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100"
               />
             </div>
             <div>
@@ -108,7 +108,7 @@ export default function BorrowAmenities() {
                 timeIntervals={15}
                 timeCaption="Start"
                 dateFormat="HH:mm"
-                className="w-full p-2 border rounded text-black"
+                className="w-full p-2 max-w-2xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100"
               />
             </div>
             <div>
@@ -121,7 +121,7 @@ export default function BorrowAmenities() {
                 timeIntervals={15}
                 timeCaption="End"
                 dateFormat="HH:mm"
-                className="w-full p-2 border rounded text-black"
+                className="w-full p-2 max-w-2xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100"
               />
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function BorrowAmenities() {
               value={formData.house_id}
               onChange={handleChange}
               required
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 max-w-2xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100"
             />
           </div>
 
@@ -144,8 +144,8 @@ export default function BorrowAmenities() {
               name="message"
               value={formData.message}
               onChange={handleChange}
-              rows={4}
-              className="w-full p-2 border rounded text-black"
+              rows={6}
+              className="w-full p-2 max-w-2xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100"
             ></textarea>
           </div>
 

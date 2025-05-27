@@ -39,7 +39,7 @@ export default function Reports() {
 
   return (
     <div className="text-white">
-      <h2 className="text-2xl font-bold mb-6">Maintenance Reports</h2>
+      <h2 className="text-2xl font-bold mb-6 text-indigo-500">Maintenance Reports</h2>
 
       {/* Tabs */}
       <div className="flex space-x-4 mb-6">

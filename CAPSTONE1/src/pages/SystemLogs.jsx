@@ -12,7 +12,7 @@ export default function SystemLogs() {
 
   return (
     <div className="text-white p-6">
-      <h2 className="text-2xl font-bold mb-6">System Logs</h2>
+      <h2 className="text-2xl font-bold mb-6 text-indigo-500">System Logs</h2>
 
       {logs.length === 0 ? (
         <p className="text-gray-400 italic">No logs available.</p>

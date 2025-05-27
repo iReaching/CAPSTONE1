@@ -27,8 +27,8 @@ export default function Home() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-4xl font-bold mb-4">Welcome to VilMan!</h1>
-      <p className="text-2xl font-bold mb-4">Admin Dashboard</p>
+      <h1 className="text-4xl font-bold mb-4 text-indigo-500">Welcome to CondoLink!</h1>
+      <p className="text-2xl font-bold mb-4 text-indigo-600">Admin Dashboard</p>
 
       {/* Row 1: Amenities and Items */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

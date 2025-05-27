@@ -58,8 +58,8 @@ export default function EntryLog() {
   };
 
   return (
-    <div className="text-white">
-      <h2 className="text-2xl font-bold mb-4">Entry Log</h2>
+    <div className="p-6 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-indigo-500">
+      <h2 className="text-2xl font-bold mb-4 text-indigo-500">Entry Log</h2>
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
@@ -71,7 +71,7 @@ export default function EntryLog() {
             setSearch(e.target.value);
             setPage(1);
           }}
-          className="w-full md:max-w-3xl px-3 py-2 border border-gray-400 rounded text-white"
+          className="w-full md:max-w-3xl px-3 py-2 border border-gray-400 rounded text-black"
         />
 
         <select
@@ -80,7 +80,7 @@ export default function EntryLog() {
             setRole(e.target.value);
             setPage(1);
           }}
-          className="px-3 py-2 border border-gray-400 rounded text-gray-500"
+          className="px-3 py-2 border border-gray-400 rounded text-black"
         >
           <option value="">Select Role</option>
           <option value="homeowner">Homeowner</option>
@@ -97,7 +97,7 @@ export default function EntryLog() {
             setSortOrder(order);
             setPage(1);
           }}
-          className="px-3 py-2 border border-gray-400 rounded text-gray-500"
+          className="px-3 py-2 border border-gray-400 rounded text-black"
         >
           <option value="timestamp_DESC">Newest First</option>
           <option value="timestamp_ASC">Oldest First</option>
@@ -215,7 +215,7 @@ export default function EntryLog() {
 
       {/* View Modal */}
       {viewModalOpen && selectedLog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white text-black p-6 rounded-lg max-w-xl w-full shadow-lg relative">
             <button
               onClick={() => setViewModalOpen(false)}

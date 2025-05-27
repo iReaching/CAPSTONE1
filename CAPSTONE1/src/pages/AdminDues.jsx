@@ -75,7 +75,7 @@ export default function AdminDues() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 text-white">
-      <h2 className="text-2xl font-bold mb-4">Monthly Association Dues</h2>
+      <h2 className="text-2xl font-bold mb-4 text-indigo-500">Monthly Association Dues</h2>
 
       <button
         onClick={() => setShowAddModal(true)}
@@ -161,7 +161,7 @@ export default function AdminDues() {
 
       {/* View Proof Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[9999]">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-[9999]">
           <div className="bg-white rounded shadow-lg max-w-lg w-full p-4 relative">
             <button
               onClick={() => setShowModal(false)}
@@ -180,7 +180,7 @@ export default function AdminDues() {
 
       {/* Add Due Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-[9999]">
           <div className="bg-white text-black rounded shadow-lg p-6 w-full max-w-md relative">
             <button
               onClick={() => setShowAddModal(false)}

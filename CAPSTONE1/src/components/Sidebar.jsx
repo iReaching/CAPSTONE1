@@ -47,7 +47,7 @@ export default function Sidebar({ children }) {
   const [itemsOpen, setItemsOpen] = useState(false);
   
 
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [profile, setProfile] = useState({});
@@ -88,17 +88,17 @@ export default function Sidebar({ children }) {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-50 h-screen bg-white border-r shadow-sm transition-all ${
+      className={`fixed top-0 left-0 z-50 h-screen bg-[#4169B3] transition-all ${
         expanded ? "w-64" : "w-20"
       }`}
     >
-      <nav className="h-full flex flex-col bg-white border-r shadow-sm">
+      <nav className="h-full flex flex-col bg-[#4169B3]">
         {/* Top: Logo and Toggle Button */}
         <div className="p-4 pb-2 flex justify-between items-center">
 
           <div
             onClick={() => setExpanded((curr) => !curr)}
-            className="p-1 text-black hover:text-gray-600 cursor-pointer"
+            className="p-1 text-white hover:text-white cursor-pointer"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </div>
@@ -122,7 +122,7 @@ export default function Sidebar({ children }) {
           className={`
             flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer
             transition-colors group w-full
-            ${isAmenitiesActive ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-100 text-gray-600"}
+            ${isAmenitiesActive ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-50 text-white"}
           `}               
           >
             <CalendarDays size={20} />
@@ -175,7 +175,7 @@ export default function Sidebar({ children }) {
             className={`
               flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer
               transition-colors group w-full
-              ${isItemsActive ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-100 text-gray-600"}
+              ${isItemsActive ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-50 text-white"}
             `}
           >
             <Boxes size={18} />
@@ -217,7 +217,7 @@ export default function Sidebar({ children }) {
         </SidebarContext.Provider>
 
         {/* Footer: User Info */}
-            <div className="border-t p-3 flex items-center justify-between bg-white">
+            <div className="p-3 flex items-center justify-between bg-[#4169B3]">
             {/* Profile Info */}
             <div className="flex items-center gap-3 overflow-hidden">
             <img
@@ -231,9 +231,9 @@ export default function Sidebar({ children }) {
             />
 
                 {expanded && (
-                <div className="leading-4 text-gray-800">
+                <div className="leading-4 text-white">
                     <h4 className="font-semibold truncate"> {profile.full_name ? profile.full_name : ""}</h4>
-                    <span className="text-xs text-gray-500 truncate">{profile.email || ""}</span>
+                    <span className="text-xs text-white truncate">{profile.email || ""}</span>
                 </div>
                 )}
             </div>
@@ -244,13 +244,13 @@ export default function Sidebar({ children }) {
                 <button
                   type="button"
                   onClick={() => setShowOptions((prev) => !prev)}
-                  className="appearance-none p-1 text-gray-400 hover:text-gray-600 bg-transparent border-none shadow-none outline-none focus:outline-none focus:ring-0"
+                  className="appearance-none p-1 text-white hover:text-white bg-transparent border-none shadow-none outline-none focus:outline-none focus:ring-0"
                 >
                   <MoreVertical size={16} />
                 </button>
                 {/* Options Menu */}
                 {showOptions && (
-                    <div className="absolute left-full top-1/3 -translate-y-1/2 ml-3 shadow-md text-white rounded-md w-40 z-50 text-sm">
+                    <div className="absolute left-full top-1/8 -translate-y-1/2 ml-3 shadow-md text-white bg-[#4169B3] rounded-md w-30 text-sm">
                     <ul className="py-1">
                         <li>
                         <button
@@ -284,11 +284,15 @@ export default function Sidebar({ children }) {
 
       </nav>
 
-      <ProfileModal
-        show={showProfile}
-        onClose={() => setShowProfile(false)}
-        onProfileUpdate={fetchProfile}
-      />
+      {showProfile && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <ProfileModal
+            show={true}
+            onClose={() => setShowProfile(false)}
+            onProfileUpdate={fetchProfile}
+          />
+        </div>
+      )}
     </aside>
   );
 }
@@ -302,7 +306,9 @@ export function SidebarItem({ icon, text, active, alert, link }) {
         className={`relative flex items-center py-2 px-3 my-1
           font-medium rounded-md cursor-pointer
           transition-colors group
-          ${active ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-indigo-50 text-gray-600"}`}
+          ${active 
+        ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" 
+        : "text-white hover:text-indigo-600 hover:bg-gray-100"}`}
       >
         {icon}
         <span

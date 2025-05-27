@@ -15,13 +15,13 @@ export default function AmenityView() {
   }, [page]);
 
   return (
-    <div className="text-white space-y-6">
+    <div className="text-indigo-500 space-y-6 p-6">
       <h2 className="text-3xl font-bold mb-6 text-center">Available Amenities</h2>
 
         {amenities.map((amenity) => (
           <div
             key={amenity.id}
-            className="bg-white text-black rounded-lg shadow-lg p-4 flex flex-col"
+            className="bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black p-4 flex flex-col"
           >
             <img
               src={`${window.location.origin}/capstone1/${amenity.image}`}

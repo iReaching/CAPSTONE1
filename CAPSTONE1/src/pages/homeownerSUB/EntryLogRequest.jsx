@@ -78,8 +78,8 @@ export default function EntryLogRequest() {
 
   return (
     <div className="text-white max-w-4xl mx-auto mt-10">
-      <h2 className="text-3xl font-bold mb-8 text-center">Request Entry Log</h2>
-      <div className="bg-white text-black rounded-lg shadow-lg p-8 space-y-6">
+      <h2 className="text-3xl font-bold mb-8 text-center text-indigo-500">Request Entry Log</h2>
+      <div className="p-6 max-w-3xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black">
         <form onSubmit={handleSubmit} className="space-y-4">
 
           <div>
@@ -90,7 +90,7 @@ export default function EntryLogRequest() {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             />
           </div>
 
@@ -101,7 +101,7 @@ export default function EntryLogRequest() {
               name="vehicle_plate"
               value={formData.vehicle_plate}
               onChange={handleChange}
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             />
           </div>
 
@@ -113,7 +113,7 @@ export default function EntryLogRequest() {
               value={formData.reason}
               onChange={handleChange}
               required
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function EntryLogRequest() {
               onChange={handleChange}
               min="1"
               required
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             />
           </div>
 
@@ -137,7 +137,7 @@ export default function EntryLogRequest() {
               name="package_details"
               value={formData.package_details}
               onChange={handleChange}
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             />
           </div>
 
@@ -153,7 +153,7 @@ export default function EntryLogRequest() {
               timeIntervals={15}
               timeCaption="Expected Time"
               dateFormat="HH:mm"
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             />
           </div>
 

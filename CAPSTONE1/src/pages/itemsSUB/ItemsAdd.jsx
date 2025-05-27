@@ -40,7 +40,7 @@ export default function ItemsAdd() {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto bg-white rounded shadow">
+    <div className="p-6 max-w-2xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-indigo-500">
       <h2 className="text-xl font-bold mb-4 text-indigo-600">Add New Item</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -52,7 +52,7 @@ export default function ItemsAdd() {
             required
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Ladder"
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
           />
         </div>
 
@@ -63,7 +63,7 @@ export default function ItemsAdd() {
             required
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter the item's description here."
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
             rows="10"
           />
         </div>
@@ -77,7 +77,7 @@ export default function ItemsAdd() {
             required
             onChange={(e) => setQuantity(e.target.value)}
             placeholder="e.g. 5 (minimum 1)"
-            className="w-full px-3 py-2 border rounded border-black text-sm text-black"
+            className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
           />
         </div>
 

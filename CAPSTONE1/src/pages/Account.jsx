@@ -87,7 +87,7 @@ export default function Accounts() {
 
   return (
     <div className="text-white">
-      <h2 className="text-2xl font-bold mb-6 text-center">User Accounts</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center text-indigo-500">User Accounts</h2>
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -96,13 +96,13 @@ export default function Accounts() {
           placeholder="Search by name or email..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="px-3 py-2 border border-gray-400 rounded w-full md:max-w-md text-white"
+          className="px-3 py-2 border border-gray-400 rounded w-full md:max-w-md text-black"
         />
 
         <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
-          className="px-3 py-2 border border-gray-400 rounded text-gray-400"
+          className="px-3 py-2 border border-gray-400 rounded text-black"
         >
           <option value="">All Roles</option>
           <option value="admin">Admin</option>
@@ -169,7 +169,7 @@ export default function Accounts() {
 
       {/* Modal */}
       {modalOpen && details && (
-<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-hidden">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50"> 
           <div className="bg-white text-black p-6 rounded-lg max-w-5xl w-full shadow-lg relative flex flex-col md:flex-row gap-6 overflow-y-auto max-h-[90vh]">
 
             {/* Delete Icon - Top Left */}
@@ -278,7 +278,7 @@ export default function Accounts() {
       )}
 
       {showRegisterModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-lg text-black relative">
             <h2 className="text-xl font-bold mb-4">Register New Account</h2>
 

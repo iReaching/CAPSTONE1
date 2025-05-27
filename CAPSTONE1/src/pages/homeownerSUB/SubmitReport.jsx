@@ -41,8 +41,8 @@ export default function SubmitReport() {
 
   return (
     <div className="text-white max-w-3xl mx-auto mt-10">
-      <h2 className="text-3xl font-bold mb-8 text-center">Submit Report</h2>
-      <div className="bg-white text-black rounded-lg shadow-lg p-8 space-y-6">
+      <h2 className="text-3xl font-bold mb-8 text-center text-indigo-500">Submit Report</h2>
+      <div className="p-6 max-w-3xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block mb-1 font-semibold">Message</label>
@@ -52,7 +52,7 @@ export default function SubmitReport() {
               onChange={handleChange}
               rows={4}
               required
-              className="w-full p-2 border rounded text-black"
+              className="w-full p-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
             ></textarea>
           </div>
 
@@ -65,7 +65,7 @@ export default function SubmitReport() {
                 value={formData.block}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded text-black"
+                className="w-full p-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
               />
             </div>
             <div>
@@ -76,7 +76,7 @@ export default function SubmitReport() {
                 value={formData.lot}
                 onChange={handleChange}
                 required
-                className="w-full p-2 border rounded text-black"
+                className="w-full p-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-200 text-black"
               />
             </div>
           </div>

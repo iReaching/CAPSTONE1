@@ -10,34 +10,3 @@
 }
 
 
-/* For small screens */
-@media (max-width: 768px) {
-  .form-container {
-    flex-direction: column;
-    padding: 10px;
-  }
-
-  .form-container input,
-  .form-container select {
-    width: 100%;
-    font-size: 14px;
-  }
-
-  .table-container {
-    overflow-x: auto;
-  }
-
-  .table-container table {
-    width: 100%;
-    font-size: 12px;
-  }
-}
-
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}

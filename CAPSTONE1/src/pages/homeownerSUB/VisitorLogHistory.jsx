@@ -20,7 +20,7 @@ export default function VisitorLogHistory() {
 
   return (
     <div className="text-white max-w-5xl mx-auto mt-10">
-      <h2 className="text-3xl font-bold mb-6 text-center">Visitor Log History</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-indigo-500">Visitor Log History</h2>
 
       {loading ? (
         <p className="text-center text-gray-400">Loading...</p>

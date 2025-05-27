@@ -76,7 +76,7 @@ export default function AmenityEdit() {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white rounded shadow">
+    <div className="max-w-xl mx-auto p-6 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100">
       <h2 className="text-xl font-bold mb-4 text-indigo-600">Edit Amenity</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -86,7 +86,7 @@ export default function AmenityEdit() {
             <select
               value={selectedId}
               onChange={(e) => setSelectedId(e.target.value)}
-              className="w-full border px-3 py-2 rounded text-sm text-black"
+              className="w-full px-3 py-2 text-sm bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-indigo-500"
               required
             >
               <option value="">-- Choose an amenity --</option>
@@ -113,7 +113,7 @@ export default function AmenityEdit() {
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            className="w-full border px-3 py-2 rounded text-sm text-black"
+            className="w-full border px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border-indigo-100 text-black"
           />
         </div>
 
@@ -122,7 +122,7 @@ export default function AmenityEdit() {
           <textarea
             value={newDescription}
             onChange={(e) => setNewDescription(e.target.value)}
-            className="w-full border px-3 py-2 rounded text-sm text-black"
+            className="w-full border px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border-indigo-100 text-black"
             rows={3}
           />
         </div>

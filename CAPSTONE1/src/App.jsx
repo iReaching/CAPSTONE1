@@ -12,7 +12,6 @@ import GuardHome from "./pages/GuardHome";
 import HomeownerHome from "./pages/HomeownerHome";
 import AdminDues from "./pages/AdminDues";
 import Amenities from "./pages/Amenities";
-import Items from "./pages/Items";
 import Reports from "./pages/Reports";
 import EntryLog from "./pages/EntryLog";
 import Account from "./pages/Account";
@@ -28,7 +27,7 @@ import ItemsEdit from "./pages/itemsSUB/ItemsEdit";
 import ItemsSchedule from "./pages/itemsSUB/ItemsSchedule";
 import EntryLogRequest from "./pages/homeownerSUB/EntryLogRequest";
 import SystemLogs from "./pages/SystemLogs";
-
+import Header from './components/Header';
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import HomeownerDues from "./pages/homeownerSUB/HomeownerDues";
@@ -54,6 +53,10 @@ export default function App() {
   const [loginState, setLoginState] = useState(Date.now()); // change triggers rerender
   const handleLogin = () => {
     setLoginState(Date.now()); // force AppLayout re-render with new localStorage role
+
+
+
+
   };
   return (
     <Router>
@@ -94,10 +97,17 @@ function AppLayout() {
           <SidebarItem icon={<ScrollText size={30} />} text="Entry Log" link="/entrylog" />
           <SidebarItem icon={<UserSquare size={30} />} text="Account" link="/account" />
           <SidebarItem icon={<Megaphone size={30} />} text="Announcement" link="/announcements" />
-
         </Sidebar>
 
-        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#0e1525] text-white overflow-x-auto transition-all duration-300">          <Routes>
+        
+        <Header
+          onLogout={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+          }}
+        />
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-16 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">          
+          <Routes>
             <Route path="/" element={<Navigate to="/home" />} />
             <Route path="/home" element={<Home />} />
             <Route path="/amenities" element={<Amenities />} />
@@ -105,7 +115,6 @@ function AppLayout() {
             <Route path="/amenities/add" element={<AmenityAdd />} />
             <Route path="/amenities/edit" element={<AmenityEdit />} />
             <Route path="/amenities/schedules" element={<AmenitySchedules />} />
-            <Route path="/items" element={<Items />} />
             <Route path="/items/view" element={<ItemsView />} />
             <Route path="/items/add" element={<ItemsAdd />} />
             <Route path="/items/edit" element={<ItemsEdit />} />
@@ -133,8 +142,14 @@ function AppLayout() {
           <SidebarItem icon={<FileText size={30} />} text="Report" link="/reports" />
           <SidebarItem icon={<UserSquare size={30} />} text="Account" link="/account" />
         </SidebarStaff>
-
-        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#0e1525] text-white overflow-x-auto transition-all duration-300">          <Routes>
+        <Header
+          onLogout={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+          }}
+        />
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">          
+          <Routes>
             <Route path="/" element={<Navigate to="/staff_home" />} />
             <Route path="/staff_home" element={<StaffHome />} />
             <Route path="/amenities" element={<Amenities />} />
@@ -160,7 +175,14 @@ function AppLayout() {
     return (
       <div className="bg-gray-900 min-h-screen text-white relative">
         <SidebarGuard />
-        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#0e1525] text-white overflow-x-auto transition-all duration-300">          <Routes>
+                <Header
+          onLogout={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+          }}
+        />
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">          
+          <Routes>
             <Route path="/" element={<Navigate to="/guard_home" />} />
             <Route path="/guard_home" element={<GuardHome />} />
             <Route path="/existinglogs" element={<EntryLog />} />
@@ -176,7 +198,13 @@ if (role === "homeowner") {
   return (
     <div className="bg-gray-900 min-h-screen text-white relative">
       <SidebarHomeowner />
-        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#0e1525] text-white overflow-x-auto transition-all duration-300">
+              <Header
+          onLogout={() => {
+            localStorage.clear();
+            window.location.href = "/login";
+          }}
+        />
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">
 
 
         <Routes>

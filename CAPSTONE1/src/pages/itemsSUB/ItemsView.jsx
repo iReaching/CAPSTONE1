@@ -6,7 +6,7 @@ export default function ItemsView() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetch(`http://localhost/vitecap1/capstone1/php/get_items_paginated.php?page=${page}`)
+    fetch(`${BASE_URL}get_items_paginated.php?page=${page}`)
       .then((res) => res.json())
       .then((data) => {
         const availableOnly = data.items.filter((item) => parseInt(item.available) > 0);
@@ -16,16 +16,16 @@ export default function ItemsView() {
   }, [page]);
 
   return (
-    <div className="text-white space-y-6">
-      <h2 className="text-3xl font-bold mb-6 text-center">Available Items</h2>
+    <div className="text-white space-y-6 p-6">
+      <h2 className="text-3xl font-bold mb-6 text-center text-indigo-500">Available Items</h2>
 
         {items.map((item) => (
           <div
             key={item.id}
-            className="bg-white text-black rounded-lg shadow-lg p-4 flex flex-col"
+            className="bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black p-4 flex flex-col"
           >
             <img
-              src={`http://localhost/vitecap1/capstone1/uploads/${item.image}`}
+              src={`${BASE_URL}uploads/${item.image}`}
               alt={item.name}
               className="w-full h-full object-cover rounded mb-4"
             />
