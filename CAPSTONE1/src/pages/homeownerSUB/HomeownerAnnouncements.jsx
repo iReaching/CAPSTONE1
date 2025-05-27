@@ -8,10 +8,15 @@ export default function HomeownerAnnouncements() {
     fetch(`${BASE_URL}get_announcements.php`)
       .then((res) => res.json())
       .then((data) => {
-        setAnnouncements(data);
+        setAnnouncements(data.announcements || []); // <-- FIXED
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch announcements", err);
         setLoading(false);
       });
   }, []);
+
 
   return (
     <div className="max-w-4xl mx-auto p-6 text-white">

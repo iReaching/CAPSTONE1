@@ -21,7 +21,7 @@ const formatDate = (dateStr) => {
 useEffect(() => {
   fetch(`${BASE_URL}get_announcements.php`)
     .then(res => res.json())
-    .then(data => setAnnouncements(data))
+    .then(data => setAnnouncements(data.announcements || []))
     .catch(err => console.error("Failed to fetch announcements", err));
 }, []);
 
