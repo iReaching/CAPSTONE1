@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-
+import { BASE_URL } from "../../config";
 export default function HomeownerAnnouncements() {
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_announcements.php")
+    fetch(`${BASE_URL}get_announcements.php`)
       .then((res) => res.json())
       .then((data) => {
         setAnnouncements(data);

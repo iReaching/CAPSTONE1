@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { BASE_URL } from "../config";
 export default function StaffHome() {
   const [summary, setSummary] = useState({
     amenity_pending: 0,
@@ -10,7 +10,7 @@ export default function StaffHome() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/admin_dashboard_summary.php")
+    fetch(`${BASE_URL}admin_dashboard_summary.php`)
       .then((res) => res.json())
       .then((data) => setSummary(data))
       .catch((err) => console.error("Dashboard fetch error:", err));

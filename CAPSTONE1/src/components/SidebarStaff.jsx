@@ -1,6 +1,7 @@
 import { useState, useContext, createContext, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import ProfileModal from "./ProfileModal";
+import { BASE_URL } from "../config";
 import {
   Home as HomeIcon,
   CalendarDays,
@@ -49,7 +50,7 @@ export default function SidebarStaff({ children }) {
   const fetchProfile = () => {
     const userId = localStorage.getItem("user_id");
     if (userId) {
-      fetch(`http://localhost/vitecap1/capstone1/php/get_profile.php?user_id=${userId}`)
+      fetch(`${BASE_URL}get_profile.php?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setProfile(data))
         .catch((err) => console.error("Profile fetch error:", err));

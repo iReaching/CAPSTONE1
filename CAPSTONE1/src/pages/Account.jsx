@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Trash2 } from "lucide-react";
+import { BASE_URL } from "../config";
 export default function Accounts() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -27,13 +28,13 @@ export default function Accounts() {
       role: roleFilter,
     });
 
-    fetch(`http://localhost/vitecap1/capstone1/php/get_users.php?${params.toString()}`)
+    fetch(`${BASE_URL}get_users.php?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => setUsers(data));
   };
 
   const handleView = (userId) => {
-    fetch(`http://localhost/vitecap1/capstone1/php/get_user_details.php?user_id=${userId}`)
+    fetch(`${BASE_URL}get_user_details.php?user_id=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data?.profile) {
@@ -57,7 +58,7 @@ export default function Accounts() {
       payload.append(key, value)
     );
 
-    fetch("http://localhost/vitecap1/capstone1/php/register_user.php", {
+    fetch(`${BASE_URL}register_user.php`, {
       method: "POST",
       body: payload,
     })
@@ -141,7 +142,7 @@ export default function Accounts() {
                   <img
                     src={
                       u.profile_pic?.startsWith("uploads/")
-                        ? `http://localhost/vitecap1/capstone1/${u.profile_pic}`
+                        ? `${window.location.origin}/capstone1/${u.profile_pic}`
                         : "https://ui-avatars.com/api/?name=" + (u.full_name || "")
                     }
                     alt="Profile"
@@ -175,7 +176,7 @@ export default function Accounts() {
             <button
               onClick={() => {
                 if (window.confirm("Are you sure you want to delete this account?")) {
-                  fetch("http://localhost/vitecap1/capstone1/php/delete_account.php", {
+                  fetch(`${BASE_URL}delete_account.php`, {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: new URLSearchParams({ user_id: details.profile.user_id }),
@@ -218,7 +219,7 @@ export default function Accounts() {
               <img
                 src={
                   details.profile.profile_pic?.startsWith("uploads/")
-                    ? `http://localhost/vitecap1/capstone1/${details.profile.profile_pic}`
+                    ? `${window.location.origin}/capstone1/${details.profile.profile_pic}`
                     : "https://ui-avatars.com/api/?name=" + (details.profile.full_name || "")
                 }
                 alt="Profile"
@@ -254,7 +255,7 @@ export default function Accounts() {
                     >
                       {v.vehicle_pic_path && (
                         <img
-                          src={`http://localhost/vitecap1/capstone1/${v.vehicle_pic_path}`}
+                          src={`${window.location.origin}/capstone1/${v.vehicle_pic_path}`}
                           alt="Vehicle"
                           className="w-60 h-auto object-contain mb-4 rounded border"
                         />

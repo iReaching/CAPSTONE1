@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { BASE_URL } from "../config";
 export default function Amenities() {
   const [tab, setTab] = useState("view");
   const [amenities, setAmenities] = useState([]);
@@ -17,18 +17,18 @@ export default function Amenities() {
   });
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_amenities.php")
+    fetch(`${BASE_URL}get_amenities.php`)
       .then((res) => res.json())
       .then((data) => setAmenities(data));
   
-    fetch("http://localhost/vitecap1/capstone1/php/get_amenity_schedule.php")
+    fetch(`${BASE_URL}get_amenity_schedule.php`)
       .then((res) => res.json())
       .then((data) => setRequests(data));
   }, []);
 
   
   const handleAction = async (id, action) => {
-    const res = await fetch("http://localhost/vitecap1/capstone1/PHP/update_amenity_status.php", {
+    const res = await fetch(`${BASE_URL}update_amenity_status.php`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, action }),
@@ -48,7 +48,7 @@ export default function Amenities() {
     formData.append("description", form.description);
     if (form.image) formData.append("image", form.image);
 
-    const res = await fetch("http://localhost/vitecap1/capstone1/PHP/add_amenity.php", {
+    const res = await fetch(`${BASE_URL}add_amenity.php`, {
       method: "POST",
       body: formData,
     });
@@ -68,7 +68,7 @@ export default function Amenities() {
     formData.append("new_description", editForm.new_description);
     if (editForm.new_image) formData.append("new_image", editForm.new_image);
 
-    const res = await fetch("http://localhost/vitecap1/capstone1/PHP/edit_amenity.php", {
+    const res = await fetch(`${BASE_URL}edit_amenity.php`, {
       method: "POST",
       body: formData,
     });
@@ -96,7 +96,7 @@ export default function Amenities() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {amenities.map((a) => (
             <div key={a.id} className="bg-white shadow rounded p-4">
-              <img src={`http://localhost/vitecap1/capstone1/${a.image}`} alt={a.name} className="h-48 w-full object-cover rounded mb-3" />
+              <img src={`${window.location.origin}/capstone1/${a.image}`} alt={a.name} className="h-48 w-full object-cover rounded mb-3" />
               <h3 className="font-bold text-indigo-600">{a.name}</h3>
               <p className="text-sm text-gray-600 whitespace-pre-wrap">{a.description}</p>
             </div>

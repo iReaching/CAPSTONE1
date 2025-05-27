@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Pencil, Trash2, MoreVertical, X } from "lucide-react";
-
+import { BASE_URL } from "../../config";
 export default function ManageVehicles() {
   const userId = localStorage.getItem("user_id");
   const [vehicles, setVehicles] = useState([]);
@@ -14,7 +14,7 @@ export default function ManageVehicles() {
   }, []);
 
   const fetchUserDetails = () => {
-    fetch(`http://localhost/vitecap1/capstone1/php/get_user_details.php?user_id=${userId}`)
+    fetch(`${BASE_URL}get_user_details.php?user_id=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.vehicles) setVehicles(data.vehicles);
@@ -33,7 +33,7 @@ export default function ManageVehicles() {
     formData.append("vehicle_type", editData.type);
     formData.append("vehicle_plate", editData.plate);
 
-    fetch("http://localhost/vitecap1/capstone1/php/update_vehicle.php", {
+    fetch(`${BASE_URL}update_vehicle.php`, {
       method: "POST",
       body: formData,
     })
@@ -50,7 +50,7 @@ export default function ManageVehicles() {
       const formData = new FormData();
       formData.append("id", id);
 
-      fetch("http://localhost/vitecap1/capstone1/php/delete_vehicle.php", {
+      fetch(`${BASE_URL}delete_vehicle.php`, {
         method: "POST",
         body: formData,
       })
@@ -105,10 +105,10 @@ export default function ManageVehicles() {
                 <td className="px-4 py-2">
                   {v.vehicle_pic_path ? (
                     <img
-                      src={`http://localhost/vitecap1/capstone1/${v.vehicle_pic_path}`}
+                      src={`${window.location.origin}/capstone1/${v.vehicle_pic_path}`}
                       alt="Vehicle"
                       className="w-14 h-10 object-cover rounded cursor-pointer border"
-                      onClick={() => setSelectedImage(`http://localhost/vitecap1/capstone1/${v.vehicle_pic_path}`)}
+                      onClick={() => setSelectedImage(`${window.location.origin}/capstone1/${v.vehicle_pic_path}`)}
                     />
                   ) : (
                     "-"

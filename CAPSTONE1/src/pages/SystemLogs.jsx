@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-
+import { BASE_URL } from "../config";
 export default function SystemLogs() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_logs.php")
+    fetch(`${BASE_URL}get_logs.php`)
       .then((res) => res.json())
       .then((data) => setLogs(data))
       .catch((err) => console.error("Error fetching logs:", err));

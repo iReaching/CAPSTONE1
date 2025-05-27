@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { BASE_URL } from "../../config";
 export default function EntryLogRequest() {
   const [formData, setFormData] = useState({
     name: "",
@@ -18,7 +18,7 @@ export default function EntryLogRequest() {
   useEffect(() => {
     // Fetch full name of the logged-in user to set as homeowner_name
     if (userId) {
-      fetch(`http://localhost/vitecap1/capstone1/php/get_profile.php?user_id=${userId}`)
+      fetch(`${BASE_URL}get_profile.php?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => {
           setFormData((prev) => ({
@@ -53,7 +53,7 @@ export default function EntryLogRequest() {
       );
     }
 
-    fetch("http://localhost/vitecap1/capstone1/php/request_entrylog.php", {
+    fetch(`${BASE_URL}request_entrylog.php`, {
       method: "POST",
       body: payload,
     })

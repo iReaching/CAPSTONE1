@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { BASE_URL } from "../../config";
 export default function BorrowAmenities() {
   const [amenities, setAmenities] = useState([]);
   const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ export default function BorrowAmenities() {
   });
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_amenities.php")
+    fetch(`${BASE_URL}get_amenities.php`)
       .then((res) => res.json())
       .then((data) => setAmenities(data));
   }, []);
@@ -42,7 +42,7 @@ export default function BorrowAmenities() {
     if (formData.time_end)
       payload.append("time_end", formData.time_end.toTimeString().slice(0, 5));
 
-    fetch("http://localhost/vitecap1/capstone1/php/schedule_amenity.php", {
+    fetch(`${BASE_URL}schedule_amenity.php`, {
       method: "POST",
       body: payload,
     })

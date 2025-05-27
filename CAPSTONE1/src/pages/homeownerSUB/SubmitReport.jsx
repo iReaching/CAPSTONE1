@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { BASE_URL } from "../../config";
 export default function SubmitReport() {
   const [formData, setFormData] = useState({
     message: "",
@@ -24,7 +24,7 @@ export default function SubmitReport() {
     payload.append("block", formData.block);
     payload.append("lot", formData.lot);
 
-    fetch("http://localhost/vitecap1/capstone1/php/submit_report.php", {
+    fetch(`${BASE_URL}submit_report.php`, {
       method: "POST",
       body: payload
     })

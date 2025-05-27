@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-
+import { BASE_URL } from "../config";
 export default function Reports() {
   const [reports, setReports] = useState([]);
   const [activeTab, setActiveTab] = useState("pending");
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_reports.php")
+    fetch(`${BASE_URL}get_reports.php`)
       .then((res) => res.json())
       .then((data) => setReports(data))
       .catch((err) => console.error("Error fetching reports:", err));
   }, []);
 
   const handleResolve = (id) => {
-    fetch("http://localhost/vitecap1/capstone1/php/update_report_status.php", {
+    fetch(`${BASE_URL}update_report_status.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

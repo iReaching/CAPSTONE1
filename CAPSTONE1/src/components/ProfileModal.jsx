@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { BASE_URL } from "../config";
 export default function ProfileModal({ show, onClose, onProfileUpdate }) {
   const [visible, setVisible] = useState(false);
   const [profile, setProfile] = useState({
@@ -26,7 +26,7 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
     if (!show) return;
     const userId = localStorage.getItem("user_id");
     if (userId) {
-      fetch(`http://localhost/vitecap1/capstone1/php/get_profile.php?user_id=${userId}`)
+      fetch(`${BASE_URL}get_profile.php?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => {
           setProfile(data);
@@ -44,7 +44,7 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
     formData.append("contact_number", profile.contact_number);
     if (profilePic) formData.append("profile_pic", profilePic);
 
-    const response = await fetch("http://localhost/vitecap1/capstone1/PHP/update_profile.php", {
+    const response = await fetch(`${BASE_URL}update_profile.php`, {
       method: "POST",
       body: formData,
     });
@@ -66,7 +66,7 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
     const formData = new FormData();
     formData.append("user_id", profile.user_id);
 
-    const res = await fetch("http://localhost/vitecap1/capstone1/PHP/delete_account.php", {
+    const res = await fetch(`${BASE_URL}delete_account.php`, {
       method: "POST",
       body: formData,
     });

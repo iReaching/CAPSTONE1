@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-
+import { BASE_URL } from "../../config";
 export default function ItemsSchedule() {
   const [schedules, setSchedules] = useState([]);
   const [activeTab, setActiveTab] = useState("pending");
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_item_schedule.php")
+    fetch(`${BASE_URL}get_item_schedule.php`)
       .then((res) => res.json())
       .then((data) => setSchedules(data))
       .catch((err) => console.error("Error fetching item schedules:", err));
   }, []);
 
   const handleUpdateStatus = (id, status) => {
-    fetch("http://localhost/vitecap1/capstone1/php/update_item_status.php", {
+    fetch(`${BASE_URL}update_item_status.php`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ id, status }),

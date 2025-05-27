@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { BASE_URL } from "../../config";
 export default function BorrowItem() {
   const [items, setItems] = useState([]);
   const [formData, setFormData] = useState({
@@ -13,7 +13,7 @@ export default function BorrowItem() {
   });
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_items.php")
+    fetch(`${BASE_URL}get_items.php`)
       .then((res) => res.json())
       .then((data) => setItems(data));
   }, []);
@@ -40,7 +40,7 @@ export default function BorrowItem() {
     if (formData.time_end)
       payload.append("time_end", formData.time_end.toTimeString().slice(0, 5));
 
-    fetch("http://localhost/vitecap1/capstone1/php/borrow_item.php", {
+    fetch(`${BASE_URL}borrow_item.php`, {
       method: "POST",
       body: payload,
     })

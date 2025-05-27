@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Pencil, Trash2, X } from "lucide-react";
-
+import { BASE_URL } from "../config";
 export default function AdminAnnouncements() {
   const userId = localStorage.getItem("user_id");
   const [announcements, setAnnouncements] = useState([]);
@@ -12,7 +12,7 @@ export default function AdminAnnouncements() {
   }, []);
 
   const fetchAnnouncements = () => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_announcements.php")
+    fetch(`${BASE_URL}get_announcements.php`)
       .then((res) => res.json())
       .then((data) => setAnnouncements(data));
   };
@@ -20,8 +20,8 @@ export default function AdminAnnouncements() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const url = editingId
-      ? "http://localhost/vitecap1/capstone1/php/update_announcement.php"
-      : "http://localhost/vitecap1/capstone1/php/add_announcement.php";
+      ? `${BASE_URL}update_announcement.php`
+      : `${BASE_URL}add_announcement.php`;
 
     const form = new FormData();
     form.append("title", formData.title);
@@ -49,7 +49,7 @@ export default function AdminAnnouncements() {
     form.append("id", id);
     form.append("user_id", userId);
 
-    fetch("http://localhost/vitecap1/capstone1/php/delete_announcement.php", {
+    fetch(`${BASE_URL}delete_announcement.php`, {
       method: "POST",
       body: form,
     })

@@ -1,6 +1,7 @@
 import { useState, useContext, createContext, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import ProfileModal from "./ProfileModal";
+import { BASE_URL } from "../config";
 import {
   Home as HomeIcon,
   CalendarDays,
@@ -57,7 +58,7 @@ export default function Sidebar({ children }) {
   useEffect(() => {
     const userId = localStorage.getItem("user_id");
     if (userId) {
-      fetch(`http://localhost/vitecap1/capstone1/php/get_profile.php?user_id=${userId}`)
+      fetch(`${BASE_URL}get_profile.php?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setProfile(data))
         .catch((err) => console.error("Profile fetch error:", err));
@@ -67,7 +68,7 @@ export default function Sidebar({ children }) {
   const fetchProfile = () => {
     const userId = localStorage.getItem("user_id");
     if (userId) {
-      fetch(`http://localhost/vitecap1/capstone1/PHP/get_profile.php?user_id=${userId}`)
+      fetch(`${BASE_URL}get_profile.php?user_id=${userId}`)
         .then((res) => res.json())
         .then((data) => setProfile(data))
         .catch((err) => console.error("Profile fetch error:", err));
@@ -222,7 +223,7 @@ export default function Sidebar({ children }) {
             <img
               src={
                 profile.profile_picture?.startsWith("uploads/")
-                  ? `http://localhost/vitecap1/capstone1/${profile.profile_picture}`
+                  ? `${window.location.origin}/capstone1/${profile.profile_picture}`
                   : profile.profile_picture || "https://ui-avatars.com/api/?name=" + (profile.full_name || "")
               }
               alt="Profile"

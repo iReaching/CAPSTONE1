@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { BASE_URL } from "../../config";
 export default function ItemsAdd() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -17,7 +17,7 @@ export default function ItemsAdd() {
     if (image) formData.append("image", image);
 
     try {
-      const res = await fetch("http://localhost/vitecap1/capstone1/php/add_item.php", {
+      const res = await fetch(`${BASE_URL}add_item.php`, {
         method: "POST",
         body: formData,
       });

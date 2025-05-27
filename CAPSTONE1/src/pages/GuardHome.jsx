@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { BASE_URL } from "../config";
 export default function GuardHome() {
   const [successMsg, setSuccessMsg] = useState("");
   const [preview, setPreview] = useState("");
@@ -27,7 +27,7 @@ export default function GuardHome() {
   }, []);
 
   const fetchLogs = async () => {
-    const res = await axios.get("http://localhost/vitecap1/capstone1/PHP/get_entry_logs.php", {
+    const res = await axios.get(`${BASE_URL}get_entry_logs.php`, {
       params: {
         page: 1,
         role: "guard",
@@ -39,7 +39,7 @@ export default function GuardHome() {
   };
 
   const fetchHomeowners = async () => {
-    const res = await axios.get("http://localhost/vitecap1/capstone1/PHP/get_homeowners.php");
+    const res = await axios.get(`${BASE_URL}get_homeowners.php`);
     setHomeowners(res.data);
   };
 
@@ -69,7 +69,7 @@ export default function GuardHome() {
     }
 
     console.log("Submitting form...");
-    await axios.post("http://localhost/vitecap1/capstone1/PHP/add_entrylog.php", data)
+    await axios.post(`${BASE_URL}add_entrylog.php`, data)
     .then(res => console.log("Response:", res.data))
     .catch(err => {
     console.error("POST error:", err);
@@ -98,7 +98,7 @@ export default function GuardHome() {
   const handleDelete = async (id) => {
     const formData = new FormData();
     formData.append("id", id);
-    await axios.post("http://localhost/vitecap1/capstone1/PHP/delete_entry_log.php", formData);
+    await axios.post(`${BASE_URL}delete_entry_log.php`, formData);
     fetchLogs();
   };
 

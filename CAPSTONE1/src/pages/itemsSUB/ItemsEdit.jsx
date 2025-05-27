@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
-
+import { BASE_URL } from "../../config";
 export default function ItemsEdit() {
   const [items, setItems] = useState([]);
   const [selectedId, setSelectedId] = useState("");
@@ -14,7 +14,7 @@ export default function ItemsEdit() {
   }, []);
 
   const fetchItems = () => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_items.php")
+    fetch(`${BASE_URL}get_items.php`)
       .then((res) => res.json())
       .then((data) => setItems(data))
       .catch((err) => console.error("Error fetching items:", err));
@@ -25,7 +25,7 @@ export default function ItemsEdit() {
     const confirmDelete = window.confirm("Are you sure you want to delete this item?");
     if (!confirmDelete) return;
 
-    fetch("http://localhost/vitecap1/capstone1/php/delete_item.php", {
+    fetch(`${BASE_URL}delete_item.php`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ id: selectedId }),
@@ -56,7 +56,7 @@ export default function ItemsEdit() {
     formData.append("new_description", newDescription);
     if (newImage) formData.append("new_image", newImage);
 
-    const res = await fetch("http://localhost/vitecap1/capstone1/php/edit_item.php", {
+    const res = await fetch(`${BASE_URL}edit_item.php`, {
       method: "POST",
       body: formData,
     });

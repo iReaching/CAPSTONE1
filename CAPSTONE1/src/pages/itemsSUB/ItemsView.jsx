@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { BASE_URL } from "../../config";
 export default function ItemsView() {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);

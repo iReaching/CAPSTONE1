@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-
+import { BASE_URL } from "../../config";
 export default function VisitorLogHistory() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
-    fetch(`http://localhost/vitecap1/capstone1/php/get_my_entrylogs.php?user_id=${userId}`)
+    fetch(`${BASE_URL}get_my_entrylogs.php?user_id=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setLogs(data);

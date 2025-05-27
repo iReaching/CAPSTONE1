@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { BASE_URL } from "../../config";
 export default function RegisterVehicle() {
   const [formData, setFormData] = useState({
     name: "",
@@ -36,7 +36,7 @@ export default function RegisterVehicle() {
     }
 
     try {
-      const res = await fetch("http://localhost/vitecap1/capstone1/php/submit_vehicle.php", {
+      const res = await fetch(`${BASE_URL}submit_vehicle.php`, {
         method: "POST",
         body: payload,
       });

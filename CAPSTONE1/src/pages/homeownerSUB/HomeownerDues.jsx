@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-
+import { BASE_URL } from "../../config";
 export default function HomeownerDues() {
   const userId = localStorage.getItem("user_id");
   const [dues, setDues] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_dues.php?user_id=" + userId)
+    fetch(`${BASE_URL}get_dues.php?user_id=` + userId)
       .then((res) => res.json())
       .then((data) => {
         setDues(data);
@@ -21,14 +21,14 @@ export default function HomeownerDues() {
     form.append("user_id", userId);
     form.append("payment_proof", file);
 
-    fetch("http://localhost/vitecap1/capstone1/php/request_payment.php", {
+    fetch(`${BASE_URL}request_payment.php`, {
       method: "POST",
       body: form,
     })
       .then((res) => res.json())
       .then((data) => {
         alert(data.message);
-        return fetch("http://localhost/vitecap1/capstone1/php/get_dues.php?user_id=" + userId);
+        return fetch(`${BASE_URL}get_dues.php?user_id=` + userId);
       })
       .then((res) => res.json())
       .then((data) => setDues(data));

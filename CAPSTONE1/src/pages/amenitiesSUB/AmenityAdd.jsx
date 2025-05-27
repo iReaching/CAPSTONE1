@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { BASE_URL } from "../../config";
 export default function AmenityAdd() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -16,7 +16,7 @@ export default function AmenityAdd() {
     if (image) formData.append("image", image);
 
     try {
-      const res = await fetch("http://localhost/vitecap1/capstone1/php/add_amenity.php", {
+      const res = await fetch(`${BASE_URL}add_amenity.php`, {
         method: "POST",
         body: formData,
       });

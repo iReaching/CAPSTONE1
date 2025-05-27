@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-
+import { BASE_URL } from "../../config";
 export default function AmenityView() {
   const [amenities, setAmenities] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetch(`http://localhost/vitecap1/capstone1/php/get_amenities_paginated.php?page=${page}`)
+    fetch(`${BASE_URL}get_amenities_paginated.php?page=${page}`)
       .then((res) => res.json())
       .then((data) => {
         setAmenities(data.amenities);
@@ -24,7 +24,7 @@ export default function AmenityView() {
             className="bg-white text-black rounded-lg shadow-lg p-4 flex flex-col"
           >
             <img
-              src={`http://localhost/vitecap1/capstone1/${amenity.image}`}
+              src={`${window.location.origin}/capstone1/${amenity.image}`}
               alt={amenity.name}
               className="w-full h-full object-cover rounded mb-4"
             />

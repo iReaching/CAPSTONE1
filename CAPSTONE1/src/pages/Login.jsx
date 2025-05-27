@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { BASE_URL } from "../config";
 export default function Login(props) {
   const navigate = useNavigate();
   const [userId, setUserId] = useState("");
@@ -13,7 +13,7 @@ export default function Login(props) {
     formData.append("password", password);
   
     try {
-      const response = await fetch("http://localhost/vitecap1/capstone1/php/login.php", {
+      const response = await fetch(`${BASE_URL}login.php`, {
         method: "POST",
         body: formData,
       });

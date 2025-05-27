@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { BASE_URL } from "../config";
 export default function EntryLog() {
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
@@ -21,7 +21,7 @@ export default function EntryLog() {
       sortField,
     });
 
-    fetch(`http://localhost/vitecap1/capstone1/php/get_entry_logs.php?${params.toString()}`)
+    fetch(`${BASE_URL}get_entry_logs.php?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
         setLogs(data.logs);
@@ -35,7 +35,7 @@ export default function EntryLog() {
 
   const handleDelete = (id) => {
     if (confirm("Are you sure you want to delete this entry?")) {
-      fetch("http://localhost/vitecap1/capstone1/php/delete_entry_log.php", {
+      fetch(`${BASE_URL}delete_entry_log.php`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ id }),
@@ -148,7 +148,7 @@ export default function EntryLog() {
                 <td className="px-4 py-2">
                   {log.id_photo_path ? (
                     <img
-                      src={`http://localhost/vitecap1/capstone1/${log.id_photo_path}`}
+                      src={`${window.location.origin}capstone1/${log.id_photo_path}`}
                       alt="ID"
                       className="w-12 h-12 object-cover rounded"
                     />
@@ -243,7 +243,7 @@ export default function EntryLog() {
               <div className="mt-4">
                 <p className="font-semibold mb-2">Uploaded ID Photo:</p>
                 <img
-                  src={`http://localhost/vitecap1/capstone1/${selectedLog.id_photo_path}`}
+                  src={`${window.location.origin}capstone1/${selectedLog.id_photo_path}`}
                   alt="ID"
                   className="w-full max-h-[400px] object-contain border rounded"
                 />

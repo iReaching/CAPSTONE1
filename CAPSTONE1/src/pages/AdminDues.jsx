@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { BASE_URL } from "../config";
 export default function AdminDues() {
   const [dues, setDues] = useState([]);
   const [formData, setFormData] = useState({ user_id: "", amount_due: "", due_month: "" });
@@ -9,11 +9,11 @@ export default function AdminDues() {
   const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost/vitecap1/capstone1/php/get_homeowners.php")
+    fetch(`${BASE_URL}get_homeowners.php`)
       .then((res) => res.json())
       .then((data) => setHomeowners(data));
 
-    fetch("http://localhost/vitecap1/capstone1/php/get_dues.php")
+    fetch(`${BASE_URL}get_dues.php`)
       .then((res) => res.json())
       .then((data) => setDues(data));
   }, []);
@@ -25,7 +25,7 @@ export default function AdminDues() {
     form.append("amount_due", formData.amount_due);
     form.append("due_month", formData.due_month);
 
-    fetch("http://localhost/vitecap1/capstone1/php/add_due.php", {
+    fetch(`${BASE_URL}add_due.php`, {
       method: "POST",
       body: form,
     })
@@ -33,7 +33,7 @@ export default function AdminDues() {
       .then(() => {
         setFormData({ user_id: "", amount_due: "", due_month: "" });
         setShowAddModal(false);
-        return fetch("http://localhost/vitecap1/capstone1/php/get_dues.php");
+        return fetch(`${BASE_URL}get_dues.php`);
       })
       .then((res) => res.json())
       .then((data) => setDues(data));
@@ -43,14 +43,14 @@ export default function AdminDues() {
     const form = new FormData();
     form.append("id", id);
 
-    fetch("http://localhost/vitecap1/capstone1/php/approve_payment.php", {
+    fetch(`${BASE_URL}approve_payment.php`, {
       method: "POST",
       body: form,
     })
       .then((res) => res.json())
       .then((data) => {
         alert(data.message);
-        return fetch("http://localhost/vitecap1/capstone1/php/get_dues.php");
+        return fetch(`${BASE_URL}get_dues.php`);
       })
       .then((res) => res.json())
       .then((data) => setDues(data));
@@ -60,14 +60,14 @@ export default function AdminDues() {
     const form = new FormData();
     form.append("id", id);
 
-    fetch("http://localhost/vitecap1/capstone1/php/reject_payment.php", {
+    fetch(`${BASE_URL}reject_payment.php`, {
       method: "POST",
       body: form,
     })
       .then((res) => res.json())
       .then((data) => {
         alert(data.message);
-        return fetch("http://localhost/vitecap1/capstone1/php/get_dues.php");
+        return fetch(`${BASE_URL}get_dues.php`);
       })
       .then((res) => res.json())
       .then((data) => setDues(data));
@@ -115,7 +115,7 @@ export default function AdminDues() {
                         <div className="mb-1 text-center">
                             <button
                             onClick={() => {
-                                setModalImage(`http://localhost/vitecap1/${d.payment_proof_path}`);
+                                setModalImage(`${window.location.origin}/${d.payment_proof_path}`);
                                 setShowModal(true);
                             }}
                             className="text-blue-600 underline"
