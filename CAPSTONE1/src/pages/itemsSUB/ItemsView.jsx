@@ -25,7 +25,7 @@ export default function ItemsView() {
             className="bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black p-4 flex flex-col"
           >
             <img
-              src={`${BASE_URL}uploads/${item.image}`}
+              src={`${window.location.origin}/capstone1/uploads/${item.image}`}
               alt={item.name}
               className="w-full h-full object-cover rounded mb-4"
             />

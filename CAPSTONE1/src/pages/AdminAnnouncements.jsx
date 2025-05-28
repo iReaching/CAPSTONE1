@@ -117,7 +117,7 @@ export default function AdminAnnouncements() {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => {
-                      setFormData({ title: a.title, body: a.body });
+                      setFormData({ title: a.title, body: a.content });
                       setEditingId(a.id);
                     }}
                     className="text-blue-600 hover:text-blue-800"
@@ -134,7 +134,7 @@ export default function AdminAnnouncements() {
                   </button>
                 </div>
               </div>
-              <p className="text-sm text-gray-700 mt-1">{a.body}</p>
+              <p className="text-sm text-gray-700 mt-1">{a.content}</p>
               <p className="text-xs text-gray-500 mt-1">Posted: {a.date_posted}</p>
             </div>
           ))

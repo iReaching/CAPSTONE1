@@ -31,7 +31,7 @@ export default function HomeownerAnnouncements() {
           {announcements.map((a) => (
             <div key={a.id} className="bg-white text-black p-4 rounded shadow">
               <h4 className="text-lg font-semibold">{a.title}</h4>
-              <p className="text-sm text-gray-700 mt-1">{a.body}</p>
+              <p className="text-sm text-gray-700 mt-1">{a.content}</p>
               <p className="text-xs text-gray-500 mt-1">Posted: {a.date_posted}</p>
             </div>
           ))}

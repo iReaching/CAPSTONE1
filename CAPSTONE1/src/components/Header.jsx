@@ -63,7 +63,7 @@ useEffect(() => {
                     )}
                     </h4>
                     <p className="text-sm text-gray-700 mt-1">
-                    {a.body.length > 100 ? a.body.substring(0, 100) + "..." : a.body}
+                    {a.content.length > 100 ? a.content.substring(0, 100) + "..." : a.content}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">{formatDate(a.date_posted)}</p>
                 </div>

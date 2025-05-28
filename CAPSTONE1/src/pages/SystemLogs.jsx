@@ -2,20 +2,21 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../config";
 export default function SystemLogs() {
   const [logs, setLogs] = useState([]);
-
-  fetch(`${BASE_URL}get_logs.php`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.logs && Array.isArray(data.logs)) {
-        setLogs(data.logs);
-      } else {
+  useEffect(() => {
+    fetch(`${BASE_URL}get_logs.php`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.logs && Array.isArray(data.logs)) {
+          setLogs(data.logs);
+        } else {
+          setLogs([]);
+        }
+      })
+      .catch(err => {
+        console.error("Failed to fetch logs", err);
         setLogs([]);
-      }
-    })
-    .catch(err => {
-      console.error("Failed to fetch logs", err);
-      setLogs([]);
-    });
+      });
+  }, []); // 🔒 ensures it runs ONLY ONCE
 
 
   return (
