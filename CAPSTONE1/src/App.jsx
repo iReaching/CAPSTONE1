@@ -15,12 +15,10 @@ import Amenities from "./pages/Amenities";
 import Reports from "./pages/Reports";
 import EntryLog from "./pages/EntryLog";
 import Account from "./pages/Account";
-
 import AmenityView from "./pages/amenitiesSUB/AmenityView";
 import AmenityAdd from "./pages/amenitiesSUB/AmenityAdd";
 import AmenityEdit from "./pages/amenitiesSUB/AmenityEdit";
 import AmenitySchedules from "./pages/amenitiesSUB/AmenitySchedules";
-
 import ItemsView from "./pages/itemsSUB/ItemsView";
 import ItemsAdd from "./pages/itemsSUB/ItemsAdd";
 import ItemsEdit from "./pages/itemsSUB/ItemsEdit";
@@ -121,7 +119,7 @@ function AppLayout() {
             <Route path="/items/schedule" element={<ItemsSchedule />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/entrylog" element={<EntryLog />} />
-            <Route path="/system_logs" element={<SystemLogs />} /> {/* <- New Route */}
+            <Route path="/system_logs" element={<SystemLogs />} />
             <Route path="/account" element={<Account />} />
             <Route path="/announcement" element={<AdminAnnouncements />} />
             <Route path="/dues" element={<AdminDues />} />

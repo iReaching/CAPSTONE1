@@ -305,7 +305,7 @@ export function SidebarItem({ icon, text, active, alert, link }) {
       <li
         className={`relative flex items-center py-2 px-3 my-1
           font-medium rounded-md cursor-pointer
-          transition-colors group
+          transition-colors group whitespace-nowrap
           ${active 
         ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" 
         : "text-white hover:text-indigo-600 hover:bg-gray-100"}`}

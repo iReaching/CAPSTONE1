@@ -107,7 +107,7 @@ export function SidebarItem({ icon, text, active, link }) {
 
   return (
     <Link to={link}>
-      <li className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${active ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-100 hover:text-indigo-500 text-white"}`}>
+      <li className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group whitespace-nowrap ${active ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-100 hover:text-indigo-500 text-white"}`}>
         {icon}
         <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>{text}</span>
         {!expanded && (
