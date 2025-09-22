@@ -1,8 +1,7 @@
 <?php
 include 'db_connect.php';
 include 'log_action.php';
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
 $response = ["success" => false];
@@ -11,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST["name"];
     $description = $_POST["description"];
 
-    $uploadDir = "../uploads/";
+    $uploadDir = "./uploads/";
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
@@ -23,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $targetPath = $uploadDir . $fileName;
 
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetPath)) {
-            $imagePath = "uploads/" . $fileName;
+            $imagePath = $fileName;
         } else {
             echo json_encode(["success" => false, "message" => "Image upload failed."]);
             exit;

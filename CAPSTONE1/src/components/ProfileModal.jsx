@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../config";
+import { assetUrl } from "../lib/asset";
 export default function ProfileModal({ show, onClose, onProfileUpdate }) {
   const [visible, setVisible] = useState(false);
   const [profile, setProfile] = useState({
@@ -25,12 +26,21 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
   useEffect(() => {
     if (!show) return;
     const userId = localStorage.getItem("user_id");
+    
     if (userId) {
-      fetch(`${BASE_URL}get_profile.php?user_id=${userId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setProfile(data);
-          setPreview(data.profile_picture || "");
+      fetch(`${BASE_URL}get_profile.php?user_id=${userId}`, { credentials: 'include' })
+        .then(async (res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+          }
+          const text = await res.text();
+          try {
+            const data = JSON.parse(text);
+            setProfile(data);
+            setPreview(data.profile_picture || "");
+          } catch (parseError) {
+            console.error('ProfileModal - Failed to parse JSON:', parseError);
+          }
         })
         .catch((err) => console.error("Error fetching profile:", err));
     }
@@ -44,18 +54,19 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
     formData.append("contact_number", profile.contact_number);
     if (profilePic) formData.append("profile_pic", profilePic);
 
-    const response = await fetch(`${BASE_URL}update_profile.php`, {
+const response = await fetch(`${BASE_URL}update_profile.php`, {
       method: "POST",
       body: formData,
+      credentials: 'include',
     });
 
     const result = await response.json();
     if (result.success) {
-      alert("Profile updated successfully!");
+      import("../lib/toast").then(({ showToast }) => showToast("Profile updated successfully!"));
       if (typeof onProfileUpdate === "function") onProfileUpdate();
       onClose();
     } else {
-      alert("Update failed.");
+      import("../lib/toast").then(({ showToast }) => showToast("Update failed.", 'error'));
       console.error(result.error);
     }
   };
@@ -66,19 +77,27 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
     const formData = new FormData();
     formData.append("user_id", profile.user_id);
 
-    const res = await fetch(`${BASE_URL}delete_account.php`, {
+const res = await fetch(`${BASE_URL}delete_account.php`, {
       method: "POST",
       body: formData,
+      credentials: 'include',
     });
 
     const result = await res.json();
     if (result.success) {
-      alert("Account deleted.");
+      import("../lib/toast").then(({ showToast }) => showToast("Account deleted."));
       localStorage.clear();
       window.location.href = "/login";
     } else {
-      alert("Failed to delete account.");
+      import("../lib/toast").then(({ showToast }) => showToast("Failed to delete account.", 'error'));
       console.error(result.error);
+    }
+  };
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.clear();
+      window.location.href = "/login";
     }
   };
 
@@ -108,11 +127,17 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
           <div className="flex flex-col items-center mb-4">
             <div className="border border-dashed border-gray-300 rounded-lg p-4 w-full flex flex-col items-center">
               <img
-                src={preview}
+                src={
+                  preview 
+                    ? (preview.startsWith('http') || preview.startsWith('blob:') 
+                        ? preview 
+                        : assetUrl(preview))
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.full_name || profile.user_id || 'User')}&background=4169B3&color=ffffff`
+                }
                 alt="Profile"
                 className="w-24 h-24 rounded-full object-cover mb-3"
                 onError={(e) => {
-                  e.target.src = `https://ui-avatars.com/api/?name=${profile.full_name || "User"}`;
+                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.full_name || profile.user_id || 'User')}&background=4169B3&color=ffffff`;
                 }}
               />
               <label className="text-sm text-indigo-600 font-medium cursor-pointer">
@@ -179,21 +204,33 @@ export default function ProfileModal({ show, onClose, onProfileUpdate }) {
           </div>
 
             {/* Button Row */}
-            <div className="pt-4 flex justify-between items-center">
-            <button
-                type="button"
-                onClick={handleDeleteAccount} // <-- your delete function here
-                className="bg-black text-red-500 hover:text-red-600 px-4 py-2 rounded text-sm"
-              >
-                Delete Account
-              </button>
-
+            <div className="pt-4 space-y-3">
+              {/* Save Changes - Primary action */}
               <button
                 type="submit"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
               >
                 Save Changes
               </button>
+              
+              {/* Secondary actions */}
+              <div className="flex justify-between items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
+                >
+                  Logout
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={handleDeleteAccount}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
+                >
+                  Delete Account
+                </button>
+              </div>
             </div>
         </form>
       </div>

@@ -1,5 +1,11 @@
 import { useState } from "react";
 import { BASE_URL } from "../../config";
+import Page from "../../components/ui/Page";
+import Card, { CardContent } from "../../components/ui/Card";
+import Input from "../../components/ui/Input";
+import Textarea from "../../components/ui/Textarea";
+import Button from "../../components/ui/Button";
+
 export default function AmenityAdd() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -23,79 +29,74 @@ export default function AmenityAdd() {
 
       const result = await res.json();
       if (result.success) {
-        alert("Amenity added successfully!");
+        import("../../lib/toast").then(({ showToast }) => showToast("Amenity added successfully!"));
         setName("");
         setDescription("");
         setImage(null);
+        setPreview("");
       } else {
-        alert("Error: " + result.message || "Failed to add amenity.");
+        import("../../lib/toast").then(({ showToast }) => showToast((result.message ? ("Error: " + result.message) : "Failed to add amenity."), 'error'));
       }
     } catch (err) {
       console.error("Upload failed:", err);
-      alert("Something went wrong.");
+      import("../../lib/toast").then(({ showToast }) => showToast("Something went wrong.", 'error'));
     }
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100">
-      <h2 className="text-xl font-bold mb-4 text-indigo-600">Add New Amenity</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Amenity Name</label>
-          <input
-            type="text"
-            className="w-full border px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border-indigo-100 text-black"
-            placeholder="e.g. Swimming Pool"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea
-            className="w-full border px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border-indigo-100 text-black"
-            placeholder="Enter the amenity's description here."
-            rows="10"
-          ></textarea>
-        </div>
-
-
-        <div className="flex justify-center mt-4">
-          <div className="w-full max-w-xs text-center">
-            {preview && (
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-24 h-24 mx-auto object-cover border border-gray-300 mb-3"
+    <Page title="Add Amenity" description="Create a new facility your community can reserve">
+      <Card className="max-w-2xl">
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Amenity Name</label>
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Swimming Pool"
+                required
               />
-            )}
-            <label
-              htmlFor="image-upload"
-              className="cursor-pointer inline-block px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition"
-            >
-              {preview ? "Change Image" : "Upload Image"}
-              <input
-                id="image-upload"
+            </div>
+
+            <div>
+              <label htmlFor="amenity-desc" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <Textarea
+                id="amenity-desc"
+                value={description}
+                onChange={(e) => setDescription(e.target.value.slice(0, 1000))}
+                placeholder="Describe the amenity (capacity, rules, etc.)"
+                rows={6}
+                maxLength={1000}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+              {preview && (
+                <img src={preview} alt="Preview" className="w-32 h-32 object-cover rounded border mb-2" />
+              )}
+              <Input
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
-                  const file = e.target.files[0];
-                  setImage(file);
-                  setPreview(URL.createObjectURL(file));
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setImage(file)
+                    setPreview(URL.createObjectURL(file))
+                  }
                 }}
-                className="hidden"
+                required
               />
-            </label>
-          </div>
-        </div>
+            </div>
 
-
-        <button
-          type="submit"
-          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-        >
-          Add Amenity
-        </button>
-      </form>
-    </div>
+            <div className="flex justify-end">
+              <Button type="submit">Add Amenity</Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </Page>
   );
 }

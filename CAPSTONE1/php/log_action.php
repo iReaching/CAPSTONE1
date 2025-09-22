@@ -1,6 +1,7 @@
 <?php
 // log_action.php
 include 'db_connect.php';
+include 'cors.php';
 
 function logAction($userId, $actionType, $description, $sourceFile = null) {
     global $conn;

@@ -1,8 +1,8 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
-include '../PHP/db_connect.php';
+include 'db_connect.php';
 
 $sql = "SELECT * FROM items ORDER BY created_at DESC";
 $result = $conn->query($sql);

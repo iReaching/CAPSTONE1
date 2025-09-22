@@ -1,22 +1,32 @@
 <?php
 include 'db_connect.php';
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+include 'check_auth.php';
+include 'cors.php';
 header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    require_auth();
+
     if (!isset($_GET['user_id'])) {
         echo json_encode(["success" => false, "message" => "Missing user_id"]);
         exit;
     }
 
-    $user_id = $_GET['user_id'];
-    $base_url = "http://localhost/vitecap1/capstone1/";
+    $requested_user_id = $_GET['user_id'];
+
+    // Non-admin/staff can only view their own profile
+    $role = current_role();
+    if (!in_array($role, ['admin','staff'], true)) {
+        if ($requested_user_id !== current_user_id()) {
+            http_response_code(403);
+            echo json_encode(["success" => false, "message" => "Forbidden"]);
+            exit;
+        }
+    }
 
     // Fetch user data
-    $stmt = $conn->prepare("SELECT * FROM users WHERE user_id = ?");
-    $stmt->bind_param("s", $user_id); // 's' because user_id is varchar
+    $stmt = $conn->prepare("SELECT user_id, role, email FROM users WHERE user_id = ?");
+    $stmt->bind_param("s", $requested_user_id);
     $stmt->execute();
     $user_result = $stmt->get_result();
     $user = $user_result->fetch_assoc();
@@ -27,15 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // Fetch profile data
-    $stmt = $conn->prepare("SELECT * FROM user_profiles WHERE user_id = ?");
-    $stmt->bind_param("s", $user_id);
+    $stmt = $conn->prepare("SELECT full_name, contact_number, profile_pic FROM user_profiles WHERE user_id = ?");
+    $stmt->bind_param("s", $requested_user_id);
     $stmt->execute();
     $profile_result = $stmt->get_result();
-    $profile = $profile_result->fetch_assoc();
+    $profile = $profile_result->fetch_assoc() ?: [];
 
-    $profile_pic_path = isset($profile["profile_pic"]) && $profile["profile_pic"]
-        ? $base_url . $profile["profile_pic"]
-        : "https://ui-avatars.com/api/?name=" . urlencode($user["user_id"]);
+    // Only return the filename if it exists, let frontend handle fallbacks
+    $profile_pic_path = (isset($profile["profile_pic"]) && !empty($profile["profile_pic"])) 
+        ? $profile["profile_pic"] 
+        : null;
 
     // Merge response
     $response = array(

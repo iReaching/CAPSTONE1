@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../config";
+import { assetUrl } from "../../lib/asset";
+import Page from "../../components/ui/Page";
+import Card, { CardContent } from "../../components/ui/Card";
+import Button from "../../components/ui/Button";
+
 export default function AmenityView() {
   const [amenities, setAmenities] = useState([]);
   const [page, setPage] = useState(1);
@@ -15,42 +20,44 @@ export default function AmenityView() {
   }, [page]);
 
   return (
-    <div className="text-indigo-500 space-y-6 p-6">
-      <h2 className="text-3xl font-bold mb-6 text-center">Available Amenities</h2>
-
+    <Page
+      title="Available Amenities"
+      description="Browse facilities residents can reserve"
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {amenities.map((amenity) => (
-          <div
-            key={amenity.id}
-            className="bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black p-4 flex flex-col"
-          >
-            <img
-              src={`${window.location.origin}/capstone1/${amenity.image}`}
-              alt={amenity.name}
-              className="w-full h-full object-cover rounded mb-4"
-            />
-            <h3 className="text-xl font-semibold mb-1">{amenity.name}</h3>
-            <p className="text-sm text-gray-600">{amenity.description}</p>
-          </div>
+          <Card key={amenity.id}>
+            <div className="aspect-[16/9] w-full overflow-hidden rounded-lg">
+              <img
+                src={assetUrl(amenity.image)}
+                alt={amenity.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <CardContent className="mt-4">
+              <h3 className="text-lg font-semibold text-gray-900">{amenity.name}</h3>
+              <p className="text-sm text-gray-600 mt-1">{amenity.description}</p>
+            </CardContent>
+          </Card>
         ))}
+      </div>
 
-
-      {/* Pagination Buttons */}
-      <div className="flex justify-center gap-6 mt-8">
-        <button
+      <div className="flex justify-center gap-3 mt-8">
+        <Button
+          variant="secondary"
           disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-          className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded disabled:opacity-40"
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
         >
           Previous
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="primary"
           disabled={page === totalPages}
-          onClick={() => setPage(page + 1)}
-          className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded disabled:opacity-40"
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
         >
           Next
-        </button>
+        </Button>
       </div>
-    </div>
+    </Page>
   );
 }

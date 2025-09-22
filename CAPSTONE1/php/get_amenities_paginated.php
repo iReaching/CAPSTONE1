@@ -1,6 +1,6 @@
 <?php
 include 'db_connect.php';
-header("Access-Control-Allow-Origin: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;

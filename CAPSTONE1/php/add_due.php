@@ -2,8 +2,7 @@
 include 'db_connect.php';
 include 'log_action.php';
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
 $user_id = $_POST['user_id'] ?? '';

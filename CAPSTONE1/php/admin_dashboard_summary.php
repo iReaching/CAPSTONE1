@@ -3,8 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header("Content-Type: application/json");
 include 'db_connect.php';
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
 $response = [

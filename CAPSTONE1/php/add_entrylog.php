@@ -3,8 +3,7 @@ session_start();
 require 'db_connect.php';
 require 'log_action.php';
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
 // Upload helper for ID photo

@@ -1,58 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../config";
+import { assetUrl } from "../../lib/asset";
+import Page from "../../components/ui/Page";
+import Card, { CardContent } from "../../components/ui/Card";
+import Button from "../../components/ui/Button";
+import { showToast } from "../../lib/toast";
+
 export default function ItemsView() {
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetch(`${BASE_URL}get_items_paginated.php?page=${page}`)
-      .then((res) => res.json())
+    fetch(`${BASE_URL}get_items_paginated.php?page=${page}`, { credentials: 'include' })
+      .then(async (res) => {
+        const text = await res.text();
+        try { return JSON.parse(text); } catch { throw new Error(`Invalid JSON (${res.status})`); }
+      })
       .then((data) => {
-        const availableOnly = data.items.filter((item) => parseInt(item.available) > 0);
+        const list = Array.isArray(data.items) ? data.items : [];
+        const availableOnly = list.filter((item) => parseInt(item.available) > 0);
         setItems(availableOnly);
-        setTotalPages(Math.ceil(data.total / data.limit));
+        setTotalPages(Math.max(1, Math.ceil((Number(data.total)||0) / (Number(data.limit)||1))));
+      })
+      .catch((err) => {
+        console.error(err);
+        showToast('Failed to load items', 'error');
       });
   }, [page]);
 
   return (
-    <div className="text-white space-y-6 p-6">
-      <h2 className="text-3xl font-bold mb-6 text-center text-indigo-500">Available Items</h2>
-
+    <Page title="Available Items" description="Borrowable inventory available to residents">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((item) => (
-          <div
-            key={item.id}
-            className="bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black p-4 flex flex-col"
-          >
-            <img
-              src={`${window.location.origin}/capstone1/uploads/${item.image}`}
-              alt={item.name}
-              className="w-full h-full object-cover rounded mb-4"
-            />
-            <h3 className="text-xl font-semibold mb-1">{item.name}</h3>
-            <p className="text-sm text-gray-600 mb-2">{item.description || "No description provided."}</p>
-            <span className="text-sm text-indigo-700 font-semibold">Available: {item.available}</span>
-          </div>
+          <Card key={item.id}>
+            <div className="aspect-[16/9] w-full overflow-hidden rounded-lg">
+              <img src={assetUrl(item.image)} alt={item.name} className="w-full h-full object-cover" />
+            </div>
+            <CardContent className="mt-4">
+              <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
+              <p className="text-sm text-gray-600 mt-1">{item.description || "No description provided."}</p>
+              <span className="inline-block mt-2 text-sm text-indigo-700 font-semibold">Available: {item.available}</span>
+            </CardContent>
+          </Card>
         ))}
-
-
-      {/* Pagination Buttons */}
-      <div className="flex justify-center gap-6 mt-8">
-        <button
-          disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-          className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded disabled:opacity-40"
-        >
-          Previous
-        </button>
-        <button
-          disabled={page === totalPages}
-          onClick={() => setPage(page + 1)}
-          className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded disabled:opacity-40"
-        >
-          Next
-        </button>
       </div>
-    </div>
+
+      <div className="flex justify-center gap-3 mt-8">
+        <Button variant="secondary" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</Button>
+        <Button variant="primary" disabled={page === totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>Next</Button>
+      </div>
+    </Page>
   );
 }

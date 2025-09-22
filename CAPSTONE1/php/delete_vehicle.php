@@ -1,5 +1,6 @@
 <?php
 include 'db_connect.php';
+include 'cors.php';
 header("Content-Type: application/json");
 
 $id = $_POST['id'];

@@ -1,5 +1,11 @@
 import { useState } from "react";
 import { BASE_URL } from "../../config";
+import Page from "../../components/ui/Page";
+import Card, { CardContent } from "../../components/ui/Card";
+import Input from "../../components/ui/Input";
+import Textarea from "../../components/ui/Textarea";
+import Button from "../../components/ui/Button";
+
 export default function ItemsAdd() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -13,7 +19,7 @@ export default function ItemsAdd() {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("description", description);
-    formData.append("available", quantity);
+    formData.append("quantity", quantity);
     if (image) formData.append("image", image);
 
     try {
@@ -24,99 +30,84 @@ export default function ItemsAdd() {
 
       const result = await res.json();
       if (result.success || result.message?.includes("success")) {
-        alert("Item added successfully!");
+        import("../../lib/toast").then(({ showToast }) => showToast("Item added successfully!"));
         setName("");
         setDescription("");
         setQuantity(1);
         setImage(null);
         setPreview("");
       } else {
-        alert("Error: " + result.message || "Failed to add item.");
+        import("../../lib/toast").then(({ showToast }) => showToast((result.message ? ("Error: " + result.message) : "Failed to add item."), 'error'));
       }
     } catch (err) {
       console.error("Upload failed:", err);
-      alert("Something went wrong.");
+      import("../../lib/toast").then(({ showToast }) => showToast("Something went wrong.", 'error'));
     }
   };
 
   return (
-    <div className="p-6 max-w-2xl mx-auto bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-indigo-500">
-      <h2 className="text-xl font-bold mb-4 text-indigo-600">Add New Item</h2>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
-          <input
-            type="text"
-            value={name}
-            required
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Ladder"
-            className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea
-            value={description}
-            required
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter the item's description here."
-            className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
-            rows="10"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Quantity Available</label>
-          <input
-            type="number"
-            value={quantity}
-            min="1"
-            required
-            onChange={(e) => setQuantity(e.target.value)}
-            placeholder="e.g. 5 (minimum 1)"
-            className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
-          />
-        </div>
-
-        <div className="flex justify-center mt-4">
-          <div className="w-full max-w-xs text-center">
-            {preview && (
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-24 h-24 mx-auto object-cover border border-gray-300 mb-3"
+    <Page title="Add Item" description="Add a new item to the borrowable inventory">
+      <Card className="max-w-2xl">
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+              <Input
+                type="text"
+                value={name}
+                required
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Ladder"
               />
-            )}
-            <label
-              htmlFor="image-upload"
-              className="cursor-pointer inline-block px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition"
-            >
-              {preview ? "Change Image" : "Upload Image"}
-              <input
-                id="image-upload"
+            </div>
+
+            <div>
+              <label htmlFor="item-desc" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <Textarea
+                id="item-desc"
+                value={description}
+                required
+                onChange={(e) => setDescription(e.target.value.slice(0, 1000))}
+                placeholder="Enter the item's description here."
+                rows={6}
+                maxLength={1000}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Quantity Available</label>
+              <Input
+                type="number"
+                value={quantity}
+                min={1}
+                required
+                onChange={(e) => setQuantity(e.target.value)}
+                placeholder="e.g. 5 (minimum 1)"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+              {preview && (<img src={preview} alt="Preview" className="w-32 h-32 object-cover rounded border mb-2" />)}
+              <Input
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
-                  const file = e.target.files[0];
-                  setImage(file);
-                  setPreview(URL.createObjectURL(file));
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setImage(file)
+                    setPreview(URL.createObjectURL(file))
+                  }
                 }}
-                className="hidden"
               />
-            </label>
-          </div>
-        </div>
+            </div>
 
-        <button
-          type="submit"
-          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-        >
-          Add Item
-        </button>
-      </form>
-    </div>
+            <div className="flex justify-end">
+              <Button type="submit">Add Item</Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </Page>
   );
 }

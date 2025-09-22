@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { BASE_URL } from "../../config";
+import Page from "../../components/ui/Page";
+import Card, { CardContent } from "../../components/ui/Card";
+import Input from "../../components/ui/Input";
+import Textarea from "../../components/ui/Textarea";
+import Select from "../../components/ui/Select";
+import Button from "../../components/ui/Button";
+
 export default function ItemsEdit() {
   const [items, setItems] = useState([]);
   const [selectedId, setSelectedId] = useState("");
@@ -32,7 +39,7 @@ export default function ItemsEdit() {
     })
       .then((res) => res.json())
       .then((data) => {
-        alert(data.message || "Item deleted.");
+        import("../../lib/toast").then(({ showToast }) => showToast(data.message || "Item deleted."));
         setSelectedId("");
         setNewName("");
         setNewDescription("");
@@ -42,7 +49,7 @@ export default function ItemsEdit() {
       })
       .catch((err) => {
         console.error("Deletion error:", err);
-        alert("Something went wrong.");
+        import("../../lib/toast").then(({ showToast }) => showToast("Something went wrong.", 'error'));
       });
   };
 
@@ -63,7 +70,7 @@ export default function ItemsEdit() {
 
     const result = await res.json();
     if (result.success) {
-      alert("Item updated successfully.");
+      import("../../lib/toast").then(({ showToast }) => showToast("Item updated successfully."));
       setSelectedId("");
       setNewName("");
       setNewDescription("");
@@ -71,102 +78,62 @@ export default function ItemsEdit() {
       setPreview("");
       fetchItems();
     } else {
-      alert("Update failed: " + result.message || result.error);
+      import("../../lib/toast").then(({ showToast }) => showToast((result.message ? ("Update failed: " + result.message) : (result.error || "Update failed.")), 'error'));
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black">
-      <h2 className="text-xl font-bold mb-4 text-indigo-600">Edit Item</h2>
+    <Page title="Edit Item" description="Update item details or replace images">
+      <Card className="max-w-xl">
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex items-end gap-3">
+              <div className="w-full">
+                <label className="block mb-1 text-sm font-medium text-gray-700">Select Item</label>
+                <Select value={selectedId} onChange={(e) => setSelectedId(e.target.value)} required>
+                  <option value="">-- Choose an item --</option>
+                  {items.map((item) => (
+                    <option key={item.id} value={item.id}>{item.name}</option>
+                  ))}
+                </Select>
+              </div>
+              <Button type="button" variant="destructive" onClick={handleDelete} title="Delete item">
+                <Trash2 size={18} />
+              </Button>
+            </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex justify-between items-end gap-2">
-          <div className="w-full">
-            <label className="block mb-1 text-sm font-medium text-black">Select Item</label>
-            <select
-              value={selectedId}
-              onChange={(e) => setSelectedId(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
-              required
-            >
-              <option value="">-- Choose an item --</option>
-              {items.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="text-red-600 hover:text-red-800"
-            title="Delete item"
-          >
-            <Trash2 size={24} />
-          </button>
-        </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">New Name (optional)</label>
+              <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. New Item Name" />
+            </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium text-black">New Name (optional)</label>
-          <input
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            placeholder="e.g. New Item Name"
-            className="w-full  px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
-          />
-        </div>
+            <div>
+              <label htmlFor="item-newdesc" className="block mb-1 text-sm font-medium text-gray-700">New Description (optional)</label>
+              <Textarea id="item-newdesc" rows={3} value={newDescription} onChange={(e) => setNewDescription(e.target.value.slice(0, 1000))} placeholder="e.g. Updated item description..." maxLength={1000} />
+            </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium text-black">New Description (optional)</label>
-          <textarea
-            value={newDescription}
-            onChange={(e) => setNewDescription(e.target.value)}
-            placeholder="e.g. Updated item description..."
-            className="w-full px-3 py-2 bg-slate-100 rounded-2xl shadow-slate-300 shadow-2xl border border-indigo-100 text-black"
-            rows={3}
-          />
-        </div>
-
-        <div className="flex justify-center mt-4">
-          <div className="w-full max-w-xs text-center">
-            {preview && (
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-24 h-24 mx-auto object-cover border border-gray-300 mb-3"
-              />
-            )}
-            <label
-              htmlFor="edit-item-image-upload"
-              className="cursor-pointer inline-block px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition"
-            >
-              {preview ? "Change Image" : "Upload New Image"}
-              <input
-                id="edit-item-image-upload"
+            <div>
+              <label className="block mb-1 text-sm font-medium text-gray-700">New Image (optional)</label>
+              {preview && (<img src={preview} alt="Preview" className="w-24 h-24 object-cover rounded border mb-2" />)}
+              <Input
                 type="file"
                 accept="image/*"
                 onChange={(e) => {
-                  const file = e.target.files[0];
-                  setNewImage(file);
-                  setPreview(URL.createObjectURL(file));
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    setNewImage(file)
+                    setPreview(URL.createObjectURL(file))
+                  }
                 }}
-                className="hidden"
               />
-            </label>
-          </div>
-        </div>
+            </div>
 
-        <div className="flex justify-center mt-6">
-          <button
-            type="submit"
-            className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition"
-          >
-            Update Item
-          </button>
-        </div>
-      </form>
-    </div>
+            <div className="flex justify-end">
+              <Button type="submit">Update Item</Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </Page>
   );
 }

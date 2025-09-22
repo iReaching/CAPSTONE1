@@ -1,7 +1,8 @@
-const isLocalhost = window.location.hostname === "localhost" || window.location.port === "5173";
+const isDev = window.location.port === "5173";
 
-export const BASE_URL = isLocalhost
-  ? "http://localhost/vitecap1/capstone1/php/"     // for dev
-  : `${window.location.origin}/capstone1/php/`; // for live
+// In dev, PHP runs on Apache at localhost without port. In prod, use the same origin plus Vite base path.
+export const BASE_URL = isDev
+  ? "http://localhost/vitecap1/CAPSTONE1/php/"
+  : `${window.location.origin}${import.meta.env.BASE_URL}php/`;
 
-  export default BASE_URL;
+export default BASE_URL;

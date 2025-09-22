@@ -1,9 +1,7 @@
 <?php
 include 'db_connect.php';
 include 'log_action.php';
-
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
 $id = $_POST['id'] ?? '';
@@ -16,11 +14,16 @@ if (!$id || !$user_id) {
 
 $proof_path = null;
 
-if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] == 0) {
-  $filename = "proof_" . uniqid() . "_" . $_FILES['payment_proof']['name'];
-  $target = "../uploads/payment_proofs/" . $filename;
-  move_uploaded_file($_FILES['payment_proof']['tmp_name'], $target);
-  $proof_path = "capstone1/uploads/payment_proofs/" . $filename;
+if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
+  $filename = 'proof_' . bin2hex(random_bytes(8)) . '_' . basename($_FILES['payment_proof']['name']);
+$base_upload_dir = realpath(__DIR__ . '/..');
+  if ($base_upload_dir === false) { $base_upload_dir = __DIR__ . '/..'; }
+  $target_dir = $base_upload_dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'payment_proofs' . DIRECTORY_SEPARATOR;
+  if (!is_dir($target_dir)) { mkdir($target_dir, 0777, true); }
+  $target = $target_dir . $filename;
+  if (move_uploaded_file($_FILES['payment_proof']['tmp_name'], $target)) {
+    $proof_path = 'uploads/payment_proofs/' . $filename; // store relative path
+  }
 }
 
 if ($proof_path) {

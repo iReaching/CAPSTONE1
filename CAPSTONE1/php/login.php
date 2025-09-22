@@ -1,22 +1,28 @@
 <?php
 include 'db_connect.php';
 include 'log_action.php';
+include 'check_auth.php';
+include 'cors.php';
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
 header("Content-Type: application/json");
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user_id = $_POST["user_id"];
-    $password = $_POST["password"];
+    $user_id = $_POST["user_id"] ?? '';
+    $password = $_POST["password"] ?? '';
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE user_id = ?");
+    $stmt = $conn->prepare("SELECT user_id, role, is_admin, password FROM users WHERE user_id = ?");
     $stmt->bind_param("s", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($user = $result->fetch_assoc()) {
         if (password_verify($password, $user['password'])) {
+            // Establish server-side session
+            if (session_status() === PHP_SESSION_NONE) { session_start(); }
+            session_regenerate_id(true);
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['is_admin'] = $user['is_admin'];
+
             logAction($user["user_id"], 'login', 'User logged in successfully', 'login.php');
             echo json_encode([
                 "success" => true,

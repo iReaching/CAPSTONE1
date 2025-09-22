@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+include 'cors.php';
 header("Content-Type: application/json");
 include 'db_connect.php';
 

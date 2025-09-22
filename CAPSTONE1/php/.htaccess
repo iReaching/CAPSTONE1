@@ -1,0 +1,3 @@
+# Prepend CORS headers for every PHP script in this folder
+# This ensures consistent CORS without editing each endpoint
+php_value auto_prepend_file cors.php

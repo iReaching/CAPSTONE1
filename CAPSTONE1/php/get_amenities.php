@@ -1,6 +1,6 @@
 <?php
 include 'db_connect.php';
-header("Access-Control-Allow-Origin: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
 $result = $conn->query("SELECT * FROM amenities ORDER BY id DESC");

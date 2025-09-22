@@ -1,8 +1,6 @@
 <?php
 include 'db_connect.php';
-
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
 $sql = "

@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../config";
+import Page from "../../components/ui/Page";
+import Card, { CardContent } from "../../components/ui/Card";
+import Button from "../../components/ui/Button";
+import Badge from "../../components/ui/Badge";
+import { showToast } from "../../lib/toast";
+
 export default function ItemsSchedule() {
   const [schedules, setSchedules] = useState([]);
   const [activeTab, setActiveTab] = useState("pending");
 
   useEffect(() => {
-    fetch(`${BASE_URL}get_item_schedule.php`)
-      .then((res) => res.json())
-      .then((data) => setSchedules(data))
-      .catch((err) => console.error("Error fetching item schedules:", err));
+    fetch(`${BASE_URL}get_item_schedule.php`, { credentials: 'include' })
+      .then(async (res) => {
+        const text = await res.text();
+        try { return JSON.parse(text); } catch { throw new Error(`Invalid JSON (${res.status})`); }
+      })
+      .then((data) => setSchedules(Array.isArray(data) ? data : []))
+      .catch((err) => {
+        console.error("Error fetching item schedules:", err);
+        showToast('Failed to load item schedules', 'error');
+      });
   }, []);
 
   const handleUpdateStatus = (id, status) => {
@@ -16,17 +28,21 @@ export default function ItemsSchedule() {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ id, status }),
+      credentials: 'include',
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        const text = await res.text();
+        try { return JSON.parse(text); } catch { throw new Error(`Invalid JSON (${res.status})`); }
+      })
       .then((data) => {
         if (data.success) {
-          setSchedules((prev) =>
-            prev.map((s) => (s.id === id ? { ...s, status } : s))
-          );
+          setSchedules((prev) => prev.map((s) => (s.id === id ? { ...s, status } : s)));
+          showToast("Status updated.");
         } else {
-          alert("Failed to update item status.");
+          showToast("Failed to update item status: " + (data.error || ''), 'error');
         }
-      });
+      })
+      .catch(() => showToast("Request failed.", 'error'));
   };
 
   const filteredSchedules =
@@ -34,91 +50,52 @@ export default function ItemsSchedule() {
       ? schedules.filter((s) => s.status === "pending")
       : schedules.filter((s) => s.status === "approved" || s.status === "rejected");
 
+  const Tabs = (
+    <div className="flex items-center gap-2">
+      <Button variant={activeTab === "pending" ? "primary" : "secondary"} onClick={() => setActiveTab("pending")}>
+        Pending
+      </Button>
+      <Button variant={activeTab !== "pending" ? "primary" : "secondary"} onClick={() => setActiveTab("processed")}>
+        Processed
+      </Button>
+    </div>
+  );
+
   return (
-    <div className="text-white">
-      <h2 className="text-2xl font-bold mb-6 text-indigo-500">Item Schedules</h2>
-
-      {/* Tabs */}
-      <div className="flex space-x-4 mb-6">
-        <button
-          className={`px-4 py-2 rounded ${
-            activeTab === "pending"
-              ? "bg-indigo-600"
-              : "bg-gray-700 hover:bg-gray-600"
-          }`}
-          onClick={() => setActiveTab("pending")}
-        >
-          Pending
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${
-            activeTab !== "pending"
-              ? "bg-indigo-600"
-              : "bg-gray-700 hover:bg-gray-600"
-          }`}
-          onClick={() => setActiveTab("processed")}
-        >
-          Processed
-        </button>
-      </div>
-
+    <Page title="Item Schedules" actions={Tabs}>
       {filteredSchedules.length === 0 ? (
-        <p className="text-gray-400 italic">No {activeTab} schedules found.</p>
+        <p className="text-gray-500 italic">No {activeTab} schedules found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredSchedules.map((schedule) => (
-            <div
-              key={schedule.id}
-              className={`rounded-lg shadow-md p-4 ${
-                schedule.status === "pending"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : schedule.status === "approved"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
-              }`}
-            >
-              <h3 className="font-bold text-lg mb-2">{schedule.item_name}</h3>
-              <p className="text-sm">
-                <span className="font-medium">Requested by:</span>{" "}
-                {schedule.requested_by}
-              </p>
-              <p className="text-sm">
-                <span className="font-medium">Date:</span>{" "}
-                {schedule.request_date}
-              </p>
-              <p className="text-sm">
-                <span className="font-medium">Time:</span>{" "}
-                {schedule.time_start} - {schedule.time_end}
-              </p>
-              <p className="text-sm">
-                <span className="font-medium">Message:</span>{" "}
-                {schedule.message || "-"}
-              </p>
-              <p className="text-sm">
-                <span className="font-medium">Status:</span>{" "}
-                {schedule.status.charAt(0).toUpperCase() + schedule.status.slice(1)}
-              </p>
-
-              {schedule.status === "pending" && (
-                <div className="flex gap-2 mt-3">
-                  <button
-                    onClick={() => handleUpdateStatus(schedule.id, "approved")}
-                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleUpdateStatus(schedule.id, "rejected")}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
-                  >
-                    Reject
-                  </button>
+          {filteredSchedules.map((s) => (
+            <Card key={s.id}>
+              <CardContent>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">{s.item_name}</h3>
+                    <div className="mt-1 text-sm text-gray-600">
+                      <div><span className="font-medium">Requested by:</span> {s.requested_by}</div>
+                      <div><span className="font-medium">Date:</span> {s.request_date}</div>
+                      <div><span className="font-medium">Time:</span> {s.time_start} - {s.time_end}</div>
+                      <div><span className="font-medium">Message:</span> {s.message || "-"}</div>
+                    </div>
+                  </div>
+                  <Badge variant={s.status === 'approved' ? 'green' : s.status === 'rejected' ? 'red' : 'gray'}>
+                    {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
+                  </Badge>
                 </div>
-              )}
-            </div>
+
+                {s.status === "pending" && (
+                  <div className="flex gap-2 mt-4">
+                    <Button onClick={() => handleUpdateStatus(s.id, "approved")}>Approve</Button>
+                    <Button variant="destructive" onClick={() => handleUpdateStatus(s.id, "rejected")}>Reject</Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}
-    </div>
+    </Page>
   );
 }

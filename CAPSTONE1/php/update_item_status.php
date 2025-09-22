@@ -1,8 +1,8 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
-include '../PHP/db_connect.php';
+include 'db_connect.php';
 include 'log_action.php';
 
 $id = $_POST['id'];

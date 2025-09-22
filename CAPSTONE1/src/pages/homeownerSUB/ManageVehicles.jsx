@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Pencil, Trash2, MoreVertical, X } from "lucide-react";
 import { BASE_URL } from "../../config";
+import { assetUrl } from "../../lib/asset";
+import Page from "../../components/ui/Page";
+import Table, { THead, TR, TH, TBody, TD } from "../../components/ui/Table";
+import Input from "../../components/ui/Input";
+import Button from "../../components/ui/Button";
+import Card, { CardContent } from "../../components/ui/Card";
+import { Car } from "lucide-react";
 
 export default function ManageVehicles() {
   const userId = localStorage.getItem("user_id");
@@ -25,9 +32,9 @@ export default function ManageVehicles() {
     setEditingId(vehicle.id);
     setEditData({
       name: vehicle.name,
-      type: vehicle.type_of_vehicle,
+      type: vehicle.type, // using alias from get_user_details.php
       color: vehicle.color,
-      plate: vehicle.plate_number,
+      plate: vehicle.plate, // using alias from get_user_details.php
     });
     setDropdownOpenId(null);
   };
@@ -47,11 +54,11 @@ export default function ManageVehicles() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          alert("Vehicle updated.");
+          import("../../lib/toast").then(({ showToast }) => showToast("Vehicle updated."));
           setEditingId(null);
           fetchVehicles();
         } else {
-          alert("Update failed.");
+          import("../../lib/toast").then(({ showToast }) => showToast("Update failed.", 'error'));
         }
       });
   };
@@ -69,156 +76,110 @@ export default function ManageVehicles() {
         .then((res) => res.json())
         .then((data) => {
           if (data.success) {
-            alert("Vehicle deleted.");
+            import("../../lib/toast").then(({ showToast }) => showToast("Vehicle deleted."));
             fetchVehicles();
           } else {
-            alert("Delete failed.");
+            import("../../lib/toast").then(({ showToast }) => showToast("Delete failed.", 'error'));
           }
         });
     }
   };
 
   return (
-    <div className="px-4 md:px-10 py-4 w-full max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-indigo-500">Manage Vehicles</h2>
+    <Page>
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
+            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <Car className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-center sm:text-left">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Manage Vehicles</h1>
+              <p className="text-gray-600">Update or remove vehicles linked to your account</p>
+            </div>
+          </div>
+        </div>
+        <Card>
+          <CardContent>
+            <Table>
+              <THead>
+          <TR>
+            <TH>Name</TH>
+            <TH>Type</TH>
+            <TH>Color</TH>
+            <TH>Plate</TH>
+            <TH>Block & Lot</TH>
+            <TH>Photo</TH>
+            <TH>Actions</TH>
+          </TR>
+        </THead>
+        <TBody>
+          {vehicles.map((v) => (
+            <TR key={v.id}>
+              <TD>
+                {editingId === v.id ? (
+                  <Input value={editData.name} onChange={(e) => setEditData({ ...editData, name: e.target.value })} />
+                ) : (
+                  v.name || "-"
+                )}
+              </TD>
+              <TD>
+                {editingId === v.id ? (
+                  <Input value={editData.type} onChange={(e) => setEditData({ ...editData, type: e.target.value })} />
+                ) : (
+                  v.type
+                )}
+              </TD>
+              <TD>
+                {editingId === v.id ? (
+                  <Input value={editData.color} onChange={(e) => setEditData({ ...editData, color: e.target.value })} />
+                ) : (
+                  v.color || "-"
+                )}
+              </TD>
+              <TD>
+                {editingId === v.id ? (
+                  <Input value={editData.plate} onChange={(e) => setEditData({ ...editData, plate: e.target.value })} />
+                ) : (
+                  v.plate
+                )}
+              </TD>
+              <TD>Block {v.block}, Lot {v.lot}</TD>
+              <TD>
+                {v.vehicle_pic_path ? (
+                  <img src={assetUrl(v.vehicle_pic_path)} alt="Vehicle" className="w-14 h-10 object-cover rounded cursor-pointer border" onClick={() => setSelectedImage(assetUrl(v.vehicle_pic_path))} />
+                ) : (
+                  "-"
+                )}
+              </TD>
+              <TD>
+                {editingId === v.id ? (
+                  <Button size="sm" onClick={() => handleSave(v.id)}>Save</Button>
+                ) : (
+                  <div className="inline-flex gap-2">
+                    <Button variant="secondary" size="sm" onClick={() => handleEdit(v)}>Edit</Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleDelete(v.id)}>Delete</Button>
+                  </div>
+                )}
+              </TD>
+            </TR>
+          ))}
+        </TBody>
+            </Table>
+          </CardContent>
+        </Card>
 
-      <div className="overflow-auto rounded-lg shadow bg-white text-black">
-        <table className="w-full text-sm text-left bg-white text-black rounded shadow">
-          <thead className="bg-indigo-600 text-white">
-            <tr>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Type</th>
-              <th className="px-4 py-2">Color</th>
-              <th className="px-4 py-2">Plate</th>
-              <th className="px-4 py-2">Block & Lot</th>
-              <th className="px-4 py-2">Photo</th>
-              <th className="px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vehicles.map((v) => (
-              <tr key={v.id} className="border-b bg-white hover:bg-gray-100 transition">
-                <td className="px-4 py-2">
-                  {editingId === v.id ? (
-                    <input
-                      value={editData.name}
-                      onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                      className="p-1 border rounded w-full text-black"
-                    />
-                  ) : (
-                    v.name || "-"
-                  )}
-                </td>
-                <td className="px-4 py-2">
-                  {editingId === v.id ? (
-                    <input
-                      value={editData.type}
-                      onChange={(e) => setEditData({ ...editData, type: e.target.value })}
-                      className="p-1 border rounded w-full text-black"
-                    />
-                  ) : (
-                    v.type
-                  )}
-                </td>
-                <td className="px-4 py-2">
-                  {editingId === v.id ? (
-                    <input
-                      value={editData.color}
-                      onChange={(e) => setEditData({ ...editData, color: e.target.value })}
-                      className="p-1 border rounded w-full text-black"
-                    />
-                  ) : (
-                    v.color || "-"
-                  )}
-                </td>
-                <td className="px-4 py-2">
-                  {editingId === v.id ? (
-                    <input
-                      value={editData.plate}
-                      onChange={(e) => setEditData({ ...editData, plate: e.target.value })}
-                      className="p-1 border rounded w-full text-black"
-                    />
-                  ) : (
-                    v.plate
-                  )}
-                </td>
-                <td className="px-4 py-2">Block {v.block}, Lot {v.lot}</td>
-                <td className="px-4 py-2">
-                  {v.vehicle_pic_path ? (
-                    <img
-                      src={`${window.location.origin}/capstone1/${v.vehicle_pic_path}`}
-                      alt="Vehicle"
-                      className="w-14 h-10 object-cover rounded cursor-pointer border"
-                      onClick={() => setSelectedImage(`${window.location.origin}/capstone1/${v.vehicle_pic_path}`)}
-                    />
-                  ) : (
-                    "-"
-                  )}
-                </td>
-                <td className="px-4 py-2 relative">
-                  {editingId === v.id ? (
-                    <button
-                      onClick={() => handleSave(v.id)}
-                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
-                    >
-                      Save
-                    </button>
-                  ) : (
-                    <>
-                      <div
-                        onClick={() => setDropdownOpenId((prev) => (prev === v.id ? null : v.id))}
-                        className="cursor-pointer px-2 py-1 rounded hover:bg-gray-200 text-gray-600 hover:text-black inline-block"
-                      >
-                        <MoreVertical size={18} />
-                      </div>
-
-                      {dropdownOpenId === v.id && (
-                        <div className="absolute right-0 mt-2 w-40 bg-white text-sm text-black rounded shadow-md z-50">
-                          <ul>
-                            <li>
-                              <div
-                                onClick={() => handleEdit(v)}
-                                className="block w-full px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                              >
-                                <Pencil size={14} className="inline-block mr-2" />
-                                Edit
-                              </div>
-                            </li>
-                            <li>
-                              <div
-                                onClick={() => handleDelete(v.id)}
-                                className="block w-full px-4 py-2 hover:bg-red-100 text-red-600 cursor-pointer"
-                              >
-                                <Trash2 size={14} className="inline-block mr-2" />
-                                Delete
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Image Modal */}
       {selectedImage && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="relative bg-white p-4 rounded shadow-xl">
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-black"
-            >
+            <button onClick={() => setSelectedImage(null)} className="absolute top-2 right-2 text-gray-500 hover:text-black">
               <X size={20} />
             </button>
             <img src={selectedImage} alt="Full Vehicle" className="max-w-full max-h-[80vh] rounded" />
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </Page>
   );
 }

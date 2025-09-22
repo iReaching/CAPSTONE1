@@ -1,8 +1,8 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+include 'cors.php';
 header("Content-Type: application/json");
 
-include '../PHP/db_connect.php';
+include 'db_connect.php';
 
 $limit = 1; // Items per page
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;

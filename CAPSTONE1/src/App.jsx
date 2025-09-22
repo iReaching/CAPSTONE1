@@ -36,6 +36,7 @@ import SubmitReport from "./pages/homeownerSUB/SubmitReport";
 import VisitorLogHistory from "./pages/homeownerSUB/VisitorLogHistory";
 import HomeownerAnnouncements from "./pages/homeownerSUB/HomeownerAnnouncements";
 import ManageVehicles from './pages/homeownerSUB/ManageVehicles';
+import Health from "./pages/Health";
 
 import {
   Home as HomeIcon,
@@ -51,10 +52,6 @@ export default function App() {
   const [loginState, setLoginState] = useState(Date.now()); // change triggers rerender
   const handleLogin = () => {
     setLoginState(Date.now()); // force AppLayout re-render with new localStorage role
-
-
-
-
   };
   return (
     <Router>
@@ -62,6 +59,7 @@ export default function App() {
         {/* Public routes */}
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route path="/health" element={<Health />} />
 
         {/* Protected role-based layout */}
         <Route
@@ -82,12 +80,24 @@ export default function App() {
 // Layout and routing based on user role
 function AppLayout() {
   const role = localStorage.getItem("role");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Rendered header with hamburger to open sidebar on mobile
+  const renderHeader = () => (
+    <Header
+      onMenuClick={() => setSidebarOpen(true)}
+      onLogout={() => {
+        localStorage.clear();
+        window.location.href = "/login";
+      }}
+    />
+  );
 
   // ADMIN
   if (role === "admin") {
     return (
       <div className="bg-gray-900 min-h-screen text-white relative">
-        <Sidebar>
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
           <SidebarItem icon={<HomeIcon size={30} />} text="Home" link="/home" />
           <SidebarItem icon={<CalendarDays size={30} />} text="Amenities" link="/amenities" />
           <SidebarItem icon={<Boxes size={30} />} text="Items" link="/items" />
@@ -97,14 +107,8 @@ function AppLayout() {
           <SidebarItem icon={<Megaphone size={30} />} text="Announcement" link="/announcements" />
         </Sidebar>
 
-        
-        <Header
-          onLogout={() => {
-            localStorage.clear();
-            window.location.href = "/login";
-          }}
-        />
-        <main className="absolute top-0 left-0 right-0 min-h-screen pt-16 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">          
+        {renderHeader()}
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-20 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">          
           <Routes>
             <Route path="/" element={<Navigate to="/home" />} />
             <Route path="/home" element={<Home />} />
@@ -133,20 +137,15 @@ function AppLayout() {
   if (role === "staff") {
     return (
       <div className="bg-gray-900 min-h-screen text-white relative">
-        <SidebarStaff>
+        <SidebarStaff isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
           <SidebarItem icon={<HomeIcon size={30} />} text="Home" link="/staff_home" />
           <SidebarItem icon={<CalendarDays size={30} />} text="Amenities" link="/amenities" />
           <SidebarItem icon={<Boxes size={30} />} text="Items" link="/items" />
           <SidebarItem icon={<FileText size={30} />} text="Report" link="/reports" />
           <SidebarItem icon={<UserSquare size={30} />} text="Account" link="/account" />
         </SidebarStaff>
-        <Header
-          onLogout={() => {
-            localStorage.clear();
-            window.location.href = "/login";
-          }}
-        />
-        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">          
+        {renderHeader()}
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-16 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">          
           <Routes>
             <Route path="/" element={<Navigate to="/staff_home" />} />
             <Route path="/staff_home" element={<StaffHome />} />
@@ -155,7 +154,7 @@ function AppLayout() {
             <Route path="/amenities/add" element={<AmenityAdd />} />
             <Route path="/amenities/edit" element={<AmenityEdit />} />
             <Route path="/amenities/schedules" element={<AmenitySchedules />} />
-            <Route path="/items" element={<Items />} />
+            <Route path="/items" element={<ItemsView />} />
             <Route path="/items/view" element={<ItemsView />} />
             <Route path="/items/add" element={<ItemsAdd />} />
             <Route path="/items/edit" element={<ItemsEdit />} />
@@ -172,14 +171,9 @@ function AppLayout() {
   if (role === "guard") {
     return (
       <div className="bg-gray-900 min-h-screen text-white relative">
-        <SidebarGuard />
-                <Header
-          onLogout={() => {
-            localStorage.clear();
-            window.location.href = "/login";
-          }}
-        />
-        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">          
+        <SidebarGuard isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        {renderHeader()}
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-16 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">          
           <Routes>
             <Route path="/" element={<Navigate to="/guard_home" />} />
             <Route path="/guard_home" element={<GuardHome />} />
@@ -195,14 +189,9 @@ function AppLayout() {
 if (role === "homeowner") {
   return (
     <div className="bg-gray-900 min-h-screen text-white relative">
-      <SidebarHomeowner />
-              <Header
-          onLogout={() => {
-            localStorage.clear();
-            window.location.href = "/login";
-          }}
-        />
-        <main className="absolute top-0 left-0 right-0 min-h-screen pt-10 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">
+      <SidebarHomeowner isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      {renderHeader()}
+        <main className="absolute top-0 left-0 right-0 min-h-screen pt-16 pr-4 pl-16 md:pl-64 bg-[#eef2ff] text-white overflow-x-auto transition-all duration-300">
 
 
         <Routes>
