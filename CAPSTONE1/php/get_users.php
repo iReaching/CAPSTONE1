@@ -10,7 +10,7 @@ $role = $_GET['role'] ?? '';
 
 $sql = "SELECT 
             u.user_id, u.role, u.email, u.is_admin,
-            up.full_name, up.contact_number, up.profile_pic
+            up.full_name, up.contact_number, up.profile_pic, up.unit_id
         FROM users u
         LEFT JOIN user_profiles up ON u.user_id = up.user_id";
 

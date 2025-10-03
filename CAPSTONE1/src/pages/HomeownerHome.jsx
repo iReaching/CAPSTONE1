@@ -4,7 +4,6 @@ import { BASE_URL } from "../config";
 import {
   Home,
   Building2,
-  Package,
   FileText,
   Car,
   Shield,
@@ -14,6 +13,7 @@ import {
   Bell,
   TrendingUp
 } from "lucide-react";
+import MarketFeed from "../components/MarketFeed";
 export default function HomeownerHome() {
   const navigate = useNavigate();
 
@@ -32,6 +32,11 @@ export default function HomeownerHome() {
             </div>
           </div>
           <p className="text-gray-600 ml-15">Access all your community services and manage your home</p>
+        </div>
+
+        {/* Marketplace feed */}
+        <div className="mb-8">
+          <MarketFeed role="homeowner" />
         </div>
 
         {/* Quick Actions */}
@@ -56,26 +61,6 @@ export default function HomeownerHome() {
             </div>
           </div>
 
-          {/* View Items */}
-          <div
-            onClick={() => navigate("/items/view")}
-            className="group cursor-pointer bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:scale-105 transition-all duration-200"
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                <Package className="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">View Items</h3>
-                <p className="text-sm text-gray-600">Browse borrowables</p>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">See what's available</span>
-              <TrendingUp className="w-4 h-4 text-gray-400 group-hover:text-green-600 transition-colors" />
-            </div>
-          </div>
-
           {/* Borrow Amenity */}
           <div
             onClick={() => navigate("/homeowner/borrow_amenities")}
@@ -96,27 +81,7 @@ export default function HomeownerHome() {
             </div>
           </div>
 
-          {/* Borrow Item */}
-          <div
-            onClick={() => navigate("/homeowner/borrow_item")}
-            className="group cursor-pointer bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:scale-105 transition-all duration-200"
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-                <Package className="w-6 h-6 text-emerald-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Borrow Item</h3>
-                <p className="text-sm text-gray-600">Request items</p>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Submit request</span>
-              <TrendingUp className="w-4 h-4 text-gray-400 group-hover:text-emerald-600 transition-colors" />
-            </div>
-          </div>
-
-          {/* Submit Report */}
+          {/* Submit a Ticket */}
           <div
             onClick={() => navigate("/homeowner/submit_report")}
             className="group cursor-pointer bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:scale-105 transition-all duration-200"
@@ -126,8 +91,8 @@ export default function HomeownerHome() {
                 <FileText className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Submit Report</h3>
-                <p className="text-sm text-gray-600">Report issues</p>
+                <h3 className="text-lg font-semibold text-gray-900">Submit a Ticket</h3>
+                <p className="text-sm text-gray-600">Request maintenance/support</p>
               </div>
             </div>
             <div className="flex items-center justify-between">

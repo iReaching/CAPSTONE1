@@ -20,7 +20,7 @@ export function TR({ className, children }) {
 
 export function TH({ className, children }) {
   return (
-    <th scope="col" className={cn("px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider", className)}>
+    <th scope="col" className={cn("px-4 py-3 text-left text-xs font-medium text-black uppercase tracking-wider", className)}>
       {children}
     </th>
   )
@@ -31,5 +31,5 @@ export function TBody({ children }) {
 }
 
 export function TD({ className, children }) {
-  return <td className={cn("px-4 py-3 text-sm text-gray-700", className)}>{children}</td>
+  return <td className={cn("px-4 py-3 text-sm text-black", className)}>{children}</td>
 }

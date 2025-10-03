@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { BASE_URL } from "../config";
 import { assetUrl } from "../lib/asset";
-import Page from "../components/ui/Page";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Select from "../components/ui/Select";
@@ -16,7 +15,7 @@ export default function Accounts() {
   const [modalOpen, setModalOpen] = useState(false);
   const [details, setDetails] = useState(null);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [registerData, setRegisterData] = useState({ user_id: "", email: "", password: "", role: "homeowner", is_admin: 0 });
+  const [registerData, setRegisterData] = useState({ user_id: "", email: "", password: "", role: "homeowner", is_admin: 0, unit_id: "" });
 
   useEffect(() => {
     fetchUsers();
@@ -57,7 +56,7 @@ export default function Accounts() {
           if (data.success) {
           import("../lib/toast").then(({ showToast }) => showToast("Account registered!"));
           setShowRegisterModal(false);
-          setRegisterData({ user_id: "", email: "", password: "", role: "homeowner", is_admin: 0 });
+          setRegisterData({ user_id: "", email: "", password: "", role: "homeowner", is_admin: 0, unit_id: "" });
           fetchUsers();
         } else {
           import("../lib/toast").then(({ showToast }) => showToast(data.message || "Failed to register.", 'error'));
@@ -66,20 +65,48 @@ export default function Accounts() {
       .catch(() => import("../lib/toast").then(({ showToast }) => showToast("Registration failed.", 'error')));
   };
 
+  const handleDeleteAccount = () => {
+    if (!details || !details.profile) return;
+    if (!window.confirm("Are you sure you want to delete this account?")) return;
+    fetch(`${BASE_URL}delete_account.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ user_id: details.profile.user_id }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          import("../lib/toast").then(({ showToast }) => showToast("Account deleted successfully."));
+          setModalOpen(false);
+          fetchUsers();
+        } else {
+          import("../lib/toast").then(({ showToast }) => showToast("Failed to delete account.", 'error'));
+        }
+      })
+      .catch((err) => {
+        console.error("Error deleting account:", err);
+        import("../lib/toast").then(({ showToast }) => showToast("Error deleting account.", 'error'));
+      });
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setRegisterData((prev) => ({ ...prev, [name]: type === "checkbox" ? (checked ? 1 : 0) : value }));
   };
 
   return (
-    <Page
-      title="User Accounts"
-      actions={
-        <Button onClick={() => setShowRegisterModal(true)} className="inline-flex items-center gap-2">
-          <Plus size={16} /> Add Account
-        </Button>
-      }
-    >
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">User Accounts</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button onClick={() => setShowRegisterModal(true)} className="inline-flex items-center gap-2">
+            <Plus size={16} /> Add Account
+          </Button>
+        </div>
+      </div>
+      <div className="mt-6">
       {/* Filters */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
         <Input
@@ -102,126 +129,138 @@ export default function Accounts() {
         <THead>
           <TR>
             <TH>Profile</TH>
-            <TH>Full Name</TH>
-            <TH>Email</TH>
+            <TH>User</TH>
             <TH>Contact</TH>
             <TH>Role</TH>
+            <TH>Unit</TH>
             <TH className="text-right">Action</TH>
           </TR>
         </THead>
         <TBody>
           {users.map((u) => (
-            <TR key={u.user_id}>
+            <TR key={u.user_id} className="hover:bg-gray-50">
               <TD>
-                <img
-                  src={u.profile_pic?.startsWith("uploads/") ? assetUrl(u.profile_pic) : `https://ui-avatars.com/api/?name=${encodeURIComponent(u.full_name || "")}`}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full object-cover"
-                />
+                <div className="flex items-center gap-3">
+                  <img
+                    src={u.profile_pic?.startsWith("uploads/") ? assetUrl(u.profile_pic) : `https://ui-avatars.com/api/?name=${encodeURIComponent(u.full_name || u.user_id || "User")}&background=111111&color=ffffff`}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full object-cover border"
+                    onError={(e)=>{ e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(u.full_name || u.user_id || 'User')}&background=111111&color=ffffff`; }}
+                  />
+                  <div className="hidden sm:block">
+                    <div className="font-medium text-gray-900 truncate max-w-[160px]">{u.full_name || u.user_id}</div>
+                    <div className="text-xs text-gray-500 truncate max-w-[160px]">{u.email}</div>
+                  </div>
+                </div>
               </TD>
-              <TD>{u.full_name}</TD>
-              <TD>{u.email}</TD>
-              <TD>{u.contact_number}</TD>
-              <TD className="capitalize">{u.role}</TD>
+              <TD className="sm:hidden">
+                <div className="text-sm">
+                  <div className="font-medium text-gray-900">{u.full_name || u.user_id}</div>
+                  <div className="text-xs text-gray-500">{u.email}</div>
+                </div>
+              </TD>
+              <TD>{u.contact_number || '—'}</TD>
+              <TD>
+                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${u.role==='admin'? 'bg-purple-100 text-purple-700' : u.role==='staff'? 'bg-blue-100 text-blue-700' : u.role==='guard'? 'bg-teal-100 text-teal-700' : 'bg-green-100 text-green-700'}`}>
+                  {u.role || '—'}
+                </span>
+              </TD>
+              <TD>{u.unit_id || '—'}</TD>
               <TD className="text-right">
-                <Button variant="secondary" size="sm" onClick={() => handleView(u.user_id)}>View</Button>
+                <Button onClick={() => handleView(u.user_id)} className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">View</Button>
               </TD>
             </TR>
           ))}
         </TBody>
       </Table>
 
-      {/* Details Modal */}
+      {/* Modals */}
+      <>
       {modalOpen && details && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50">
-          <div className="bg-white text-black p-6 rounded-lg max-w-5xl w-full shadow-lg relative flex flex-col md:flex-row gap-6 overflow-y-auto max-h-[90vh]">
-            <button
-              onClick={() => {
-                if (window.confirm("Are you sure you want to delete this account?")) {
-                  fetch(`${BASE_URL}delete_account.php`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams({ user_id: details.profile.user_id }),
-                  })
-                    .then((res) => res.json())
-                    .then((data) => {
-          if (data.success) {
-                      import("../lib/toast").then(({ showToast }) => showToast("Account deleted successfully."));
-                      setModalOpen(false);
-                      fetchUsers();
-                    } else {
-                      import("../lib/toast").then(({ showToast }) => showToast("Failed to delete account.", 'error'));
-                    }
-                    })
-                    .catch((err) => {
-                      console.error("Error deleting account:", err);
-                      import("../lib/toast").then(({ showToast }) => showToast("Error deleting account.", 'error'));
-                    });
-                }
-              }}
-              className="absolute top-2 left-2 p-2 bg-white text-red-600 rounded"
-              title="Delete Account"
-            >
-              <Trash2 size={20} />
-            </button>
-
-            <button onClick={() => { setModalOpen(false); setDetails(null); }} className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl">
-              &times;
-            </button>
-
-            {/* Left Column: User Info + Activity */}
-            <div className="flex-1 space-y-4">
-              <h3 className="text-xl font-bold">User Details</h3>
-              <img
-                src={details.profile.profile_pic?.startsWith("uploads/") ? assetUrl(details.profile.profile_pic) : `https://ui-avatars.com/api/?name=${encodeURIComponent(details.profile.full_name || "")}`}
-                alt="Profile"
-                className="w-24 h-24 rounded-full object-cover mx-auto mb-4"
-              />
-              <p><strong>Full Name:</strong> {details.profile.full_name}</p>
-              <p><strong>Email:</strong> {details.profile.email}</p>
-              <p><strong>Contact:</strong> {details.profile.contact_number}</p>
-              <p><strong>Role:</strong> {details.profile.role}</p>
-
-              <div className="mt-6">
-                <h4 className="text-lg font-semibold">Activity History</h4>
-                <ul className="text-sm mt-2">
-                  <li>{details.activity.amenity_requests} amenity request(s)</li>
-                  <li>{details.activity.item_requests} item request(s)</li>
-                  <li>{details.activity.reports} report(s)</li>
-                  <li>{details.activity.entry_logs} entry log request(s)</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Right Column: Registered Vehicles */}
-            <div className="flex-1">
-              <h4 className="text-xl font-bold mb-4 text-center">Registered Vehicles</h4>
-              {details.vehicles.length === 0 ? (
-                <p className="text-sm text-gray-500 text-center">No registered vehicles found.</p>
-              ) : (
-                <div className="grid grid-cols-1 gap-6">
-                  {details.vehicles.map((v, idx) => (
-                    <div key={idx} className="border rounded-lg shadow-md p-4 flex flex-col items-center bg-white text-black">
-                      {v.vehicle_pic_path && (
-                        <img src={assetUrl(v.vehicle_pic_path)} alt="Vehicle" className="w-60 h-auto object-contain mb-4 rounded border" />
-                      )}
-                      <div className="text-center space-y-1 text-sm">
-                        <p><span className="font-semibold">Name:</span> {v.name}</p>
-                        <p><span className="font-semibold">Type:</span> {v.type}</p>
-                        <p><span className="font-semibold">Color:</span> {v.color}</p>
-                        <p><span className="font-semibold">Plate:</span> {v.plate}</p>
-                        <p><span className="font-semibold">Block:</span> {v.block}</p>
-                        <p><span className="font-semibold">Lot:</span> {v.lot}</p>
-                      </div>
-                    </div>
-                  ))}
+          <div className="bg-white text-black rounded-2xl shadow-xl w-[95vw] max-w-5xl relative overflow-hidden">
+            {/* Header */}
+            <div className="px-6 pt-6 pb-4 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <img
+                  src={details.profile.profile_pic?.startsWith("uploads/") ? assetUrl(details.profile.profile_pic) : `https://ui-avatars.com/api/?name=${encodeURIComponent(details.profile.full_name || details.profile.user_id || 'User')}&background=111111&color=ffffff`}
+                  alt="Profile"
+                  className="w-16 h-16 rounded-full object-cover border"
+                />
+                <div>
+                  <div className="text-xl font-bold text-gray-900">{details.profile.full_name || details.profile.user_id}</div>
+                  <div className="text-sm text-gray-600">{details.profile.email}</div>
+                  <div className="mt-1 flex items-center gap-2 text-sm">
+                    <span className="text-gray-700">{details.profile.contact_number || 'No contact'}</span>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-gray-700">Unit: {details.profile.unit_id || '—'}</span>
+                    <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${details.profile.role==='admin'? 'bg-purple-100 text-purple-700' : details.profile.role==='staff'? 'bg-blue-100 text-blue-700' : details.profile.role==='guard'? 'bg-teal-100 text-teal-700' : 'bg-green-100 text-green-700'}`}>{details.profile.role}</span>
+                  </div>
                 </div>
-              )}
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={() => { setModalOpen(false); setDetails(null); }} className="px-3 py-1.5 rounded-lg border text-gray-700 hover:bg-gray-50">Close</button>
+                <button
+                  onClick={handleDeleteAccount}
+                  className="px-3 py-1.5 rounded-lg border text-red-600 hover:bg-red-50"
+                  title="Delete Account"
+                >
+                  <Trash2 size={20} /> Delete
+                </button>
+            </div>
+            </div>
+            {/* Body */}
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[75vh] overflow-y-auto">
+              {/* Activity */}
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold text-gray-900">Activity</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="rounded-lg border p-3 bg-gray-50">
+                    <div className="text-xs text-gray-500">Amenity Requests</div>
+                    <div className="text-lg font-bold">{details.activity.amenity_requests}</div>
+                  </div>
+                  <div className="rounded-lg border p-3 bg-gray-50">
+                    <div className="text-xs text-gray-500">Item Requests</div>
+                    <div className="text-lg font-bold">{details.activity.item_requests}</div>
+                  </div>
+                  <div className="rounded-lg border p-3 bg-gray-50">
+                    <div className="text-xs text-gray-500">Reports</div>
+                    <div className="text-lg font-bold">{details.activity.reports}</div>
+                  </div>
+                  <div className="rounded-lg border p-3 bg-gray-50">
+                    <div className="text-xs text-gray-500">Entry Log Requests</div>
+                    <div className="text-lg font-bold">{details.activity.entry_logs}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Vehicles */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Registered Vehicles</h3>
+                {details.vehicles.length === 0 ? (
+                  <p className="text-sm text-gray-500">No registered vehicles found.</p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4">
+                    {details.vehicles.map((v, idx) => (
+                      <div key={idx} className="border rounded-xl p-4 flex gap-3 items-start">
+                        {v.vehicle_pic_path && (
+                          <img src={assetUrl(v.vehicle_pic_path)} alt="Vehicle" className="w-24 h-16 object-cover rounded border" />
+                        )}
+                        <div className="text-sm text-gray-800">
+                          <div className="font-medium">{v.name} <span className="text-gray-500">• {v.type}</span></div>
+                          <div>Plate: {v.plate || '—'}</div>
+                          <div>Color: {v.color || '—'}</div>
+                          <div>Block/Lot: {v.block || '—'}/{v.lot || '—'}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       )}
-
       {/* Register Modal */}
       {showRegisterModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50">
@@ -244,6 +283,13 @@ export default function Accounts() {
               <option value="homeowner">Homeowner</option>
             </Select>
 
+            {registerData.role === 'homeowner' && (
+              <>
+                <label className="block mb-2 text-sm">Unit ID</label>
+                <Input type="text" name="unit_id" placeholder="e.g., Unit 101-A" value={registerData.unit_id} onChange={handleInputChange} className="mb-4" />
+              </>
+            )}
+
             <div className="flex justify-end gap-2">
               <Button variant="secondary" onClick={() => setShowRegisterModal(false)}>Cancel</Button>
               <Button onClick={handleRegister}>Register</Button>
@@ -251,6 +297,8 @@ export default function Accounts() {
           </div>
         </div>
       )}
-    </Page>
+      </>
+      </div>
+    </div>
   );
 }

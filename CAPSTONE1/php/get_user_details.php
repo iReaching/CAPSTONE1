@@ -26,7 +26,7 @@ $response = [
 ];
 
 // Get profile info
-$profile_sql = "SELECT u.user_id, u.email, u.role, up.full_name, up.contact_number, up.profile_pic
+$profile_sql = "SELECT u.user_id, u.email, u.role, up.full_name, up.contact_number, up.profile_pic, up.unit_id
                 FROM users u
                 JOIN user_profiles up ON u.user_id = up.user_id
                 WHERE u.user_id = ?";

@@ -6,7 +6,6 @@ import { BASE_URL } from "../config";
 import {
   Home as HomeIcon,
   CalendarDays,
-  Boxes,
   FileText,
   ScrollText,
   UserSquare,
@@ -26,15 +25,15 @@ export default function SidebarStaff({ isOpen = false, onClose }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isAmenitiesActive = location.pathname.startsWith("/amenities");
-  const isItemsActive = location.pathname.startsWith("/items");
+  const isAmenitiesActive = false;
+  const isItemsActive = false; // Items removed across roles
 
   const [expanded, setExpanded] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [profile, setProfile] = useState({});
   const [amenitiesOpen, setAmenitiesOpen] = useState(false);
-  const [itemsOpen, setItemsOpen] = useState(false);
+  // const [itemsOpen, setItemsOpen] = useState(false); // removed
 
   const fetchProfile = () => {
     const userId = localStorage.getItem("user_id");
@@ -67,43 +66,13 @@ export default function SidebarStaff({ isOpen = false, onClose }) {
           <SidebarContext.Provider value={{ expanded }}>
             <ul className="flex-1 px-3 space-y-1">
               <SidebarItem icon={<HomeIcon size={20} />} text="Home" link="/staff_home" active={location.pathname === "/staff_home"} />
+              <SidebarItem icon={<ScrollText size={20} />} text="Monthly Dues" link="/dues" active={location.pathname === "/dues"} />
 
-              <li className="relative">
-                <Link to="#" onClick={(e) => { e.preventDefault(); if (!isAmenitiesActive) navigate("/amenities/view"); setAmenitiesOpen((prev) => !prev); }}
-                  className={`${isAmenitiesActive ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-100 text-white"} flex items-center py-2 px-3 my-1 font-medium rounded-md transition-colors group`}>
-                  <CalendarDays size={20} />
-                  <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>Amenities</span>
-                  {expanded && <div className="ml-auto">{amenitiesOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}</div>}
-                </Link>
-                {amenitiesOpen && expanded && (
-                  <ul className="ml-9 mt-1 space-y-1 text-sm">
-                    <SidebarItem icon={<Eye size={20} />} text="View" link="/amenities/view" active={location.pathname === "/amenities/view"} />
-                    <SidebarItem icon={<Plus size={20} />} text="Add" link="/amenities/add" active={location.pathname === "/amenities/add"} />
-                    <SidebarItem icon={<Wrench size={20} />} text="Edit" link="/amenities/edit" active={location.pathname === "/amenities/edit"} />
-                    <SidebarItem icon={<ScrollText size={20} />} text="Schedules" link="/amenities/schedules" active={location.pathname === "/amenities/schedules"} />
-                  </ul>
-                )}
-              </li>
+              {/* Amenities removed for Finance-focused staff */}
 
-              <li className="relative">
-                <Link to="#" onClick={(e) => { e.preventDefault(); if (!isItemsActive) navigate("/items/view"); setItemsOpen((prev) => !prev); }}
-                  className={`${isItemsActive ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-100 text-white"} flex items-center py-2 px-3 my-1 font-medium rounded-md transition-colors group`}>
-                  <Boxes size={20} />
-                  <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>Items</span>
-                  {expanded && <div className="ml-auto">{itemsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}</div>}
-                </Link>
-                {itemsOpen && expanded && (
-                  <ul className="ml-9 mt-1 space-y-1 text-sm">
-                    <SidebarItem icon={<Eye size={20} />} text="View" link="/items/view" active={location.pathname === "/items/view"} />
-                    <SidebarItem icon={<Plus size={20} />} text="Add" link="/items/add" active={location.pathname === "/items/add"} />
-                    <SidebarItem icon={<Wrench size={20} />} text="Edit" link="/items/edit" active={location.pathname === "/items/edit"} />
-                    <SidebarItem icon={<ScrollText size={20} />} text="Schedule" link="/items/schedule" active={location.pathname === "/items/schedule"} />
-                  </ul>
-                )}
-              </li>
+              {/* Items section removed */}
 
-              <SidebarItem icon={<FileText size={20} />} text="Report" link="/reports" active={location.pathname === "/reports"} />
-              <SidebarItem icon={<UserSquare size={20} />} text="Account" link="/account" active={location.pathname === "/account"} />
+              {/* Account removed for Staff UI/UX per requirements */}
             </ul>
           </SidebarContext.Provider>
         </nav>

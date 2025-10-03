@@ -16,22 +16,38 @@ $proof_path = null;
 
 if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
   $filename = 'proof_' . bin2hex(random_bytes(8)) . '_' . basename($_FILES['payment_proof']['name']);
-$base_upload_dir = realpath(__DIR__ . '/..');
-  if ($base_upload_dir === false) { $base_upload_dir = __DIR__ . '/..'; }
+  // Save under php/uploads to keep a single canonical location
+  $base_upload_dir = __DIR__;
   $target_dir = $base_upload_dir . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'payment_proofs' . DIRECTORY_SEPARATOR;
   if (!is_dir($target_dir)) { mkdir($target_dir, 0777, true); }
   $target = $target_dir . $filename;
   if (move_uploaded_file($_FILES['payment_proof']['tmp_name'], $target)) {
-    $proof_path = 'uploads/payment_proofs/' . $filename; // store relative path
+    $proof_path = 'php/uploads/payment_proofs/' . $filename; // store relative path including php/
   }
 }
 
+// GCASH metadata (optional)
+$gcash_ref = $_POST['gcash_reference'] ?? null;
+$gcash_name = $_POST['gcash_sender_name'] ?? null;
+$gcash_mobile = $_POST['gcash_sender_mobile'] ?? null;
+$gcash_amount = isset($_POST['gcash_amount']) && $_POST['gcash_amount'] !== '' ? floatval($_POST['gcash_amount']) : null;
+
 if ($proof_path) {
-  $stmt = $conn->prepare("UPDATE monthly_dues SET payment_requested = 1, payment_proof_path = ? WHERE id = ?");
-  $stmt->bind_param("si", $proof_path, $id);
+  if ($gcash_amount !== null) {
+    $stmt = $conn->prepare("UPDATE monthly_dues SET payment_requested = 1, payment_proof_path = ?, gcash_reference = ?, gcash_sender_name = ?, gcash_sender_mobile = ?, gcash_amount = ? WHERE id = ?");
+    $stmt->bind_param("ssssid", $proof_path, $gcash_ref, $gcash_name, $gcash_mobile, $gcash_amount, $id);
+  } else {
+    $stmt = $conn->prepare("UPDATE monthly_dues SET payment_requested = 1, payment_proof_path = ?, gcash_reference = ?, gcash_sender_name = ?, gcash_sender_mobile = ? WHERE id = ?");
+    $stmt->bind_param("ssssi", $proof_path, $gcash_ref, $gcash_name, $gcash_mobile, $id);
+  }
 } else {
-  $stmt = $conn->prepare("UPDATE monthly_dues SET payment_requested = 1 WHERE id = ?");
-  $stmt->bind_param("i", $id);
+  if ($gcash_amount !== null) {
+    $stmt = $conn->prepare("UPDATE monthly_dues SET payment_requested = 1, gcash_reference = ?, gcash_sender_name = ?, gcash_sender_mobile = ?, gcash_amount = ? WHERE id = ?");
+    $stmt->bind_param("sssdi", $gcash_ref, $gcash_name, $gcash_mobile, $gcash_amount, $id);
+  } else {
+    $stmt = $conn->prepare("UPDATE monthly_dues SET payment_requested = 1, gcash_reference = ?, gcash_sender_name = ?, gcash_sender_mobile = ? WHERE id = ?");
+    $stmt->bind_param("sssi", $gcash_ref, $gcash_name, $gcash_mobile, $id);
+  }
 }
 
 if ($stmt->execute()) {

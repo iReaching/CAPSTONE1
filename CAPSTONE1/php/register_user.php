@@ -35,7 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("ssssi", $user_id, $email, $hashed_password, $role, $is_admin);
 
     if ($stmt->execute()) {
-        $conn->query("INSERT INTO user_profiles (user_id, full_name, contact_number, profile_pic) VALUES ('$user_id', '', '', '')");
+        // Ensure unit_id column exists in user_profiles
+        $conn->query("ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS unit_id VARCHAR(64) NULL");
+        $unit = $_POST['unit_id'] ?? '';
+        $u = $conn->prepare("INSERT INTO user_profiles (user_id, full_name, contact_number, profile_pic, unit_id) VALUES (?, '', '', '', ?)");
+        $u->bind_param('ss', $user_id, $unit);
+        $u->execute();
+        $u->close();
 
         logAction($user_id, 'insert', "New account created for role: $role", 'register_user.php');
 

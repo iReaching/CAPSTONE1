@@ -11,6 +11,7 @@ import StaffHome from "./pages/StaffHome";
 import GuardHome from "./pages/GuardHome";
 import HomeownerHome from "./pages/HomeownerHome";
 import AdminDues from "./pages/AdminDues";
+import AdminBalances from "./pages/AdminBalances";
 import Amenities from "./pages/Amenities";
 import Reports from "./pages/Reports";
 import EntryLog from "./pages/EntryLog";
@@ -19,17 +20,12 @@ import AmenityView from "./pages/amenitiesSUB/AmenityView";
 import AmenityAdd from "./pages/amenitiesSUB/AmenityAdd";
 import AmenityEdit from "./pages/amenitiesSUB/AmenityEdit";
 import AmenitySchedules from "./pages/amenitiesSUB/AmenitySchedules";
-import ItemsView from "./pages/itemsSUB/ItemsView";
-import ItemsAdd from "./pages/itemsSUB/ItemsAdd";
-import ItemsEdit from "./pages/itemsSUB/ItemsEdit";
-import ItemsSchedule from "./pages/itemsSUB/ItemsSchedule";
 import EntryLogRequest from "./pages/homeownerSUB/EntryLogRequest";
 import SystemLogs from "./pages/SystemLogs";
 import Header from './components/Header';
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import HomeownerDues from "./pages/homeownerSUB/HomeownerDues";
-import BorrowItem from "./pages/homeownerSUB/BorrowItem";
 import BorrowAmenities from "./pages/homeownerSUB/BorrowAmenities";
 import RegisterVehicle from "./pages/homeownerSUB/RegisterVehicle";
 import SubmitReport from "./pages/homeownerSUB/SubmitReport";
@@ -41,7 +37,6 @@ import Health from "./pages/Health";
 import {
   Home as HomeIcon,
   CalendarDays,
-  Boxes,
   FileText,
   ScrollText,
   UserSquare,
@@ -100,7 +95,6 @@ function AppLayout() {
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
           <SidebarItem icon={<HomeIcon size={30} />} text="Home" link="/home" />
           <SidebarItem icon={<CalendarDays size={30} />} text="Amenities" link="/amenities" />
-          <SidebarItem icon={<Boxes size={30} />} text="Items" link="/items" />
           <SidebarItem icon={<FileText size={30} />} text="Report" link="/reports" />
           <SidebarItem icon={<ScrollText size={30} />} text="Entry Log" link="/entrylog" />
           <SidebarItem icon={<UserSquare size={30} />} text="Account" link="/account" />
@@ -117,16 +111,13 @@ function AppLayout() {
             <Route path="/amenities/add" element={<AmenityAdd />} />
             <Route path="/amenities/edit" element={<AmenityEdit />} />
             <Route path="/amenities/schedules" element={<AmenitySchedules />} />
-            <Route path="/items/view" element={<ItemsView />} />
-            <Route path="/items/add" element={<ItemsAdd />} />
-            <Route path="/items/edit" element={<ItemsEdit />} />
-            <Route path="/items/schedule" element={<ItemsSchedule />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/entrylog" element={<EntryLog />} />
             <Route path="/system_logs" element={<SystemLogs />} />
             <Route path="/account" element={<Account />} />
             <Route path="/announcement" element={<AdminAnnouncements />} />
             <Route path="/dues" element={<AdminDues />} />
+            <Route path="/balances" element={<AdminBalances />} />
           </Routes>
         </main>
       </div>
@@ -140,7 +131,6 @@ function AppLayout() {
         <SidebarStaff isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
           <SidebarItem icon={<HomeIcon size={30} />} text="Home" link="/staff_home" />
           <SidebarItem icon={<CalendarDays size={30} />} text="Amenities" link="/amenities" />
-          <SidebarItem icon={<Boxes size={30} />} text="Items" link="/items" />
           <SidebarItem icon={<FileText size={30} />} text="Report" link="/reports" />
           <SidebarItem icon={<UserSquare size={30} />} text="Account" link="/account" />
         </SidebarStaff>
@@ -154,13 +144,9 @@ function AppLayout() {
             <Route path="/amenities/add" element={<AmenityAdd />} />
             <Route path="/amenities/edit" element={<AmenityEdit />} />
             <Route path="/amenities/schedules" element={<AmenitySchedules />} />
-            <Route path="/items" element={<ItemsView />} />
-            <Route path="/items/view" element={<ItemsView />} />
-            <Route path="/items/add" element={<ItemsAdd />} />
-            <Route path="/items/edit" element={<ItemsEdit />} />
-            <Route path="/items/schedule" element={<ItemsSchedule />} />
             <Route path="/reports" element={<Reports />} />
-            <Route path="/account" element={<Account />} />
+            {/* Account route removed for Staff UI/UX */}
+            <Route path="/dues" element={<AdminDues />} />
           </Routes>
         </main>
       </div>
@@ -197,16 +183,10 @@ if (role === "homeowner") {
         <Routes>
           <Route path="/" element={<Navigate to="/homeowner_home" />} />
           <Route path="/homeowner_home" element={<HomeownerHome />} />
-          <Route path="/homeowner/borrow_item" element={<BorrowItem />} />
-          <Route path="/homeowner/borrow_amenities" element={<BorrowAmenities />} />
-          <Route path="/homeowner/register_vehicle" element={<RegisterVehicle />} />
-          <Route path="/homeowner/manage_vehicles" element={<ManageVehicles />} />
           <Route path="/homeowner/submit_report" element={<SubmitReport />} />
-          <Route path="/homeowner/request_entry" element={<EntryLogRequest />} />
           <Route path="/homeowner/visitor_logs" element={<VisitorLogHistory />} />
           <Route path="/homeowner/announcements" element={<HomeownerAnnouncements />} />
           <Route path="/homeowner/dues" element={<HomeownerDues />} />
-          <Route path="/items/view" element={<ItemsView />} />
           <Route path="/amenities/view" element={<AmenityView />} />
         </Routes>
       </main>

@@ -4,7 +4,6 @@ import { BASE_URL } from "../config";
 import {
   LayoutDashboard,
   Building2,
-  Package,
   FileText,
   Shield,
   Users,
@@ -16,6 +15,8 @@ import {
   Clock,
   Loader2
 } from "lucide-react";
+import MarketFeed from "../components/MarketFeed";
+import MarketModeration from "../components/MarketModeration";
 
 export default function Home() {
   const [summary, setSummary] = useState({
@@ -81,6 +82,12 @@ export default function Home() {
             </div>
           </div>
           <p className="text-gray-600 ml-15">Monitor and manage your condominium community</p>
+        </div>
+
+        {/* Marketplace moderation and feed */}
+        <div className="mb-8 space-y-6">
+          <MarketModeration />
+          <MarketFeed role="admin" />
         </div>
 
         {/* Key Metrics */}
@@ -173,42 +180,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Items Card */}
-          <div
-            onClick={() => navigate("/items/view")}
-            className="group cursor-pointer bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:scale-105 transition-all duration-200"
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                <Package className="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Items</h3>
-                <p className="text-sm text-gray-600">Borrowable items</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {summary.item_pending > 0 ? (
-                  <>
-                    <AlertCircle className="w-4 h-4 text-orange-500" />
-                    <span className="text-sm font-medium text-orange-600">
-                      {summary.item_pending} pending request{summary.item_pending !== 1 ? 's' : ''}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-sm text-green-600">All requests handled</span>
-                  </>
-                )}
-              </div>
-              <TrendingUp className="w-4 h-4 text-gray-400 group-hover:text-green-600 transition-colors" />
-            </div>
-          </div>
-
-          {/* Reports Card */}
+          {/* Tickets Card */}
           <div
             onClick={() => navigate("/reports")}
             className="group cursor-pointer bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:scale-105 transition-all duration-200"
@@ -218,8 +190,8 @@ export default function Home() {
                 <FileText className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Reports</h3>
-                <p className="text-sm text-gray-600">Community issues</p>
+                <h3 className="text-lg font-semibold text-gray-900">Tickets</h3>
+                <p className="text-sm text-gray-600">Maintenance and support</p>
               </div>
             </div>
             
@@ -298,7 +270,7 @@ export default function Home() {
 
           {/* Monthly Dues Card */}
           <div
-            onClick={() => navigate("/admin-dues")}
+            onClick={() => navigate("/dues")}
             className="group cursor-pointer bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:scale-105 transition-all duration-200"
           >
             <div className="flex items-center gap-4 mb-4">

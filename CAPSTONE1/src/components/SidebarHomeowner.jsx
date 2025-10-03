@@ -4,7 +4,6 @@ import { BASE_URL } from "../config";
 import {
   Home,
   CalendarDays,
-  Boxes,
   FileText,
   UserSquare,
   MoreVertical,
@@ -56,14 +55,8 @@ export default function SidebarHomeowner({ isOpen = false, onClose }) {
             <ul className={`${expanded ? "flex-1 px-3 space-y-1" : "px-3 space-y-1"}`}>
               <SidebarItem icon={<Home size={20} />} text="Home" link="/homeowner_home" active={location.pathname === "/homeowner_home"} />
               <SidebarItem icon={<CalendarDays size={20} />} text="Amenities" link="/amenities/view" active={location.pathname.startsWith("/amenities")} />
-              <SidebarItem icon={<Boxes size={20} />} text="Items" link="/items/view" active={location.pathname.startsWith("/items")} />
-              <SidebarItem icon={<FileText size={20} />} text="Borrow Amenity" link="/homeowner/borrow_amenities" active={location.pathname === "/homeowner/borrow_amenities"} />
-              <SidebarItem icon={<FileText size={20} />} text="Borrow Item" link="/homeowner/borrow_item" active={location.pathname === "/homeowner/borrow_item"} />
-              <SidebarItem icon={<FileText size={20} />} text="Submit Report" link="/homeowner/submit_report" active={location.pathname === "/homeowner/submit_report"} />
-              <SidebarItem icon={<UserSquare size={20} />} text="Register Vehicle" link="/homeowner/register_vehicle" active={location.pathname === "/homeowner/register_vehicle"} />
-              <SidebarItem icon={<LogIn size={20} />} text="Entry Log Request" link="/homeowner/request_entry" active={location.pathname === "/homeowner/request_entry"} />
+              <SidebarItem icon={<FileText size={20} />} text="Submit a Ticket" link="/homeowner/submit_report" active={location.pathname === "/homeowner/submit_report"} />
               <SidebarItem icon={<FileText size={20} />} text="Visitor Logs" link="/homeowner/visitor_logs" active={location.pathname === "/homeowner/visitor_logs"} />
-              <SidebarItem icon={<UserSquare size={20} />} text="Manage Vehicles" link="/homeowner/manage_vehicles" active={location.pathname === "/homeowner/manage_vehicles"} />
               <SidebarItem icon={<Megaphone size={20} />} text="Announcements" link="/homeowner/announcements" active={location.pathname === "/homeowner/announcements"} />
               <SidebarItem icon={<DollarSign size={20} />} text="Monthly Dues" link="/homeowner/dues" active={location.pathname === "/homeowner/dues"} />
             </ul>

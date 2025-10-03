@@ -17,16 +17,22 @@ include 'db_connect.php';
 include 'cors.php';
 header("Content-Type: application/json");
 
-// Minimal query using only the announcements table (matches your schema)
+// Ensure image column exists (pin/audience removed from UI; keep harmless if present)
+$conn->query("ALTER TABLE announcements ADD COLUMN IF NOT EXISTS image_path VARCHAR(255) NULL");
+
 $sql = "
   SELECT 
-    id,
-    title AS subject,
-    content,
-    date_posted,
-    posted_by
-  FROM announcements
-  ORDER BY date_posted DESC
+    a.id,
+    a.title AS subject,
+    a.content,
+    a.date_posted,
+    a.posted_by,
+    a.image_path,
+    up.full_name AS poster_name,
+    up.profile_pic AS poster_profile_pic
+  FROM announcements a
+  LEFT JOIN user_profiles up ON up.user_id = a.posted_by
+  ORDER BY a.date_posted DESC
 ";
 
 $result = $conn->query($sql);

@@ -26,6 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Enforce single vehicle per tenant
+    $chk = $conn->prepare('SELECT COUNT(*) FROM vehicle_registrations WHERE user_id = ?');
+    $chk->bind_param('s', $user_id);
+    $chk->execute();
+    $chk->bind_result($c); $chk->fetch(); $chk->close();
+    if ((int)$c > 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Only one vehicle is allowed per tenant']);
+        exit;
+    }
+
     // Upload directory: php/uploads/
     $target_dir = __DIR__ . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR;
     if (!is_dir($target_dir)) {

@@ -2,7 +2,7 @@
 include 'cors.php';
 header("Content-Type: application/json");
 
-include '../PHP/db_connect.php';
+include 'db_connect.php';
 include 'log_action.php';
 
 $data = json_decode(file_get_contents("php://input"));

@@ -1,7 +1,97 @@
 import React, { useEffect, useState } from "react";
-import { Pencil, Trash2, X, Megaphone, Plus, Calendar, User, Loader2, CheckCircle } from "lucide-react";
+import { Pencil, Trash2, X, Megaphone, Plus, Calendar, User, Loader2, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { BASE_URL } from "../config";
 import { showToast } from "../lib/toast";
+import { assetUrl } from "../lib/asset";
+function AnnouncementCarouselAdmin({ items }) {
+  const [index, setIndex] = React.useState(0)
+  const touchStartX = React.useRef(null)
+  const n = items.length
+
+  const clamp = (i) => (i + n) % n
+  const prev = () => setIndex((i) => clamp(i - 1))
+  const next = () => setIndex((i) => clamp(i + 1))
+  const go = (i) => setIndex(clamp(i))
+
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX }
+  const onTouchEnd = (e) => {
+    if (touchStartX.current == null) return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    if (Math.abs(dx) > 40) { dx > 0 ? prev() : next() }
+    touchStartX.current = null
+  }
+
+  const a = items[index] || {}
+  const posted = (() => { try { return new Date(a.date_posted).toLocaleString() } catch { return a.date_posted || '' } })()
+  const img = a.image_path ? assetUrl(a.image_path) : null
+  const avatar = a.poster_profile_pic ? assetUrl(a.poster_profile_pic) : null
+
+  const [lightbox, setLightbox] = React.useState(null)
+  return (
+    <div className="relative w-full" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="p-4">
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            {avatar ? (
+              <img src={avatar} alt="avatar" className="w-8 h-8 rounded-full border" />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gray-200" />
+            )}
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">{a.title}</h3>
+              <div className="text-xs text-gray-500 mt-1">{a.poster_name ? `By ${a.poster_name} • ` : ''}{posted}</div>
+            </div>
+          </div>
+        </div>
+        {a.content && (
+          <div className="text-sm text-gray-800 mt-2 whitespace-pre-wrap">{a.content}</div>
+        )}
+        {img && (
+          <div className="mt-3">
+            <button type="button" onClick={() => setLightbox(img)} className="block w-full">
+              <img src={img} alt="Announcement" className="w-full max-h-80 object-cover rounded border-2 border-black" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {n > 1 && (
+        <>
+          <button
+            aria-label="Previous"
+            onClick={prev}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full z-30 p-2 text-black hover:text-neutral-700 focus:outline-none pointer-events-auto"
+          >
+            <ChevronLeft className="w-6 h-6 text-black" />
+          </button>
+          <button
+            aria-label="Next"
+            onClick={next}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full z-30 p-2 text-black hover:text-neutral-700 focus:outline-none pointer-events-auto"
+          >
+            <ChevronRight className="w-6 h-6 text-black" />
+          </button>
+
+          <div className="flex items-center justify-center gap-2 py-3 z-20">
+            {items.map((_, i) => (
+              <span
+                key={i}
+                onClick={() => go(i)}
+                className={`w-2.5 h-2.5 rounded-full cursor-pointer border ${i === index ? 'border-black bg-black' : 'border-black bg-transparent'}`}
+              ></span>
+            ))}
+          </div>
+        </>
+      )}
+      {lightbox && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center" onClick={()=> setLightbox(null)}>
+          <img src={lightbox} alt="full" className="max-w-[90vw] max-h-[85vh] object-contain rounded border bg-white" />
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function AdminAnnouncements() {
   const userId = localStorage.getItem("user_id");
   const [announcements, setAnnouncements] = useState([]);
@@ -43,6 +133,7 @@ export default function AdminAnnouncements() {
     form.append("title", formData.title);
     form.append("body", formData.body);
     form.append("user_id", userId);
+    if (formData.image) form.append('image', formData.image);
     if (editingId) form.append("id", editingId);
 
     try {
@@ -139,7 +230,7 @@ export default function AdminAnnouncements() {
             </h3>
           </div>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
               <input
@@ -169,6 +260,15 @@ export default function AdminAnnouncements() {
                 maxLength={1000}
                 required
               ></textarea>
+            </div>
+
+            {/* Image uploader */}
+            <div>
+              <label className="block text-sm font-medium text-black mb-1">Image (optional)</label>
+              <div className="border-2 border-black rounded p-2 inline-block">
+                <input type="file" accept="image/*" onChange={(e)=> setFormData({...formData, image: e.target.files?.[0]||null, preview: e.target.files?.[0]? URL.createObjectURL(e.target.files[0]) : null})} className="text-black" />
+              </div>
+              {formData.preview && <img src={formData.preview} alt="preview" className="h-20 mt-2 rounded border-2 border-black" />}
             </div>
             
             <div className="flex items-center justify-between">
@@ -210,63 +310,13 @@ export default function AdminAnnouncements() {
           </form>
         </div>
 
-        {/* Announcements List */}
-        <div className="space-y-4">
-          {announcements.length === 0 ? (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
-              <Megaphone className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No announcements yet</h3>
-              <p className="text-gray-600">Create your first announcement to share with the community.</p>
-            </div>
-          ) : (
-            announcements.map((announcement) => (
-              <div key={announcement.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h4 className="text-xl font-semibold text-gray-900 mb-2">{announcement.title}</h4>
-                    <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        <span>Posted: {new Date(announcement.date_posted).toLocaleDateString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <User className="w-4 h-4" />
-                        <span>By Admin</span>
-                      </div>
-                    </div>
-                    <p className="text-gray-700 leading-relaxed">{announcement.content}</p>
-                  </div>
-                  
-                  <div className="flex gap-2 ml-4">
-                    <button
-                      onClick={() => {
-                        setFormData({ title: announcement.title, body: announcement.content });
-                        setEditingId(announcement.id);
-                      }}
-                      disabled={deleting === announcement.id}
-                      className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
-                      title="Edit announcement"
-                    >
-                      <Pencil size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(announcement.id)}
-                      disabled={deleting === announcement.id}
-                      className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                      title="Delete announcement"
-                    >
-                      {deleting === announcement.id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Trash2 size={18} />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        {/* Preview Carousel */}
+        {announcements.length > 0 && (
+          <div className="relative w-full max-w-3xl mx-auto border rounded-2xl bg-white shadow-sm mb-8">
+            <AnnouncementCarouselAdmin items={announcements} />
+          </div>
+        )}
+
       </div>
     </div>
   );

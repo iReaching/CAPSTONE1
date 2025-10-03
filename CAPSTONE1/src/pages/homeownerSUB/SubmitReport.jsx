@@ -71,8 +71,8 @@ export default function SubmitReport() {
               <FileText className="w-5 h-5 text-white" />
             </div>
             <div className="text-center sm:text-left">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Submit Report</h1>
-              <p className="text-gray-600">Let the admin know about issues or incidents</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Submit a Ticket</h1>
+              <p className="text-gray-600">Open a maintenance/support ticket</p>
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function SubmitReport() {
               <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                 <FileText className="w-4 h-4 text-blue-600" />
               </div>
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Report Details</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Ticket Details</h2>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -91,7 +91,8 @@ export default function SubmitReport() {
                 <MessageSquare className="w-4 h-4 inline mr-1" />
                 Message
               </label>
-              <Textarea id="report-message" name="message" value={formData.message} onChange={handleChange} rows={4} maxLength={1000} required disabled={submitting} />
+              <Textarea id="report-message" name="message" placeholder="Describe the issue (e.g., 'Water leak in bathroom near sink')" value={formData.message} onChange={handleChange} rows={4} maxLength={1000} required disabled={submitting} />
+              <p className="mt-1 text-xs text-gray-500">Tip: Include where and when you noticed the issue.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -100,14 +101,14 @@ export default function SubmitReport() {
                   <MapPin className="w-4 h-4 inline mr-1" />
                   Block
                 </label>
-                <Input type="number" min={1} step={1} name="block" value={formData.block} onChange={handleChange} required disabled={submitting} />
+                <Input type="number" min={1} step={1} name="block" placeholder="e.g., 12" value={formData.block} onChange={handleChange} required disabled={submitting} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <MapPin className="w-4 h-4 inline mr-1" />
                   Lot
                 </label>
-                <Input type="number" min={1} step={1} name="lot" value={formData.lot} onChange={handleChange} required disabled={submitting} />
+                <Input type="number" min={1} step={1} name="lot" placeholder="e.g., 8" value={formData.lot} onChange={handleChange} required disabled={submitting} />
               </div>
             </div>
 
@@ -116,12 +117,12 @@ export default function SubmitReport() {
                 {submitting ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Submitting Report...
+                    Submitting Ticket...
                   </>
                 ) : (
                   <>
                     <Send className="w-5 h-5" />
-                    Submit Report
+                    Submit Ticket
                   </>
                 )}
               </Button>

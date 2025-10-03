@@ -13,7 +13,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $time_start = $_POST['time_start'] ?? '';
     $time_end = $_POST['time_end'] ?? '';
 
-    if (!$amenity_id || !$homeowner_id || !$house_id || !$request_date || !$time_start || !$time_end) {
+    // If house/unit id not provided, try to derive from account profile (unit_id in user_profiles)
+    if (!$house_id && $homeowner_id) {
+        $q = $conn->prepare("SHOW COLUMNS FROM user_profiles LIKE 'unit_id'");
+        $q->execute(); $exists = $q->get_result()->num_rows > 0; $q->close();
+        if ($exists) {
+            $s = $conn->prepare("SELECT unit_id FROM user_profiles WHERE user_id = ?");
+            $s->bind_param('s', $homeowner_id); $s->execute(); $r = $s->get_result()->fetch_assoc(); $s->close();
+            if ($r && !empty($r['unit_id'])) { $house_id = $r['unit_id']; }
+        }
+    }
+
+    if (!$amenity_id || !$homeowner_id || !$request_date || !$time_start || !$time_end) {
         echo json_encode(["success" => false, "message" => "Missing required fields"]);
         exit;
     }

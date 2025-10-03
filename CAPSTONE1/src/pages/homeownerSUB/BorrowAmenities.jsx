@@ -68,17 +68,16 @@ export default function BorrowAmenities() {
     const payload = new FormData();
     payload.append("homeowner_id", homeownerId);
     payload.append("amenity_id", formData.amenity_id);
-    payload.append("house_id", formData.house_id);
     payload.append("message", formData.message || "");
 
     if (formData.request_date)
       payload.append("request_date", formData.request_date.toISOString().split("T")[0]);
 
     if (formData.time_start)
-      payload.append("time_start", formData.time_start.toTimeString().slice(0, 5));
+      payload.append("time_start", typeof formData.time_start === 'string' ? formData.time_start : formData.time_start.toTimeString().slice(0, 5));
 
     if (formData.time_end)
-      payload.append("time_end", formData.time_end.toTimeString().slice(0, 5));
+      payload.append("time_end", typeof formData.time_end === 'string' ? formData.time_end : formData.time_end.toTimeString().slice(0, 5));
 
     try {
       const response = await fetch(`${BASE_URL}schedule_amenity.php`, {
@@ -182,15 +181,17 @@ export default function BorrowAmenities() {
                   <Calendar className="w-4 h-4 inline mr-1" />
                   Date
                 </label>
-                <DatePicker
-                  selected={formData.request_date}
-                  onChange={(date) => setFormData({ ...formData, request_date: date })}
-                  dateFormat="yyyy-MM-dd"
-                  minDate={new Date()}
+                <input
+                  type="date"
+                  value={formData.request_date ? formData.request_date.toISOString().slice(0,10) : ''}
+                  onChange={(e) => {
+                    const v = e.target.value; setFormData({ ...formData, request_date: v? new Date(v): null })
+                  }}
+                  min={new Date().toISOString().slice(0,10)}
                   disabled={submitting}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors disabled:opacity-50"
-                  placeholderText="Select date"
                 />
+                <p className="mt-1 text-xs text-gray-500">Example: 2025-10-02</p>
               </div>
               
               <div>
@@ -198,18 +199,14 @@ export default function BorrowAmenities() {
                   <Clock className="w-4 h-4 inline mr-1" />
                   Start Time
                 </label>
-                <DatePicker
-                  selected={formData.time_start}
-                  onChange={(time) => setFormData({ ...formData, time_start: time })}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeIntervals={15}
-                  timeCaption="Start"
-                  dateFormat="HH:mm"
+                <input
+                  type="time"
+                  value={typeof formData.time_start === 'string' ? formData.time_start : (formData.time_start ? formData.time_start.toTimeString().slice(0,5) : '')}
+                  onChange={(e)=> setFormData({ ...formData, time_start: e.target.value })}
                   disabled={submitting}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors disabled:opacity-50"
-                  placeholderText="Start time"
                 />
+                <p className="mt-1 text-xs text-gray-500">Example: 09:00</p>
               </div>
               
               <div>
@@ -217,38 +214,18 @@ export default function BorrowAmenities() {
                   <Clock className="w-4 h-4 inline mr-1" />
                   End Time
                 </label>
-                <DatePicker
-                  selected={formData.time_end}
-                  onChange={(time) => setFormData({ ...formData, time_end: time })}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeIntervals={15}
-                  timeCaption="End"
-                  dateFormat="HH:mm"
+                <input
+                  type="time"
+                  value={typeof formData.time_end === 'string' ? formData.time_end : (formData.time_end ? formData.time_end.toTimeString().slice(0,5) : '')}
+                  onChange={(e)=> setFormData({ ...formData, time_end: e.target.value })}
                   disabled={submitting}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors disabled:opacity-50"
-                  placeholderText="End time"
                 />
+                <p className="mt-1 text-xs text-gray-500">Example: 11:30</p>
               </div>
             </div>
 
-            {/* House ID */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Home className="w-4 h-4 inline mr-1" />
-                House/Unit ID
-              </label>
-              <input
-                type="text"
-                name="house_id"
-                value={formData.house_id}
-                onChange={handleChange}
-                disabled={submitting}
-                required
-                placeholder="e.g., Unit 101, Block A"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-            </div>
+            {/* House ID removed: derived from your account details */}
 
             {/* Message */}
             <div>
@@ -294,7 +271,7 @@ export default function BorrowAmenities() {
             <div>
               <h3 className="font-medium text-blue-900 mb-1">Booking Guidelines</h3>
               <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Bookings must be made at least 24 hours in advance</li>
+                <li>• Bookings must be made at least 48 hours in advance</li>
                 <li>• Maximum booking duration is 4 hours per session</li>
                 <li>• You will receive a confirmation once approved</li>
                 <li>• Cancellations must be made 12 hours before the booking</li>

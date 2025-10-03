@@ -2,10 +2,9 @@ import { useState, useContext, createContext, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import ProfileModal from "./ProfileModal";
 import { BASE_URL } from "../config";
-import {
+import { 
   Home as HomeIcon,
   CalendarDays,
-  Boxes,
   FileText,
   ScrollText,
   UserSquare,
@@ -35,14 +34,10 @@ export default function Sidebar({ children, isOpen = false, onClose }) {
     "/amenities/schedules"
   ].includes(location.pathname);
   
-  const isItemsActive = [
-    "/items/view",
-    "/items/add",
-    "/items/edit",
-    "/items/schedule"
-  ].includes(location.pathname);
+  // Items section removed across all roles
+  const isItemsActive = false;
   
-  const [itemsOpen, setItemsOpen] = useState(false);
+  // const [itemsOpen, setItemsOpen] = useState(false);
   const [expanded, setExpanded] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
@@ -153,56 +148,15 @@ className={`fixed top-0 left-0 z-50 h-screen bg-[var(--brand)] transition-transf
                 )}
               </li>
 
-              <li className="relative">
-                <Link
-                  to="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (!isItemsActive) {
-                      navigate("/items/view");
-                    }
-                    setItemsOpen((prev) => !prev);
-                  }}
-                  className={`
-                    flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer
-                    transition-colors group w-full
-                    ${isItemsActive ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800" : "hover:bg-gray-50 text-white"}
-                  `}
-                >
-                  <Boxes size={18} />
-                  <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
-                    Items
-                  </span>
+              {/* Items section removed */}
 
-                  {!expanded && (
-                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2 py-1 rounded-md bg-indigo-100 text-indigo-800 text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all z-50">
-                      Items
-                    </div>
-                  )}
-
-                  {expanded && (
-                    <div className="ml-auto">
-                      {itemsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                    </div>
-                  )}
-                </Link>
-
-                {itemsOpen && expanded && (
-                  <ul className="ml-9 mt-1 space-y-1 text-sm">
-                    <SidebarItem icon={<Eye size={16} />} text="View" link="/items/view" active={location.pathname === "/items/view"} />
-                    <SidebarItem icon={<Plus size={16} />} text="Add" link="/items/add" active={location.pathname === "/items/add"} />
-                    <SidebarItem icon={<Wrench size={16} />} text="Edit" link="/items/edit" active={location.pathname === "/items/edit"} />
-                    <SidebarItem icon={<ScrollText size={16} />} text="Schedule" link="/items/schedule" active={location.pathname === "/items/schedule"} />
-                  </ul>
-                )}
-              </li>
-
-              <SidebarItem icon={<FileText size={18} />} text="Report" link="/reports" active={location.pathname === "/reports"} />
+              <SidebarItem icon={<FileText size={18} />} text="Tickets" link="/reports" active={location.pathname === "/reports"} />
               <SidebarItem icon={<ScrollText size={18} />} text="Entry Log" link="/entrylog" active={location.pathname === "/entrylog"} />
               <SidebarItem icon={<ScrollText size={18} />} text="System Logs" link="/system_logs" active={location.pathname === "/system_logs"} />
               <SidebarItem icon={<UserSquare size={18} />} text="Account" link="/account" active={location.pathname === "/account"} />
               <SidebarItem icon={<Megaphone size={18} />} text="Announcement" link="/announcement" active={location.pathname === "/announcement"} />
               <SidebarItem icon={<DollarSign size={18} />} text="Monthly Dues" link="/dues" active={location.pathname === "/dues"} />
+              <SidebarItem icon={<DollarSign size={18} />} text="Balances" link="/balances" active={location.pathname === "/balances"} />
             </ul>
           </SidebarContext.Provider>
         </nav>

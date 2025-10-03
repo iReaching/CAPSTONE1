@@ -234,16 +234,15 @@ export default function EntryLog() {
             </div>
             <div className="flex flex-col md:flex-row items-stretch gap-2">
               <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-600">From</label>
+                <label className="text-sm text-gray-600">From <span className="text-xs text-gray-500">(e.g., 2025-10-02)</span></label>
                 <Input type="date" value={fromDate} onChange={(e) => { setFromDate(e.target.value); setPage(1); }} />
               </div>
               <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-600">To</label>
+                <label className="text-sm text-gray-600">To <span className="text-xs text-gray-500">(e.g., 2025-10-15)</span></label>
                 <Input type="date" value={toDate} onChange={(e) => { setToDate(e.target.value); setPage(1); }} />
               </div>
               <div className="flex-1" />
               <div className="flex items-center gap-2">
-                <Button variant="secondary" onClick={() => setColumns((c) => ({ ...c, actions: c.actions }))} className="hidden" />
                 <Button variant="secondary" onClick={() => exportCSV()} disabled={exporting}>{exporting ? 'Exporting…' : 'Export CSV'}</Button>
               </div>
             </div>

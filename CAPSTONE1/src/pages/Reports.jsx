@@ -85,7 +85,7 @@ export default function Reports() {
 
   if (loading) {
     return (
-      <Page title="Maintenance Reports">
+      <Page title="Tickets">
         <div className="flex items-center justify-center min-h-[300px]">
           <div className="flex items-center gap-3 text-gray-600">
             <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
@@ -97,7 +97,7 @@ export default function Reports() {
   }
 
   return (
-    <Page title="Maintenance Reports" description="Manage community issues and maintenance requests" actions={Tabs}>
+    <Page title="Tickets" description="Manage maintenance and support tickets" actions={Tabs}>
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
         <Card>
