@@ -23,7 +23,7 @@ if ($rate_id === null || $rate_id === '') {
 } else {
   $rate_id = (int)$rate_id;
   $stmt = $conn->prepare("INSERT INTO monthly_dues (user_id, amount_due, due_month, rate_id, payment_method) VALUES (?, ?, ?, ?, ?)");
-  $stmt->bind_param("sisds", $user_id, $amount_due, $due_month, $rate_id, $payment_method);
+  $stmt->bind_param("sdsis", $user_id, $amount_due, $due_month, $rate_id, $payment_method);
 }
 
 $conn->begin_transaction();
@@ -31,6 +31,7 @@ try {
   if (!$stmt->execute()) { throw new Exception($stmt->error ?: 'Insert failed'); }
   logAction($user_id, 'insert', "Added monthly due for $due_month", basename(__FILE__));
   // Insert ledger charge safely with FK present
+  /*
   $new_id = (int)$conn->insert_id;
   if ($new_id <= 0) { throw new Exception('Insert failed (no ID)'); }
 
@@ -47,9 +48,9 @@ try {
   $ins = $conn->prepare("INSERT INTO dues_ledger (user_id, due_id, entry_type, amount, note) VALUES (?,?,?,?,?)");
   $etype='charge'; $note='Monthly due charge';
   $amt = (float)$amount_due;
-  $ins->bind_param('sisss', $user_id, $new_id, $etype, $amt, $note);
+  $ins->bind_param('sisds', $user_id, $new_id, $etype, $amt, $note);
   if (!$ins->execute() || $ins->affected_rows !== 1) { throw new Exception('Failed to add ledger charge'); }
-  $ins->close();
+  $ins->close(); */
   $conn->commit();
   echo json_encode(["success" => true]);
 } catch (Exception $e) {

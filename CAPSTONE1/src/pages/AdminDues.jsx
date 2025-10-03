@@ -421,6 +421,7 @@ const policy = { dueDay: 10 };
         </div>
 
         {/* Balances */}
+        {/*
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -468,7 +469,7 @@ const policy = { dueDay: 10 };
               </table>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Rates Management */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
@@ -600,6 +601,7 @@ const policy = { dueDay: 10 };
         </div>
 
         {/* Advance Payments (pending approval) */}
+        {/*
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -666,7 +668,7 @@ const policy = { dueDay: 10 };
               </table>
             </div>
           )}
-        </div>
+        </div>*/}
 
         {/* GCASH Settings */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">

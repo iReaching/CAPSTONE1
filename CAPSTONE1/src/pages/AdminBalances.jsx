@@ -73,7 +73,7 @@ export default function AdminBalances() {
     if (!p) return null; return assetUrl(p);
   };
 
-  return (
+  /*return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 p-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
@@ -180,5 +180,5 @@ export default function AdminBalances() {
         </div>
       </div>
     </div>
-  );
+  );*/
 }

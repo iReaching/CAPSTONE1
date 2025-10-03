@@ -249,71 +249,10 @@ const unpaid = [...dues].filter(d => Number(d.is_paid)===0).sort((a,b)=> String(
     );
   }
 
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 p-6">
       <div className="max-w-6xl mx-auto">
-        {/* Balance Card + Advance Payment */}
-<div className="grid grid-cols-1 gap-4 mb-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-            <div className="text-sm text-gray-600">Current Balance</div>
-            <div className={`text-3xl font-bold ${balance < 0 ? 'text-green-600' : (balance>0? 'text-red-600':'text-gray-900')}`}>
-              {balance < 0 ? `Credit: ₱${Math.abs(balance).toLocaleString()}` : `₱${Number(balance).toLocaleString()}`}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">Negative means you have advance credit.</div>
-          </div>
-        </div>
-
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
-              <CreditCard className="w-5 h-5 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900">Monthly Dues</h1>
-          </div>
-          <p className="text-gray-600">Track your monthly association dues and payment status</p>
-        </div>
-
-        {/* Pay in Advance (moved under Monthly Dues title) */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
-          <div className="text-sm font-medium text-gray-900 mb-2">Pay in advance</div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <input type="number" min="0" step="0.01" placeholder="Amount (PHP)" className="w-full border rounded px-3 py-2" value={adv.amount} onChange={(e)=> setAdv({...adv, amount:e.target.value})} />
-            <label className="inline-flex items-center gap-2 px-3 py-2 border-2 border-black rounded bg-white cursor-pointer text-black">
-              <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e)=> {
-                const f = e.target.files?.[0] || null;
-                setAdv(prev=> ({...prev, proof: f, preview: f && f.type.startsWith('image/') ? URL.createObjectURL(f) : null }));
-              }} />
-              Upload Proof (optional)
-            </label>
-            {adv.preview && (
-              <img src={adv.preview} alt="preview" className="h-12 w-12 object-cover rounded border" />
-            )}
-            {!adv.preview && adv.proof && (
-              <span className="text-xs text-gray-600 truncate">{adv.proof.name}</span>
-            )}
-            <button disabled={advSubmitting || !adv.amount} onClick={async ()=>{
-              try{
-                setAdvSubmitting(true);
-                const fd = new FormData();
-                fd.append('user_id', userId);
-                fd.append('amount', adv.amount);
-                if (adv.proof) fd.append('proof', adv.proof);
-const res = await fetch(`${BASE_URL}record_advance_payment.php`, { method:'POST', body: fd, credentials:'include' });
-                  const data = await res.json();
-                  const note=document.createElement('div'); note.className=`fixed top-20 right-4 ${data.success? 'bg-green-600':'bg-red-600'} text-white px-4 py-2 rounded`; note.textContent=data.success? 'Advance payment submitted for review' : (data.message||'Failed'); document.body.appendChild(note); setTimeout(()=>note.remove(),2500);
-                if (data.success) {
-                  // Refresh dues and balance
-                  const up = await fetch(`${BASE_URL}get_dues.php?user_id=${userId}`, { credentials:'include' });
-                  const arr = await up.json(); setDues(Array.isArray(arr)? arr:[]);
-// Balance will update after admin approval
-                    setAdv({ amount:'', proof:null });
-                }
-              }catch(e){ console.error(e);} finally { setAdvSubmitting(false);}                
-            }} className="px-4 py-2 bg-indigo-600 text-white rounded disabled:opacity-50">{advSubmitting? 'Submitting...' : 'Submit'}</button>
-          </div>
-          <div className="text-xs text-gray-500 mt-1">Advance payments will appear as a credit (negative balance).</div>
-        </div>
 
         {/* Payment method notice + GCASH Recipient */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">

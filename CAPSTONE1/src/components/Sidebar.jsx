@@ -156,7 +156,6 @@ className={`fixed top-0 left-0 z-50 h-screen bg-[var(--brand)] transition-transf
               <SidebarItem icon={<UserSquare size={18} />} text="Account" link="/account" active={location.pathname === "/account"} />
               <SidebarItem icon={<Megaphone size={18} />} text="Announcement" link="/announcement" active={location.pathname === "/announcement"} />
               <SidebarItem icon={<DollarSign size={18} />} text="Monthly Dues" link="/dues" active={location.pathname === "/dues"} />
-              <SidebarItem icon={<DollarSign size={18} />} text="Balances" link="/balances" active={location.pathname === "/balances"} />
             </ul>
           </SidebarContext.Provider>
         </nav>
