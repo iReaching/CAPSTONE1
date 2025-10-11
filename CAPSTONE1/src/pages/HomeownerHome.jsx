@@ -14,6 +14,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import MarketFeed from "../components/MarketFeed";
+import AnnouncementsPanel from "../components/AnnouncementsPanel";
 export default function HomeownerHome() {
   const navigate = useNavigate();
 
@@ -34,9 +35,11 @@ export default function HomeownerHome() {
           <p className="text-gray-600 ml-15">Access all your community services and manage your home</p>
         </div>
 
-        {/* Marketplace feed */}
-        <div className="mb-8">
-          <MarketFeed role="homeowner" />
+        <div className="grid gap-6 mb-8">
+          <AnnouncementsPanel role="homeowner" />
+          <div>
+            <MarketFeed role="homeowner" />
+          </div>
         </div>
 
         {/* Quick Actions */}

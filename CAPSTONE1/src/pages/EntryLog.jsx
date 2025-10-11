@@ -282,7 +282,7 @@ export default function EntryLog() {
           ) : logs.length === 0 ? (
             <div className="flex items-center justify-center h-40 text-gray-500 italic">No entry logs found.</div>
           ) : (
-          <Table>
+          <Table className="max-h-[60vh] overflow-y-auto">
             <THead>
               <TR>
                 {columns.name && <TH>Name</TH>}
@@ -367,8 +367,8 @@ export default function EntryLog() {
 
       {/* View Modal */}
       {viewModalOpen && selectedLog && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50">
-          <div className="bg-white text-black p-6 rounded-lg max-w-xl w-full shadow-lg relative">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 px-3 py-6">
+          <div className="bg-white text-black p-6 rounded-lg max-w-xl w-full shadow-lg relative max-h-[85vh] overflow-y-auto">
             <button onClick={() => setViewModalOpen(false)} className="absolute top-2 right-2 text-gray-500 hover:text-black text-xl" aria-label="Close details">
               &times;
             </button>
@@ -400,8 +400,8 @@ export default function EntryLog() {
 
       {/* Delete Confirm Modal */}
       {deleteModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white text-black p-6 rounded-lg max-w-md w-full shadow-lg">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 px-3 py-6">
+          <div className="bg-white text-black p-6 rounded-lg max-w-md w-full shadow-lg max-h-[70vh] overflow-y-auto">
             <h3 className="text-lg font-semibold">Delete entry?</h3>
             <p className="mt-2 text-sm text-gray-600">This action cannot be undone.</p>
             <div className="mt-6 flex items-center justify-end gap-2">

@@ -31,6 +31,12 @@ $sel_pay = $conn->prepare("SELECT COALESCE(SUM(amount),0) AS s FROM dues_ledger 
 $sel_late = $conn->prepare("SELECT COALESCE(SUM(amount),0) AS s FROM dues_ledger WHERE due_id=? AND entry_type='late_fee'");
 $sel_adj = $conn->prepare("SELECT COALESCE(SUM(amount),0) AS s FROM dues_ledger WHERE due_id=? AND entry_type='adjustment'");
 
+$txn_stmt = null;
+$txn_table = $conn->query("SHOW TABLES LIKE 'gcash_transactions'");
+if ($txn_table && $txn_table->num_rows > 0) {
+  $txn_stmt = $conn->prepare("SELECT reference, status, checkout_url, gcash_payment_id, updated_at FROM gcash_transactions WHERE due_id = ? ORDER BY id DESC LIMIT 1");
+}
+
 $dues = [];
 while ($row = $result->fetch_assoc()) {
   $row_is_paid = isset($row['is_paid']) ? (int)$row['is_paid'] : 0;
@@ -79,10 +85,21 @@ while ($row = $result->fetch_assoc()) {
   $row['late_total'] = $late_total;
   $row['adjustment_total'] = $adj_total;
   $row['outstanding'] = $outstanding;
+  $row['gcash_transaction'] = null;
+
+  if ($txn_stmt && $due_id) {
+    $txn_stmt->bind_param('i', $due_id);
+    $txn_stmt->execute();
+    $txn_res = $txn_stmt->get_result()->fetch_assoc();
+    $row['gcash_transaction'] = $txn_res ?: null;
+  }
 
   $dues[] = $row;
 }
 
 echo json_encode($dues);
+if ($txn_stmt) {
+  $txn_stmt->close();
+}
 $conn->close();
 ?>

@@ -14,7 +14,7 @@ export default function AmenityView() {
   const isHomeowner = role === 'homeowner';
   const [allAmenities, setAllAmenities] = useState([]);
   const [submitting, setSubmitting] = useState(false);
-  const [formData, setFormData] = useState({ amenity_id: "", request_date: null, time_start: null, time_end: null, house_id: "", message: "" });
+  const [formData, setFormData] = useState({ amenity_id: "", request_date: null, time_start: null, time_end: null, message: "" });
 
   // UI enhancements
   const [bookedSet, setBookedSet] = useState(new Set()); // amenity_ids booked on selected date
@@ -65,15 +65,14 @@ export default function AmenityView() {
       const fd = new FormData();
       fd.append('homeowner_id', homeownerId);
       fd.append('amenity_id', formData.amenity_id);
-      fd.append('house_id', formData.house_id);
-      fd.append('message', formData.message || '');
+            fd.append('message', formData.message || '');
       if (formData.request_date) fd.append('request_date', formData.request_date.toISOString().split('T')[0]);
       if (formData.time_start) fd.append('time_start', formData.time_start.toTimeString().slice(0,5));
       if (formData.time_end) fd.append('time_end', formData.time_end.toTimeString().slice(0,5));
       const res = await fetch(`${BASE_URL}schedule_amenity.php`, { method:'POST', body: fd, credentials:'include' });
 const result = await res.json();
       const el=document.createElement('div'); el.className=`fixed top-20 right-4 ${result.success!==false? 'bg-green-600':'bg-red-600'} text-white px-4 py-2 rounded`; el.textContent=result.message || (result.success!==false? 'Amenity booking request submitted!':'Failed to submit request'); document.body.appendChild(el); setTimeout(()=>el.remove(),3000);
-      if (result.success!==false) setFormData({ amenity_id:"", request_date:null, time_start:null, time_end:null, house_id:"", message:"" });
+      if (result.success!==false) setFormData({ amenity_id:"", request_date:null, time_start:null, time_end:null, message:"" });
     } catch(e){ console.error(e);} finally { setSubmitting(false); }
   };
 
@@ -118,10 +117,6 @@ const result = await res.json();
                     const [h,m]=e.target.value.split(':'); const d=new Date(); d.setHours(+h||0, +m||0,0,0); setFormData({...formData, time_end: e.target.value? d:null});
                   }} required />
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">House/Unit ID</label>
-                <input className="w-full p-3 border rounded" name="house_id" value={formData.house_id} onChange={handleChange} placeholder="e.g., Unit 101" required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Additional Message (Optional)</label>
@@ -246,3 +241,7 @@ const result = await res.json();
     </Page>
   );
 }
+
+
+
+

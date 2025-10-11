@@ -7,6 +7,7 @@ import Card, { CardContent } from "../components/ui/Card";
 import Input from "../components/ui/Input";
 import Select from "../components/ui/Select";
 import Button from "../components/ui/Button";
+import AnnouncementsPanel from "../components/AnnouncementsPanel";
 
 export default function GuardHome() {
   const [preview, setPreview] = useState("");
@@ -143,6 +144,7 @@ export default function GuardHome() {
 
   return (
     <Page title="Entry Log Submission" description="Security can record visitor entries here">
+      <AnnouncementsPanel role="guard" showViewAll={false} className="mb-6" />
       {loading && (
         <div className="text-gray-600 bg-white/50 border rounded px-4 py-2 mb-4">Loading recent logs...</div>
       )}

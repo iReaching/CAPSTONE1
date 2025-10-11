@@ -3,6 +3,7 @@ include 'db_connect.php';
 include 'log_action.php';
 include 'check_auth.php';
 include 'cors.php';
+require_once __DIR__ . '/gcash_client.php';
 header("Content-Type: application/json");
 
 require_role(['admin']);
@@ -16,9 +17,10 @@ if (!$id) {
 }
 
 // Fetch amounts for ledger
-$sel = $conn->prepare("SELECT user_id, amount_due, COALESCE(gcash_amount, amount_due) AS requested_amount FROM monthly_dues WHERE id = ?");
+$sel = $conn->prepare("SELECT user_id, amount_due, gcash_reference, COALESCE(gcash_amount, amount_due) AS requested_amount FROM monthly_dues WHERE id = ?");
 $sel->bind_param('i', $id); $sel->execute(); $res = $sel->get_result(); $row = $res->fetch_assoc(); $sel->close();
 $user_for_due = $row ? $row['user_id'] : null; $requested_amount = $row ? (float)$row['requested_amount'] : 0.0;
+$gcash_reference = $row ? $row['gcash_reference'] : null;
 
 // Compute outstanding before approval using ledger
 $paid_total = 0.0; $late_total = 0.0; $adj_total = 0.0; $amount_due = $row ? (float)$row['amount_due'] : 0.0;
@@ -76,6 +78,23 @@ try {
   $stmt->bind_param("isi", $paid_flag, $admin_id, $id);
   if (!$stmt->execute()) { throw new Exception('Failed to update due'); }
   $stmt->close();
+
+  $gcashConfig = gcash_sandbox_config();
+  if ($gcashConfig['mode_is_sandbox'] && $gcash_reference) {
+    gcash_ensure_transactions_table($conn);
+    $lookup = $conn->prepare("SELECT id FROM gcash_transactions WHERE reference = ? ORDER BY id DESC LIMIT 1");
+    $lookup->bind_param('s', $gcash_reference);
+    $lookup->execute();
+    $txnRow = $lookup->get_result()->fetch_assoc();
+    $lookup->close();
+    if ($txnRow) {
+      gcash_update_transaction($conn, (int)$txnRow['id'], 'approved_manual', [
+        'manual_approval' => true,
+        'admin_id' => $admin_id,
+        'reference' => $gcash_reference,
+      ]);
+    }
+  }
 
   $conn->commit();
   logAction($admin_id, 'update', "Approved payment for due ID $id (applied=".$to_apply.", overpay=".$overpay.")", basename(__FILE__));

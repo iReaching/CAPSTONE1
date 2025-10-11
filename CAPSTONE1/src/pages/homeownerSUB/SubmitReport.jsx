@@ -2,61 +2,61 @@ import React, { useState } from "react";
 import { BASE_URL } from "../../config";
 import Page from "../../components/ui/Page";
 import Card, { CardContent } from "../../components/ui/Card";
-import Input from "../../components/ui/Input";
 import Textarea from "../../components/ui/Textarea";
 import Button from "../../components/ui/Button";
-import { FileText, Send, Loader2, MapPin, MessageSquare, AlertCircle } from "lucide-react";
+import { FileText, Send, Loader2, MessageSquare, AlertCircle } from "lucide-react";
+
 export default function SubmitReport() {
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    message: "",
-    block: "",
-    lot: ""
+    message: ""
   });
 
-  const handleChange = (e) => {
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
   };
 
-  const showNotification = (message, type = 'success') => {
-    const notification = document.createElement('div');
-    const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+  const showNotification = (message, type = "success") => {
+    const notification = document.createElement("div");
+    const bgColor = type === "success" ? "bg-green-500" : "bg-red-500";
     notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all`;
     notification.innerHTML = message;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 4000);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setSubmitting(true);
-    const userId = localStorage.getItem("user_id");
 
+    const userId = localStorage.getItem("user_id");
     const payload = new FormData();
     payload.append("user_id", userId);
-    payload.append("message", formData.message);
-    payload.append("block", formData.block);
-    payload.append("lot", formData.lot);
+    payload.append("message", formData.message.trim());
+    // Maintain compatibility with existing backend columns.
+    payload.append("block", "N/A");
+    payload.append("lot", "N/A");
 
     try {
-      const res = await fetch(`${BASE_URL}submit_report.php`, {
+      const response = await fetch(`${BASE_URL}submit_report.php`, {
         method: "POST",
         body: payload,
-        credentials: 'include'
+        credentials: "include"
       });
-      const data = await res.json();
+      const data = await response.json();
       if (data.success) {
-        showNotification('✅ ' + (data.message || 'Report submitted!'));
-        setFormData({ message: "", block: "", lot: "" });
+        showNotification(data.message || "Report submitted!");
+        setFormData({ message: "" });
       } else {
-        showNotification('❌ ' + (data.message || 'Failed to submit report.'), 'error');
+        showNotification(data.message || "Failed to submit report.", "error");
       }
-    } catch (err) {
-      console.error(err);
-      showNotification('❌ Failed to submit report.', 'error');
+    } catch (error) {
+      console.error(error);
+      showNotification("Failed to submit report.", "error");
     } finally {
       setSubmitting(false);
     }
@@ -76,6 +76,7 @@ export default function SubmitReport() {
             </div>
           </div>
         </div>
+
         <Card className="max-w-3xl">
           <CardContent>
             <div className="flex items-center gap-3 mb-6">
@@ -86,61 +87,55 @@ export default function SubmitReport() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="report-message" className="block text-sm font-medium text-gray-700 mb-2">
-                <MessageSquare className="w-4 h-4 inline mr-1" />
-                Message
-              </label>
-              <Textarea id="report-message" name="message" placeholder="Describe the issue (e.g., 'Water leak in bathroom near sink')" value={formData.message} onChange={handleChange} rows={4} maxLength={1000} required disabled={submitting} />
-              <p className="mt-1 text-xs text-gray-500">Tip: Include where and when you noticed the issue.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <MapPin className="w-4 h-4 inline mr-1" />
-                  Block
+                <label htmlFor="report-message" className="block text-sm font-medium text-gray-700 mb-2">
+                  <MessageSquare className="w-4 h-4 inline mr-1" />
+                  Message
                 </label>
-                <Input type="number" min={1} step={1} name="block" placeholder="e.g., 12" value={formData.block} onChange={handleChange} required disabled={submitting} />
+                <Textarea
+                  id="report-message"
+                  name="message"
+                  placeholder="Describe the issue (e.g., 'Water leak in bathroom near sink')"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={4}
+                  maxLength={1000}
+                  required
+                  disabled={submitting}
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Tip: Include where and when you noticed the issue.
+                </p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <MapPin className="w-4 h-4 inline mr-1" />
-                  Lot
-                </label>
-                <Input type="number" min={1} step={1} name="lot" placeholder="e.g., 8" value={formData.lot} onChange={handleChange} required disabled={submitting} />
-              </div>
-            </div>
 
-            <div className="pt-2">
-              <Button type="submit" className="w-full" disabled={submitting}>
-                {submitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Submitting Ticket...
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    Submit Ticket
-                  </>
-                )}
-              </Button>
-            </div>
+              <div className="pt-2">
+                <Button type="submit" className="w-full" disabled={submitting}>
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Submitting Ticket...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Submit Ticket
+                    </>
+                  )}
+                </Button>
+              </div>
             </form>
           </CardContent>
         </Card>
 
-        {/* Guidance Panel */}
         <div className="mt-6 bg-amber-50 border border-amber-200 rounded-2xl p-4">
           <div className="flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
             <div>
               <h3 className="font-medium text-amber-900 mb-1">Reporting Tips</h3>
               <ul className="text-sm text-amber-800 space-y-1">
-                <li>• Provide clear details about the issue or incident</li>
-                <li>• Include your block and lot for faster assistance</li>
-                <li>• Avoid sharing sensitive personal information</li>
+                <li>- Provide clear details about the issue or incident.</li>
+                <li>- Mention the area or room where the issue is happening.</li>
+                <li>- Avoid sharing sensitive personal information.</li>
               </ul>
             </div>
           </div>

@@ -8,8 +8,6 @@ import ProfileModal from "./ProfileModal";
 import AnimatedHamburger from "./AnimatedHamburger";
 
 export default function Header({ onLogout, onMenuClick }) {
-const [showAnnouncements, setShowAnnouncements] = useState(false);
-const [announcements, setAnnouncements] = useState([]);
 const [profileOpen, setProfileOpen] = useState(false);
 const [profile, setProfile] = useState(null);
 const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -17,17 +15,6 @@ const [notifications, setNotifications] = useState([]);
 const [showNotif, setShowNotif] = useState(false);
 const [unreadCount, setUnreadCount] = useState(0);
 const role = localStorage.getItem("role"); 
-const isNew = (datePosted) => {
-  const posted = new Date(datePosted);
-  const now = new Date();
-  const diffInDays = (now - posted) / (1000 * 60 * 60 * 24);
-  return diffInDays <= 3;
-};
-const formatDate = (dateStr) => {
-  const options = { year: "numeric", month: "short", day: "numeric" };
-  return new Date(dateStr).toLocaleDateString(undefined, options);
-};
-
 // Reset sidebar state when clicking outside or on route change
 useEffect(() => {
   const handleClickOutside = (event) => {
@@ -72,26 +59,6 @@ useEffect(() => {
       }
 
       // Auth OK -> proceed to fetch data
-      // Fetch announcements (no audience filter)
-      fetch(`${BASE_URL}get_announcements.php`, { credentials: 'include' })
-        .then(async res => {
-          if (!res.ok) {
-            throw new Error(`HTTP ${res.status}`);
-          }
-          const text = await res.text();
-          try {
-            const data = JSON.parse(text);
-            setAnnouncements(Array.isArray(data) ? data : (data.announcements || []));
-          } catch (parseError) {
-            console.error('Failed to parse announcements JSON:', parseError);
-            setAnnouncements([]);
-          }
-        })
-        .catch(err => {
-          console.error('Failed to fetch announcements:', err);
-          setAnnouncements([]);
-        });
-      
       // Fetch profile
       const userId = localStorage.getItem('user_id');
       if (userId) {
@@ -176,10 +143,6 @@ useEffect(() => {
               <div className="absolute right-0 mt-2 w-80 bg-white text-gray-800 rounded-lg shadow-lg ring-1 ring-black/5 z-50">
                 <div className="px-4 py-2 border-b flex items-center justify-between">
                   <span className="font-medium text-sm">Notifications</span>
-                  <button className="text-xs text-indigo-600 hover:underline" onClick={()=>{
-                    const path = role === 'admin' ? '/announcement' : (role==='homeowner'? '/homeowner/announcements' : '/home');
-                    window.location.href = path;
-                  }}>Announcements →</button>
                 </div>
                 <ul className="max-h-80 overflow-auto">
                   {notifications.length === 0 ? (
@@ -247,49 +210,6 @@ useEffect(() => {
             )}
           </button>
         </div>
-        {showAnnouncements && (
-          <div className="fixed inset-1 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg p-6 max-w-lg w-full relative shadow-lg">
-              <button
-                  onClick={() => setShowAnnouncements(false)}
-                  className="absolute top-2 right-3 text-gray-500 hover:text-black"
-              >
-                  &times;
-              </button>
-              <h2 className="text-xl font-bold text-indigo-600 mb-4">Latest Announcements</h2>
-              <ul className="space-y-2 max-h-96 overflow-y-auto text-black">
-                  {announcements.map((a, idx) => (
-                  <div key={idx} className="border-b pb-3 mb-3 relative">
-                      <h4 className="font-semibold text-indigo-600 flex items-center gap-2">
-                      {a.subject}
-                      {isNew(a.date_posted) && (
-                          <span className="bg-red-500 text-white text-[10px] px-2 py-[2px] rounded-full">NEW</span>
-                      )}
-                      </h4>
-                      <p className="text-sm text-gray-700 mt-1">
-                      {a.content.length > 100 ? a.content.substring(0, 100) + "..." : a.content}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">{formatDate(a.date_posted)}</p>
-                  </div>
-                  ))}
-              </ul>
-              <div className="mt-4 text-right">
-                {(role === "admin" || role === "homeowner") && (
-                  <button
-                    onClick={() => {
-                      setShowAnnouncements(false);
-                      const path = role === "admin" ? "/announcement" : "/homeowner/announcements";
-                      window.location.href = path;
-                    }}
-                    className="text-indigo-600 hover:underline text-sm"
-                  >
-                    View All Announcements →
-                  </button>
-                )}
-              </div>
-              </div>
-          </div>
-          )}
       </header>
       {profileOpen && createPortal(
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center">

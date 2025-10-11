@@ -6,7 +6,6 @@ import {
   Building2,
   Calendar,
   Clock,
-  Home,
   MessageSquare,
   Send,
   Loader2,
@@ -24,7 +23,6 @@ export default function BorrowAmenities() {
     request_date: null,
     time_start: null,
     time_end: null,
-    house_id: "",
     message: ""
   });
 
@@ -95,7 +93,6 @@ export default function BorrowAmenities() {
           request_date: null,
           time_start: null,
           time_end: null,
-          house_id: "",
           message: ""
         });
       } else {
@@ -283,3 +280,8 @@ export default function BorrowAmenities() {
     </Page>
   );
 }
+
+
+
+
+

@@ -4,6 +4,8 @@
 // - Localhost default: user "root" with no password
 // - Production: define via environment variables if available, else keep the existing defaults here
 
+require_once __DIR__ . '/env.php';
+
 // Helpful in development to see issues early
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
